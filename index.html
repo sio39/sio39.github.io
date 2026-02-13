@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>AI Trade Lab</title>
+<title>AIスコア投資研究所</title>
 
 <style>
 
@@ -15,9 +14,10 @@
     --border:#1f2633;
     --text:#e8edf7;
     --accent:#4da3ff;
+    --highlight:#ffd166;
 }
 
-/* ===== 基本レイアウト ===== */
+/* ===== 基本 ===== */
 body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
@@ -30,11 +30,10 @@ body{
 header{
     background:#0f1420;
     border-bottom:1px solid var(--border);
-    padding:14px 20px;
+    padding:14px 40px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    flex-wrap:wrap;
 }
 
 .logo{
@@ -42,70 +41,114 @@ header{
     font-weight:bold;
 }
 
-/* ===== ナビ ===== */
-nav{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-}
-
 nav a{
     color:#aab4c5;
     text-decoration:none;
-    padding:8px 12px;
-    border-radius:8px;
+    margin-left:20px;
     font-size:14px;
 }
 
 nav a:hover{
-    background:#1a2233;
     color:white;
+}
+
+/* ===== ヒーロー ===== */
+.hero{
+    text-align:center;
+    padding:60px 20px 40px;
+}
+
+.hero h1{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:#9aa4b2;
 }
 
 /* ===== コンテンツ ===== */
 .container{
-    max-width:900px;
+    max-width:1000px;
     margin:auto;
-    padding:40px 20px;
+    padding:20px;
 }
 
-h1{
-    font-size:30px;
-    margin-bottom:20px;
+/* ===== カード ===== */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
 }
 
 .card{
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:12px;
+    padding:22px;
+    transition:.15s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    border-color:var(--accent);
+}
+
+.card h2{
+    margin-top:0;
+    color:var(--accent);
+}
+
+/* ===== ボタンリンク ===== */
+.button{
+    display:inline-block;
+    margin-top:12px;
+    padding:10px 16px;
+    border-radius:6px;
+    background:var(--accent);
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+}
+
+/* ===== フッター ===== */
+footer{
+    margin-top:50px;
+    text-align:center;
     padding:20px;
-    margin-top:20px;
+    border-top:1px solid var(--border);
+    color:#7c8798;
+}
+
+/* ===== スマホ補正（崩れ防止） ===== */
+@media(max-width:600px){
+
+header{
+    padding:14px 16px;
+    flex-wrap:wrap;
+}
+
+nav{
+    width:100%;
+    margin-top:8px;
+}
+
+nav a{
+    margin-left:0;
+    margin-right:12px;
+}
+
+.hero h1{
+    font-size:26px;
 }
 
 .button{
-    display:inline-block;
-    margin-top:15px;
-    background:var(--accent);
-    color:white;
-    padding:12px 18px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:bold;
+    display:block;
+    width:100%;
+    text-align:center;
+    box-sizing:border-box;
 }
 
-/* ===== スマホ調整 ===== */
-@media(max-width:600px){
-
-    h1{
-        font-size:24px;
-    }
-
-    .button{
-        display:block;
-        width:100%;
-        text-align:center;
-        box-sizing:border-box;
-    }
 }
 
 </style>
@@ -114,7 +157,6 @@ h1{
 <body>
 
 <header>
-
 <div class="logo">AI Trade Lab</div>
 
 <nav>
@@ -122,46 +164,56 @@ h1{
 <a href="ai-score.html">AIスコア解説</a>
 <a href="https://sio39.github.io/score.html">監視銘柄</a>
 </nav>
-
 </header>
 
+<!-- ===== ヒーロー ===== -->
+<section class="hero">
+<h1>AIスコア投資研究所</h1>
+<p>才能がなくても生き残る為の研究サイト</p>
+</section>
+
+<!-- ===== メイン ===== -->
 <div class="container">
 
-<h1>AIトレード分析環境</h1>
+<div class="grid">
 
 <div class="card">
+<h2>AIスコアとは</h2>
 <p>
-このサイトは独自AIスコアを用いた監視銘柄抽出、
-および実戦トレード判断補助を目的としています。
+独自アルゴリズムにより銘柄の
+割安度・収益性・成長性を数値化し
+監視銘柄抽出を行う評価システム。
 </p>
+
+<a href="ai-score.html" class="button">
+詳細解説を見る
+</a>
 </div>
 
 <div class="card">
 <h2>最新分析</h2>
-
 <p>
-市場状況・資金流入・銘柄監視ロジックなど、
-実戦で有効だった観測や検証結果を随時整理していきます。
+今後ここに銘柄分析記事を追加予定。
+トレード視点での評価を掲載します。
 </p>
-
-<a class="button" href="ai-score.html">
-詳細解説を見る
-</a>
-
 </div>
 
 <div class="card">
-<h2>サイトの目的</h2>
-
+<h2>サイト目的</h2>
 <p>
-感情を排除した銘柄抽出と、
-資金の流れを捉えるトレード判断の融合を目指します。
-AIスコアは入口であり、
-最終判断は市場の現実に基づいて行います。
+感情を排除し、
+定量データを基準とした投資判断を構築。
+個人投資家が長期生存するための武器を研究します。
 </p>
 </div>
 
 </div>
+
+</div>
+
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
 
 </body>
 </html>
