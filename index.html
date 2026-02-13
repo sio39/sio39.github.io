@@ -107,17 +107,24 @@ nav a:hover{
     color:var(--accent);
 }
 
-/* ===== ボタンリンク ===== */
+/* ===== ボタンリンク（修正版）===== */
 .button{
-    display:inline-block;
-    margin-top:12px;
+    display:block;
+    width:fit-content;
+    max-width:100%;
+    box-sizing:border-box;
+
+    margin-top:14px;
     padding:10px 16px;
-    border-radius:8px;
+
+    border-radius:6px;
     background:var(--accent);
     color:white;
     text-decoration:none;
     font-size:14px;
+    text-align:center;
 }
+
 
 /* ===== フッター ===== */
 footer{
