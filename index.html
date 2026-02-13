@@ -7,7 +7,7 @@
 
 <style>
 
-/* ===== 共通テーマ ===== */
+/* ===== テーマ ===== */
 :root{
     --bg:#0b0e14;
     --panel:#121722;
@@ -34,6 +34,9 @@ header{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
 }
 
 .logo{
@@ -46,6 +49,7 @@ nav a{
     text-decoration:none;
     margin-left:20px;
     font-size:14px;
+    transition:.2s;
 }
 
 nav a:hover{
@@ -55,42 +59,44 @@ nav a:hover{
 /* ===== ヒーロー ===== */
 .hero{
     text-align:center;
-    padding:60px 20px 40px;
+    padding:70px 20px 50px;
 }
 
 .hero h1{
-    font-size:34px;
-    margin-bottom:10px;
+    font-size:36px;
+    margin-bottom:12px;
 }
 
 .hero p{
     color:#9aa4b2;
 }
 
-/* ===== コンテンツ ===== */
+/* ===== コンテナ ===== */
 .container{
     max-width:1000px;
     margin:auto;
     padding:20px;
 }
 
-/* ===== カード ===== */
+/* ===== カードグリッド ===== */
 .grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-    gap:20px;
+    gap:22px;
 }
 
+/* ===== カード ===== */
 .card{
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:12px;
     padding:22px;
     transition:.15s;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
 }
 
 .card:hover{
-    transform:translateY(-4px);
+    transform:translateY(-6px);
     border-color:var(--accent);
 }
 
@@ -99,16 +105,32 @@ nav a:hover{
     color:var(--accent);
 }
 
-/* ===== ボタンリンク ===== */
+/* ===== 説明BOX ===== */
+.desc-box{
+    background:linear-gradient(145deg,#121722,#1a2130);
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent);
+    padding:18px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+/* ===== ボタン ===== */
 .button{
     display:inline-block;
-    margin-top:12px;
+    margin-top:14px;
     padding:10px 16px;
-    border-radius:6px;
+    border-radius:8px;
     background:var(--accent);
     color:white;
     text-decoration:none;
     font-size:14px;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.button:hover{
+    transform:scale(1.05);
 }
 
 /* ===== フッター ===== */
@@ -120,7 +142,32 @@ footer{
     color:#7c8798;
 }
 
-/* ===== スマホ補正（崩れ防止） ===== */
+/* ========================= */
+/* ===== PC 強化調整 ===== */
+/* ========================= */
+@media(min-width:1000px){
+
+.container{
+    max-width:1200px;
+}
+
+.hero h1{
+    font-size:44px;
+}
+
+.card{
+    padding:26px;
+}
+
+p{
+    font-size:16px;
+}
+
+}
+
+/* ========================= */
+/* ===== スマホ最適化 ===== */
+/* ========================= */
 @media(max-width:600px){
 
 header{
@@ -142,13 +189,6 @@ nav a{
     font-size:26px;
 }
 
-.button{
-    display:block;
-    width:100%;
-    text-align:center;
-    box-sizing:border-box;
-}
-
 }
 
 </style>
@@ -166,24 +206,23 @@ nav a{
 </nav>
 </header>
 
-<!-- ===== ヒーロー ===== -->
 <section class="hero">
 <h1>AIスコア投資研究所</h1>
 <p>才能がなくても生き残る為の研究サイト</p>
 </section>
 
-<!-- ===== メイン ===== -->
 <div class="container">
 
 <div class="grid">
 
 <div class="card">
 <h2>AIスコアとは</h2>
-<p>
+
+<div class="desc-box">
 独自アルゴリズムにより銘柄の
-割安度・収益性・成長性を数値化し
+割安度・収益性・成長性を数値化し、
 監視銘柄抽出を行う評価システム。
-</p>
+</div>
 
 <a href="ai-score.html" class="button">
 詳細解説を見る
@@ -191,27 +230,23 @@ nav a{
 </div>
 
 <div class="card">
-<h2>監視銘柄</h2>
-<p>
-AIスコア条件（A3・A5・ギャップ比）を満たした
-監視候補銘柄を掲載しています。<br>
-掲載は投資推奨ではなく一次抽出です。<br>
-売買判断は出来高・RVOL・VWAP等を確認後に行います。
-</p>
+<h2>最新分析</h2>
 
-<a href="score.html" class="button">
-監視銘柄を見る
-</a>
+<div class="desc-box">
+今後ここに銘柄分析記事を追加予定。
+トレード視点での評価を掲載します。
+</div>
 
 </div>
 
 <div class="card">
 <h2>サイト目的</h2>
-<p>
-感情を排除し、
-定量データを基準とした投資判断を構築。
+
+<div class="desc-box">
+感情を排除し定量データを基準とした投資判断を構築。
 個人投資家が長期生存するための武器を研究します。
-</p>
+</div>
+
 </div>
 
 </div>
