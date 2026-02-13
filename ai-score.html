@@ -1,93 +1,83 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIスコアとは</title>
-
-<style>
-body{
-font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-margin:0;
-background:#f4f6f8;
-}
-
-header{
-background:#0f172a;
-color:white;
-padding:25px;
-text-align:center;
-}
-
-section{
-max-width:900px;
-margin:25px auto;
-background:white;
-padding:25px;
-border-radius:10px;
-box-shadow:0 4px 12px rgba(0,0,0,0.08);
-}
-
-h2{
-border-left:6px solid #2563eb;
-padding-left:12px;
-}
-
-footer{
-text-align:center;
-padding:20px;
-background:#0f172a;
-color:white;
-margin-top:40px;
-}
-</style>
-
-</head>
-
-<body>
-
-<header>
-<h1>AIスコアとは</h1>
-</header>
-
 <section>
-<h2>概要</h2>
-AIスコアは、銘柄分析を数値化することで主観や感情を排除し、
-再現性のある投資判断を目指す独自評価システムです。
+<h2>AIスコアの考え方</h2>
+
+AIスコアは個人投資家が市場で生き残るための判断基準を
+数値化することを目的として設計された独自評価システムです。
+
+銘柄の「現在の企業体力」と「将来の爆発力」を分離して評価し、
+監視対象を機械的に抽出します。
 </section>
 
+
 <section>
-<h2>評価対象</h2>
+<h2>A3スコア（企業の基本評価）</h2>
+
+A3スコアは企業の基礎体力を測る指標です。
+
 <ul>
-<li>収益性（営業利益率）</li>
-<li>資本効率（ROE）</li>
-<li>割安度（PER）</li>
-<li>成長性（売上・利益成長率）</li>
-<li>財務健全性（ネットキャッシュ）</li>
+<li>収益性</li>
+<li>資本効率</li>
+<li>割安度</li>
 </ul>
+
+これらを統合評価し、
+
+<b>120点以上をクリアライン</b> とします。
+
+この基準を満たす企業は
+財務的に一定水準以上の安定性を持つと判断します。
 </section>
 
-<section>
-<h2>A3スコア / A5スコア</h2>
-A3スコアは基本的な企業体力を測る評価。<br><br>
-
-A5スコアは成長性・財務要素を加えた拡張評価であり、
-長期投資における優位性の判定を目的としています。
-</section>
 
 <section>
-<h2>目的</h2>
+<h2>A5スコア（将来の爆発力評価）</h2>
+
+A5スコアでは将来的な株価伸長余地を評価します。
+
 <ul>
-<li>感情トレードの排除</li>
-<li>判断の標準化</li>
-<li>期待値ベースの銘柄選別</li>
-<li>個人投資家の生存率向上</li>
+<li>売上・利益の成長性</li>
+<li>財務余力</li>
+<li>拡張可能性</li>
 </ul>
+
+A3の基礎評価に成長要素を加味し、
+<b>ギャップ比 2.5以上をクリアライン</b> とします。
+
+これは市場評価との乖離を利用し、
+伸びしろを持つ銘柄を抽出することを目的としています。
 </section>
 
-<footer>
-© 2026 AIスコア投資研究所
-</footer>
 
-</body>
-</html>
+<section>
+<h2>監視銘柄の選定</h2>
+
+以下を満たした銘柄を監視対象とします。
+
+<ul>
+<li>A3スコアクリア</li>
+<li>A5スコアクリア</li>
+</ul>
+
+数値基準を満たした銘柄のみを監視リストに追加し、
+感情による選別を排除します。
+</section>
+
+
+<section>
+<h2>スコア利用時の注意点</h2>
+
+AIスコアは万能ではありません。
+特に以下の状況では判断を保留します。
+
+<ul>
+<li>今後の成長鈍化が示唆される場合</li>
+<li>決算直前で来期成長率の予測が困難な場合</li>
+</ul>
+
+これらの局面では、
+<b>スコアが高くても投資判断を見送る</b>
+ことを原則とします。
+
+市場は期待の変化で大きく動くため、
+定量評価だけでなく状況判断を併用します。
+</section>
