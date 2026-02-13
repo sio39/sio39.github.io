@@ -1,3 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIスコアとは</title>
+
+<style>
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    margin:0;
+    background:#f4f6f8;
+    line-height:1.7;
+}
+
+/* ヘッダー */
+header{
+    background:linear-gradient(120deg,#0f172a,#1e293b);
+    color:white;
+    padding:35px;
+    text-align:center;
+    box-shadow:0 3px 12px rgba(0,0,0,0.3);
+}
+
+/* セクション */
+section{
+    max-width:900px;
+    margin:30px auto;
+    background:white;
+    padding:28px;
+    border-radius:12px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    transition:0.2s;
+}
+
+section:hover{
+    transform:translateY(-4px);
+}
+
+/* タイトル */
+h2{
+    background:linear-gradient(90deg,#2563eb,#60a5fa);
+    color:white;
+    padding:8px 14px;
+    border-radius:6px;
+    display:inline-block;
+}
+
+/* リスト */
+ul{
+    line-height:1.9;
+}
+
+/* フロー図 */
+.flowbox{
+    background:white;
+    padding:14px;
+    margin:12px auto;
+    width:80%;
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.12);
+    font-weight:bold;
+}
+
+.arrow{
+    font-size:22px;
+    margin:5px;
+}
+
+/* 注意ブロック */
+.warning{
+    background:#fff1f2;
+    border-left:6px solid #ef4444;
+    padding:16px;
+    border-radius:6px;
+}
+
+/* フッター */
+footer{
+    text-align:center;
+    padding:20px;
+    background:#0f172a;
+    color:white;
+    margin-top:40px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>AIスコア評価システム解説</h1>
+<p>才能がなくても生き残るための定量投資モデル</p>
+</header>
+
+
 <section>
 <h2>AIスコアの考え方</h2>
 
@@ -6,6 +104,7 @@ AIスコアは個人投資家が市場で生き残るための判断基準を
 
 銘柄の「現在の企業体力」と「将来の爆発力」を分離して評価し、
 監視対象を機械的に抽出します。
+
 </section>
 
 
@@ -26,6 +125,7 @@ A3スコアは企業の基礎体力を測る指標です。
 
 この基準を満たす企業は
 財務的に一定水準以上の安定性を持つと判断します。
+
 </section>
 
 
@@ -41,10 +141,12 @@ A5スコアでは将来的な株価伸長余地を評価します。
 </ul>
 
 A3の基礎評価に成長要素を加味し、
+
 <b>ギャップ比 2.5以上をクリアライン</b> とします。
 
-これは市場評価との乖離を利用し、
+市場評価との乖離を利用し、
 伸びしろを持つ銘柄を抽出することを目的としています。
+
 </section>
 
 
@@ -60,68 +162,78 @@ A3の基礎評価に成長要素を加味し、
 
 数値基準を満たした銘柄のみを監視リストに追加し、
 感情による選別を排除します。
+
 </section>
+
 
 <section>
 <h2>AIスコア評価フロー</h2>
 
-<div style="text-align:center; font-weight:bold; line-height:2.2;">
+<div style="text-align:center;">
 
-<div>企業データ</div>
-<div>↓</div>
+<div class="flowbox">企業データ</div>
+<div class="arrow">↓</div>
 
-<div style="background:#e0f2fe; padding:10px; border-radius:8px;">
+<div class="flowbox">
 A3評価（企業の基礎体力）<br>
 120点以上で通過
 </div>
 
-<div>↓</div>
+<div class="arrow">↓</div>
 
-<div style="background:#dcfce7; padding:10px; border-radius:8px;">
+<div class="flowbox">
 A5評価（将来の爆発力）<br>
 ギャップ比2.5以上で通過
 </div>
 
-<div>↓</div>
+<div class="arrow">↓</div>
 
-<div style="background:#fef3c7; padding:10px; border-radius:8px;">
-監視銘柄リスト入り
-</div>
+<div class="flowbox">監視銘柄リスト入り</div>
 
-<div>↓</div>
+<div class="arrow">↓</div>
 
-<div style="background:#fee2e2; padding:10px; border-radius:8px;">
+<div class="flowbox">
 状況チェック<br>
-・成長鈍化の兆候<br>
-・決算直前<br>
+成長鈍化 / 決算直前<br>
 → 該当時は保留
 </div>
 
-<div>↓</div>
+<div class="arrow">↓</div>
 
-<div style="background:#ede9fe; padding:10px; border-radius:8px;">
-投資判断
-</div>
+<div class="flowbox">投資判断</div>
 
 </div>
+
 </section>
 
 
 <section>
 <h2>スコア利用時の注意点</h2>
 
-AIスコアは万能ではありません。
-特に以下の状況では判断を保留します。
+<div class="warning">
+
+AIスコアは万能ではありません。  
+以下の状況では判断を保留します。
 
 <ul>
 <li>今後の成長鈍化が示唆される場合</li>
 <li>決算直前で来期成長率の予測が困難な場合</li>
 </ul>
 
-これらの局面では、
-<b>スコアが高くても投資判断を見送る</b>
-ことを原則とします。
+<b>スコアが高くても投資判断を見送る</b>  
+これを運用原則としています。
 
-市場は期待の変化で大きく動くため、
-定量評価だけでなく状況判断を併用します。
+市場は期待の変化で大きく動くため、  
+定量評価と状況判断を併用する必要があります。
+
+</div>
+
 </section>
+
+
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
+
+</body>
+</html>
