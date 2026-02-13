@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIスコア解説</title>
 
 <style>
@@ -16,16 +17,17 @@
     --highlight:#ffd166;
 }
 
-/* ===== 基本レイアウト ===== */
+/* ===== 基本 ===== */
 body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
     Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
     background:var(--bg);
     color:var(--text);
+    line-height:1.7;
 }
 
-/* ===== ヘッダー（全ページ共通）===== */
+/* ===== ヘッダー（共通）===== */
 header{
     background:#0f1420;
     border-bottom:1px solid var(--border);
@@ -33,6 +35,7 @@ header{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    flex-wrap:wrap;
 }
 
 .logo{
@@ -40,11 +43,17 @@ header{
     font-weight:bold;
 }
 
+nav{
+    display:flex;
+    flex-wrap:wrap;
+}
+
 nav a{
     color:#aab4c5;
     text-decoration:none;
     margin-left:20px;
     font-size:14px;
+    padding:6px 0;
 }
 
 nav a:hover{
@@ -67,10 +76,10 @@ h1{
 
 h2{
     color:var(--accent);
-    margin-top:30px;
+    margin-top:0;
 }
 
-/* ===== カード統一 ===== */
+/* ===== カード ===== */
 .card{
     background:var(--panel);
     border:1px solid var(--border);
@@ -91,6 +100,66 @@ ul{
 .highlight{
     color:var(--highlight);
     font-weight:bold;
+}
+
+
+/* ================================= */
+/* ===== スマホレスポンシブ対応 ===== */
+/* ================================= */
+
+@media (max-width:768px){
+
+header{
+    padding:12px 16px;
+}
+
+nav{
+    width:100%;
+    justify-content:space-around;
+    margin-top:8px;
+}
+
+nav a{
+    margin-left:0;
+    font-size:13px;
+}
+
+.container{
+    padding:20px 14px;
+}
+
+h1{
+    font-size:24px;
+}
+
+.card{
+    padding:18px;
+}
+
+p{
+    font-size:15px;
+}
+
+ul{
+    font-size:15px;
+}
+
+}
+
+@media (max-width:420px){
+
+.logo{
+    font-size:16px;
+}
+
+h1{
+    font-size:21px;
+}
+
+p{
+    font-size:14px;
+}
+
 }
 
 </style>
@@ -187,5 +256,6 @@ AIスコアは銘柄選定の入口に過ぎません。
 </div>
 
 </div>
+
 </body>
 </html>
