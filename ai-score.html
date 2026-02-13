@@ -2,72 +2,125 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>AIスコアの考え方</title>
+<title>AIスコア解説</title>
 
 <style>
+
+/* ===== 共通テーマ ===== */
+:root{
+    --bg:#0b0e14;
+    --panel:#121722;
+    --border:#1f2633;
+    --text:#e8edf7;
+    --accent:#4da3ff;
+    --highlight:#ffd166;
+}
+
+/* ===== 基本レイアウト ===== */
 body{
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-    background:#0f1116;
-    color:#e6e6e6;
-    line-height:1.8;
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
+    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* ===== ヘッダー（全ページ共通）===== */
+header{
+    background:#0f1420;
+    border-bottom:1px solid var(--border);
+    padding:14px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:bold;
+}
+
+nav a{
+    color:#aab4c5;
+    text-decoration:none;
+    margin-left:20px;
+    font-size:14px;
+}
+
+nav a:hover{
+    color:white;
+}
+
+/* ===== コンテンツ ===== */
+.container{
     max-width:900px;
-    margin:40px auto;
-    padding:20px;
+    margin:auto;
+    padding:40px 20px;
 }
 
 h1{
     font-size:32px;
     margin-bottom:25px;
-    border-bottom:2px solid #2a2f3a;
+    border-bottom:2px solid var(--border);
     padding-bottom:10px;
 }
 
 h2{
-    margin-top:35px;
-    color:#6ab0ff;
+    color:var(--accent);
+    margin-top:30px;
 }
 
+/* ===== カード統一 ===== */
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px;
+    margin-top:20px;
+}
+
+/* ===== テキスト ===== */
 p{
-    margin:14px 0;
-}
-
-.box{
-    background:#171a21;
-    padding:18px;
-    border-radius:10px;
-    margin:18px 0;
-}
-
-.highlight{
-    color:#ffd166;
-    font-weight:bold;
+    line-height:1.9;
 }
 
 ul{
     padding-left:20px;
 }
 
-li{
-    margin:6px 0;
+.highlight{
+    color:var(--highlight);
+    font-weight:bold;
 }
-</style>
 
+</style>
 </head>
+
 <body>
+
+<header>
+<div class="logo">AI Trade Lab</div>
+
+<nav>
+<a href="index.html">TOP</a>
+<a href="score.html">AIスコア</a>
+<a href="#">ニュース</a>
+<a href="#">監視銘柄</a>
+</nav>
+</header>
+
+<div class="container">
 
 <h1>AIスコアの考え方</h1>
 
 <p>
 AIスコアは独自アルゴリズムにより銘柄の
 <strong>割安度・収益性・成長性</strong>を数値化し、
-感情に頼らない投資判断を支援するための指標です。
+感情に依存しない監視銘柄抽出を目的とした評価指標です。
 </p>
 
-<div class="box">
+<div class="card">
 <h2>A3スコア（基礎評価）</h2>
-<p>
-企業の基本的な質を評価します。
-</p>
 
 <ul>
 <li>利益率</li>
@@ -77,86 +130,62 @@ AIスコアは独自アルゴリズムにより銘柄の
 
 <p>
 <span class="highlight">120点以上でクリア</span><br>
-企業として一定水準以上の収益力・効率性を持つと判断します。
+企業の収益体力が一定水準以上と判断します。
 </p>
 </div>
 
-<div class="box">
+<div class="card">
 <h2>A5スコア（成長評価）</h2>
-<p>
-将来の爆発力・成長力を含めた拡張評価です。
-</p>
 
 <ul>
 <li>売上成長率</li>
-<li>ネットキャッシュ比率</li>
+<li>ネットキャッシュ</li>
 </ul>
 
 <p>
-A3に加えて将来性を評価します。
-</p>
-
-<p>
-<span class="highlight">ギャップ比 2.5以上でクリア</span><br>
-市場評価との乖離が大きく、監視価値がある銘柄と判断します。
+<span class="highlight">ギャップ比2.5以上でクリア</span><br>
+市場評価との乖離があり監視価値のある銘柄を抽出します。
 </p>
 </div>
 
-<div class="box">
-<h2>監視銘柄への採用基準</h2>
-
-<p>
-以下の条件を満たした銘柄を監視対象とします。
-</p>
+<div class="card">
+<h2>監視銘柄採用条件</h2>
 
 <ul>
-<li>A3スコア 120以上</li>
-<li>A5評価通過</li>
-<li>ギャップ比 2.5以上</li>
+<li>A3クリア</li>
+<li>A5クリア</li>
+<li>ギャップ比条件通過</li>
 </ul>
 
 </div>
 
-<div class="box">
-<h2>重要な注意点</h2>
+<div class="card">
+<h2>注意点</h2>
 
 <p>
-今後の成長が鈍化する可能性がある場合や、
-決算接近により来期予測が困難な場合は、
-スコアが高くても保留判断とします。
+決算直前や成長鈍化兆候がある場合、
+スコアが高くても投資判断は保留とします。
+AIスコアは過去データ評価であり、
+未来の構造変化を完全には反映しないためです。
 </p>
-
-<p>
-AIスコアは過去データベース評価であり、
-将来の構造変化を完全には反映できないためです。
-</p>
-
 </div>
 
-<div class="box">
+<div class="card">
 <h2>実戦トレードでの位置付け</h2>
 
 <p>
-AIスコアは銘柄選びの初期フィルターとして使用していますが、
-これだけで投資判断を完結させるものではありません。
-スコアが一定水準を満たした銘柄は、
-あくまで監視銘柄リストに追加される段階に過ぎません。
+AIスコアは銘柄選定の入口に過ぎません。
+監視銘柄に追加された後、
+当日の出来高・RVOL・VWAP位置関係などを確認し、
+資金流入状況を検証します。
 </p>
 
 <p>
-実際のトレード判断では当日の市場状況を重視しており、
-出来高、RVOL、VWAPの位置関係などを確認したうえで、
-需給や資金流入の有無をチェックします。
+最終的な投資判断は市場環境と値動きの総合評価で行います。
+これらの実践的チェックプロセスは今後詳細解説予定です。
 </p>
-
-<p>
-最終的には相場全体の状況認識と個別銘柄の値動きを踏まえた
-総合的な投資判断が必要になります。
-これらの具体的なチェック方法や判断プロセスについては、
-今後別途詳細に解説していく予定です。
-</p>
-
 </div>
 
+</div>
 </body>
 </html>
