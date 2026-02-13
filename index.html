@@ -4,105 +4,104 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>AIスコア投資分析</title>
+<title>AI Trade Lab</title>
 
 <style>
-/* ===== 共通デザイン ===== */
+
+/* ===== 共通テーマ ===== */
+:root{
+    --bg:#0b0e14;
+    --panel:#121722;
+    --border:#1f2633;
+    --text:#e8edf7;
+    --accent:#4da3ff;
+}
+
+/* ===== 基本レイアウト ===== */
 body{
     margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-    background:#0f172a;
-    color:#e2e8f0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
+    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+    background:var(--bg);
+    color:var(--text);
 }
 
 /* ===== ヘッダー ===== */
 header{
-    background:#020617;
-    padding:14px 18px;
+    background:#0f1420;
+    border-bottom:1px solid var(--border);
+    padding:14px 20px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    border-bottom:1px solid #1e293b;
+    flex-wrap:wrap;
 }
 
 .logo{
     font-size:20px;
     font-weight:bold;
-    letter-spacing:1px;
 }
 
 /* ===== ナビ ===== */
 nav{
     display:flex;
-    gap:14px;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
 nav a{
+    color:#aab4c5;
     text-decoration:none;
-    color:#cbd5f5;
-    padding:8px 14px;
-    border-radius:10px;
-    transition:.2s;
+    padding:8px 12px;
+    border-radius:8px;
     font-size:14px;
 }
 
 nav a:hover{
-    background:#1e293b;
+    background:#1a2233;
+    color:white;
 }
 
-/* ===== メイン ===== */
-main{
+/* ===== コンテンツ ===== */
+.container{
     max-width:900px;
     margin:auto;
-    padding:28px 18px;
+    padding:40px 20px;
 }
 
 h1{
-    font-size:26px;
-    margin-bottom:12px;
+    font-size:30px;
+    margin-bottom:20px;
 }
 
-p{
-    line-height:1.7;
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px;
+    margin-top:20px;
 }
 
-/* ===== ボタン ===== */
 .button{
     display:inline-block;
-    margin-top:18px;
-    background:#2563eb;
+    margin-top:15px;
+    background:var(--accent);
     color:white;
     padding:12px 18px;
-    border-radius:12px;
+    border-radius:10px;
     text-decoration:none;
     font-weight:bold;
-    transition:.2s;
-}
-
-.button:hover{
-    background:#1d4ed8;
 }
 
 /* ===== スマホ調整 ===== */
 @media(max-width:600px){
 
-    header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:8px;
-    }
-
-    nav{
-        width:100%;
-        justify-content:flex-start;
-        flex-wrap:wrap;
-    }
-
     h1{
-        font-size:22px;
+        font-size:24px;
     }
 
     .button{
+        display:block;
         width:100%;
         text-align:center;
         box-sizing:border-box;
@@ -115,35 +114,54 @@ p{
 <body>
 
 <header>
-    <div class="logo">AIスコア分析</div>
 
-    <nav>
-        <a href="index.html">トップ</a>
-        <a href="ai_score.html">AIスコア解説</a>
-        <a href="https://sio39.github.io/score.html">監視銘柄</a>
-    </nav>
+<div class="logo">AI Trade Lab</div>
+
+<nav>
+<a href="index.html">TOP</a>
+<a href="ai-score.html">AIスコア解説</a>
+<a href="https://sio39.github.io/score.html">監視銘柄</a>
+</nav>
+
 </header>
 
-<main>
+<div class="container">
 
-<h1>AIスコア投資分析ツール</h1>
+<h1>AIトレード分析環境</h1>
+
+<div class="card">
+<p>
+このサイトは独自AIスコアを用いた監視銘柄抽出、
+および実戦トレード判断補助を目的としています。
+</p>
+</div>
+
+<div class="card">
+<h2>最新分析</h2>
 
 <p>
-AIスコアは独自アルゴリズムにより銘柄の割安度・収益性・成長性を数値化し、
-感情に頼らない銘柄選定を支援する指標です。
+市場状況・資金流入・銘柄監視ロジックなど、
+実戦で有効だった観測や検証結果を随時整理していきます。
 </p>
 
-<p>
-本ツールではスコアを監視銘柄選定の起点として活用し、
-その後の出来高・RVOL・VWAP・市場状況などの当日判断と組み合わせることで、
-実戦トレードへの接続を目的としています。
-</p>
-
-<a class="button" href="ai_score.html">
-AIスコアの詳細解説を見る
+<a class="button" href="ai-score.html">
+詳細解説を見る
 </a>
 
-</main>
+</div>
+
+<div class="card">
+<h2>サイトの目的</h2>
+
+<p>
+感情を排除した銘柄抽出と、
+資金の流れを捉えるトレード判断の融合を目指します。
+AIスコアは入口であり、
+最終判断は市場の現実に基づいて行います。
+</p>
+</div>
+
+</div>
 
 </body>
 </html>
