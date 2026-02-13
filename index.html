@@ -6,40 +6,105 @@
 <title>AIスコア投資研究所</title>
 
 <style>
+
 body{
-    font-family: sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     margin:0;
     background:#f4f6f8;
+    color:#222;
 }
 
+/* ===== ヘッダー ===== */
+
 header{
-    background:#111;
+    background:#0f172a;
     color:white;
-    padding:20px;
+    padding:30px 20px;
     text-align:center;
 }
 
+header h1{
+    margin:0;
+    font-size:26px;
+}
+
+header p{
+    opacity:0.8;
+}
+
+/* ===== ナビ ===== */
+
+nav{
+    background:#1e293b;
+    text-align:center;
+    padding:12px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin:0 15px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    color:#38bdf8;
+}
+
+/* ===== コンテンツ ===== */
+
 section{
     max-width:900px;
-    margin:20px auto;
+    margin:25px auto;
     background:white;
-    padding:20px;
-    border-radius:8px;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 
 h2{
-    border-left:5px solid #0077ff;
-    padding-left:10px;
+    border-left:6px solid #2563eb;
+    padding-left:12px;
 }
+
+/* カード */
 
 .card{
-    background:#fafafa;
-    padding:15px;
-    margin-top:10px;
-    border-radius:6px;
+    background:#f9fafb;
+    padding:18px;
+    margin-top:12px;
+    border-radius:8px;
 }
-</style>
 
+/* ボタンリンク */
+
+.btn{
+    display:inline-block;
+    margin-top:15px;
+    padding:12px 18px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    font-weight:bold;
+}
+
+.btn:hover{
+    background:#1d4ed8;
+}
+
+/* フッター */
+
+footer{
+    text-align:center;
+    padding:25px;
+    background:#0f172a;
+    color:white;
+    margin-top:40px;
+    font-size:14px;
+}
+
+</style>
 </head>
 
 <body>
@@ -49,37 +114,12 @@ h2{
 <p>データで戦う個人投資家のための分析サイト</p>
 </header>
 
+<nav>
+<a href="index.html">ホーム</a>
+<a href="score.html">注目銘柄</a>
+</nav>
+
 <section>
 <h2>AIスコアとは</h2>
 <div class="card">
-独自アルゴリズムにより銘柄の割安度・収益性・成長性を数値化。
-感情に頼らない投資判断を支援します。
-</div>
-</section>
-
-<p>
-<a href="score.html">
-▶ AIスコア注目銘柄はこちら
-</a>
-</p>
-    
-
-<section>
-<h2>最新分析（準備中）</h2>
-<div class="card">
-ここに銘柄分析記事を追加していきます。
-</div>
-</section>
-
-
-
-    
-<section>
-<h2>サイト目的</h2>
-<div class="card">
-個人投資家が市場で生き残るための武器としてAIスコアを公開・検証していきます。
-</div>
-</section>
-
-</body>
-</html>
+独自アルゴリズムにより銘柄の
