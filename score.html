@@ -6,72 +6,157 @@
 <title>監視銘柄リスト</title>
 
 <style>
+/* ===== 全体 ===== */
 body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
     Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
     background:#0b0e14;
     color:#e8edf7;
+}
+
+/* ===== ヘッダー ===== */
+header{
+    background:#0f1420;
+    border-bottom:1px solid #1f2633;
+    padding:14px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+header .logo{
+    font-size:20px;
+    font-weight:bold;
+}
+header nav a{
+    color:#aab4c5;
+    text-decoration:none;
+    margin-left:20px;
+    font-size:14px;
+    transition:.2s;
+}
+header nav a:hover{
+    color:white;
+}
+
+/* ===== コンテナ ===== */
+.container{
+    max-width:1000px;
+    margin:auto;
     padding:20px;
 }
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
+
+/* ===== グリッド ===== */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
 }
-th, td{
-    border:1px solid #4da3ff;
-    padding:8px;
-    text-align:left;
-}
-th{
+
+/* ===== カード ===== */
+.card{
     background:#121722;
+    border:1px solid #1f2633;
+    border-radius:12px;
+    padding:22px;
+    transition:.15s;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+.card:hover{
+    transform:translateY(-6px);
+    border-color:#4da3ff;
+}
+.card h2{
+    margin-top:0;
     color:#4da3ff;
 }
-tr:nth-child(even){
-    background:#0f1420;
+
+/* ===== 説明ボックス ===== */
+.desc-box{
+    background:linear-gradient(145deg,#121722,#1a2130);
+    border:1px solid #1f2633;
+    border-left:4px solid #4da3ff;
+    padding:12px;
+    border-radius:10px;
+    margin-top:8px;
 }
-tr:nth-child(odd){
-    background:#121722;
+
+/* ===== フッター ===== */
+footer{
+    margin-top:50px;
+    text-align:center;
+    padding:20px;
+    border-top:1px solid #1f2633;
+    color:#7c8798;
 }
 </style>
 </head>
 <body>
 
-<h1>監視銘柄リスト</h1>
-<p>CSVを読み込んで自動表示しています。</p>
+<header>
+    <div class="logo">AI Trade Lab</div>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="ai-score.html">AIスコア解説</a>
+        <a href="score.html">監視銘柄</a>
+    </nav>
+</header>
 
-<table id="stock-table">
-    <thead>
-        <tr>
-            <th>銘柄名</th>
-            <th>銘柄コード</th>
-            <th>AIスコア</th>
-            <th>A3スコア</th>
-            <th>価格</th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+<div class="container">
+    <h1>監視銘柄リスト</h1>
+    <p>CSVを読み込み、AIスコア条件を満たした銘柄を自動表示しています。</p>
 
-<!-- PapaParse CDN -->
+    <div class="grid" id="stock-list"></div>
+</div>
+
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
+
+<!-- ===== PapaParse CDN ===== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
 <script>
-// GitHub Raw URL を指定
-const csvUrl = 'https://raw.githubusercontent.com/sio39/sio39.github.io/main/stocjs.csv';
+// 同じリポジトリ内に置いた CSV を読み込む
+const csvUrl = 'stocjs.csv';
 
 Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: function(results){
-        const tbody = document.querySelector('#stock-table tbody');
+        const container = document.getElementById('stock-list');
+
+        if(!results.data || results.data.length === 0){
+            container.innerHTML = '<p style="color:red;">CSVが空か、読み込みに失敗しました。</p>';
+            return;
+        }
+
         results.data.forEach(stock => {
             if(!stock['銘柄名']) return; // 空行スキップ
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${stock['銘柄名']}</td>
-                <td>${stock['銘柄コード']}</td>
-                <td>${stock['AIスコア']}</td>
-                <td>${stock['A3スコア']}</td>
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.innerHTML = `
+                <h2>${stock['銘柄名']} (${stock['銘柄コード']})</h2>
+                <div class="desc-box">
+                    AIスコア: ${stock['AIスコア']}<br>
+                    A3スコア: ${stock['A3スコア']}<br>
+                    価格: ${stock['価格']}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    },
+    error: function(err){
+        console.error('CSV読み込みエラー:', err);
+        const container = document.getElementById('stock-list');
+        container.innerHTML = '<p style="color:red;">CSVの読み込みに失敗しました。</p>';
+    }
+});
+</script>
+
+</body>
+</html>
