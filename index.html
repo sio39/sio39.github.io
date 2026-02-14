@@ -37,6 +37,7 @@ header{
     position:sticky;
     top:0;
     z-index:1000;
+    flex-wrap:wrap;
 }
 
 .logo{
@@ -44,16 +45,38 @@ header{
     font-weight:bold;
 }
 
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:16px;
+}
+
 nav a{
     color:#aab4c5;
     text-decoration:none;
-    margin-left:20px;
     font-size:14px;
     transition:.2s;
 }
 
 nav a:hover{
     color:white;
+}
+
+/* ===== Xリンクボタン ===== */
+.x-button{
+    background-color:#1DA1F2;
+    color:white;
+    padding:8px 16px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+    font-size:14px;
+    transition:.2s;
+}
+
+.x-button:hover{
+    background-color:#0d8ddb;
 }
 
 /* ===== ヒーロー ===== */
@@ -74,8 +97,8 @@ nav a:hover{
 /* ヒーロー画像 */
 .hero img{
     max-width:100%;
-    max-height:400px; /* 最大高さを設定 */
-    object-fit:cover; /* はみ出しを防ぐ */
+    max-height:400px;
+    object-fit:cover;
     border-radius:12px;
     margin-top:20px;
 }
@@ -173,7 +196,7 @@ p{
 }
 
 .hero img{
-    max-height:500px; /* PCでは少し大きめに */
+    max-height:500px;
 }
 
 }
@@ -185,7 +208,8 @@ p{
 
 header{
     padding:14px 16px;
-    flex-wrap:wrap;
+    flex-direction:column;
+    align-items:flex-start;
 }
 
 nav{
@@ -194,7 +218,6 @@ nav{
 }
 
 nav a{
-    margin-left:0;
     margin-right:12px;
 }
 
@@ -205,11 +228,17 @@ nav a{
 .hero img{
     margin-top:16px;
     border-radius:10px;
-    max-height:250px; /* スマホで小さめに */
+    max-height:250px;
 }
 
 p{
     font-size:14px;
+}
+
+.x-button{
+    margin-top:8px;
+    width:100%;
+    text-align:center;
 }
 
 }
@@ -227,13 +256,17 @@ p{
 <a href="ai-score.html">AIスコア解説</a>
 <a href="https://sio39.github.io/score.html">監視銘柄</a>
 </nav>
+
+<!-- Xリンクはメニューの横ではなく右上に独立 -->
+<a href="https://x.com/N0oZk" target="_blank" rel="noopener noreferrer" class="x-button">
+フォローする @N0oZk
+</a>
 </header>
 
 <section class="hero">
 <h1>AIスコア投資研究所</h1>
 <p>才能がなくても生き残る為の研究サイト</p>
 
-<!-- サイト名下に画像追加 -->
 <img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" 
      alt="トップ画像">
 
@@ -241,7 +274,6 @@ p{
 
 <div class="container">
 
-<!-- 追加文章 -->
 <div class="desc-box">
 <p>個人投資家の負けを減らしたい――私自身の試行錯誤から得た手法を、無料で公開しています。</p>
 </div>
@@ -251,7 +283,6 @@ p{
 
 <p>勝つための方法は一朝一夕には身につきません。しかし、正しい知識や工夫を取り入れることで、無駄な損失を減らし、少しずつ改善していくことは可能です。私の経験や考えを参考にして、皆さんの投資ライフが少しでも安定する助けになれば幸いです。</p>
 </div>
-<!-- 追加文章ここまで -->
 
 <div class="grid">
 
@@ -283,24 +314,3 @@ AIスコア条件（A3・A5・ギャップ比）を満たした
 </a>
 
 </div>
-
-<div class="card">
-<h2>サイト目的</h2>
-
-<div class="desc-box">
-感情を排除し定量データを基準とした投資判断を構築。
-個人投資家が長期生存するための武器を研究します。
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<footer>
-© 2026 AIスコア投資研究所
-</footer>
-
-</body>
-</html>
