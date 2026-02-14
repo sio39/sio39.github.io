@@ -1,1 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>CSV読み込みテスト</title>
+<style>
+body { font-family:sans-serif; background:#0b0e14; color:#e8edf7; padding:20px; }
+.stock { background:#121722; padding:10px; margin:5px 0; border-radius:6px; border:1px solid #1f2633; }
+</style>
+</head>
+<body>
+<h1>CSV読み込みテスト</h1>
+<div id="stock-list"></div>
+
+<!-- PapaParse CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+// CSVのパスを変数に入れる
 const csvFile = 'stocjs.csv';
+
+// CSVを読み込む処理
+Papa.parse(csvFile, {
+    download: true,          // ファイルをダウンロード
+    header: true,            // 1行目をヘッダーとして扱う
+    skipEmptyLines: true,    // 空行をスキップ
+    complete: function(results){
+        const container = document.getElementById('stock-list');
+        results.data.forEach(row => {
+            if(!row['銘柄名']) return; // 空行スキップ
+            const div = document.createElement('div');
+            div.className = 'stock';
+            div.textContent = `${row['銘柄名']} (${row['銘柄コード']}) - AIスコア: ${row['AIスコア']}`;
+            container.appendChild(div);
+        });
+    },
+    error: function(err){
+        document.getElementById('stock-list').textContent = 'CSV読み込みエラー';
+        console.error(err);
+    }
+});
+</script>
+</body>
+</html>
