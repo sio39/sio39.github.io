@@ -14,7 +14,6 @@
     --border:#1f2633;
     --text:#e8edf7;
     --accent:#4da3ff;
-    --highlight:#ffd166;
 }
 
 /* ===== 基本 ===== */
@@ -63,7 +62,7 @@ nav a:hover{
     color:white;
 }
 
-/* ===== Xリンクボタン ===== */
+/* ===== Xボタン ===== */
 .x-button{
     background-color:#1DA1F2;
     color:white;
@@ -73,6 +72,9 @@ nav a:hover{
     font-weight:bold;
     font-size:14px;
     transition:.2s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 .x-button:hover{
@@ -176,7 +178,6 @@ footer{
 
 /* ========================= */
 /* ===== PC 強化調整 ===== */
-/* ========================= */
 @media(min-width:1000px){
 
 .container{
@@ -199,11 +200,16 @@ p{
     max-height:500px;
 }
 
+/* PCでは文字付きボタン表示 */
+.x-button::after{
+    content:" フォローする @N0oZk";
+    margin-left:6px;
+}
+
 }
 
 /* ========================= */
 /* ===== スマホ最適化 ===== */
-/* ========================= */
 @media(max-width:600px){
 
 header{
@@ -219,6 +225,7 @@ nav{
 
 nav a{
     margin-right:12px;
+    margin-bottom:6px;
 }
 
 .hero h1{
@@ -235,12 +242,18 @@ p{
     font-size:14px;
 }
 
-.x-button{
-    margin-top:8px;
-    width:100%;
-    text-align:center;
+/* スマホでは文字を消して鳩マークだけ表示 */
+.x-button::after{
+    content:""; /* 文字なし */
 }
 
+.x-button{
+    width:36px;
+    height:36px;
+    padding:0;
+    border-radius:50%;
+    font-size:18px;
+}
 }
 
 </style>
@@ -257,9 +270,8 @@ p{
 <a href="https://sio39.github.io/score.html">監視銘柄</a>
 </nav>
 
-<!-- Xリンクはメニューの横ではなく右上に独立 -->
 <a href="https://x.com/N0oZk" target="_blank" rel="noopener noreferrer" class="x-button">
-フォローする @N0oZk
+🕊
 </a>
 </header>
 
@@ -314,3 +326,24 @@ AIスコア条件（A3・A5・ギャップ比）を満たした
 </a>
 
 </div>
+
+<div class="card">
+<h2>サイト目的</h2>
+
+<div class="desc-box">
+感情を排除し定量データを基準とした投資判断を構築。
+個人投資家が長期生存するための武器を研究します。
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
+
+</body>
+</html>
