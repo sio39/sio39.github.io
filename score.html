@@ -79,22 +79,29 @@ footer{ margin-top:50px; text-align:center; padding:20px; border-top:1px solid #
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <script>
-// 同じリポジトリ内に置いた CSV を読み込む
-const csvUrl = 'stocjs.csv';
+// GitHub Raw URL
+const rawUrl = 'https://raw.githubusercontent.com/sio39/sio39.github.io/main/stocjs.csv';
+// CORS回避用プロキシ
+const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rawUrl);
 
-Papa.parse(csvUrl, {
+Papa.parse(proxyUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: function(results){
+        // AllOrigins の場合、データは results.contents に入っている
+        const csvText = results.contents || results.data;
+        // PapaParse で再度解析してオブジェクト化
+        const data = Papa.parse(csvText, {header:true, skipEmptyLines:true}).data;
+
         const container = document.getElementById('stock-list');
 
-        if(!results.data || results.data.length === 0){
+        if(!data || data.length === 0){
             container.innerHTML = '<p style="color:red;">CSVが空か、読み込みに失敗しました。</p>';
             return;
         }
 
-        results.data.forEach(stock => {
+        data.forEach(stock => {
             if(!stock['銘柄名']) return; // 空行スキップ
             const div = document.createElement('div');
             div.className = 'card';
