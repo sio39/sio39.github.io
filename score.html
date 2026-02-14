@@ -3,83 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>監視銘柄リスト</title>
-
+<title>CSV読み込みテスト</title>
 <style>
-body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
-    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-    background:#0b0e14;
-    color:#e8edf7;
-}
-header{
-    background:#0f1420;
-    border-bottom:1px solid #1f2633;
-    padding:14px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    position:sticky;
-    top:0;
-    z-index:1000;
-}
-header .logo{ font-size:20px; font-weight:bold; }
-header nav a{
-    color:#aab4c5;
-    text-decoration:none;
-    margin-left:20px;
-    font-size:14px;
-    transition:.2s;
-}
-header nav a:hover{ color:white; }
-.container{ max-width:1000px; margin:auto; padding:20px; }
-.grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; }
-.card{
-    background:#121722;
-    border:1px solid #1f2633;
-    border-radius:12px;
-    padding:22px;
-    transition:.15s;
-    box-shadow:0 8px 24px rgba(0,0,0,0.35);
-}
-.card:hover{ transform:translateY(-6px); border-color:#4da3ff; }
-.card h2{ margin-top:0; color:#4da3ff; }
-.desc-box{
-    background:linear-gradient(145deg,#121722,#1a2130);
-    border:1px solid #1f2633;
-    border-left:4px solid #4da3ff;
-    padding:12px;
-    border-radius:10px;
-    margin-top:8px;
-}
-footer{ margin-top:50px; text-align:center; padding:20px; border-top:1px solid #1f2633; color:#7c8798; }
+body { font-family: sans-serif; background:#0b0e14; color:#e8edf7; padding:20px; }
+.stock { background:#121722; padding:10px; margin:5px 0; border-radius:6px; border:1px solid #1f2633; }
 </style>
 </head>
-
 <body>
-<header>
-    <div class="logo">AI Trade Lab</div>
-    <nav>
-        <a href="index.html">TOP</a>
-        <a href="ai-score.html">AIスコア解説</a>
-        <a href="score.html">監視銘柄</a>
-    </nav>
-</header>
-
-<div class="container">
-    <h1>監視銘柄リスト</h1>
-    <p>CSVを読み込み、AIスコア条件を満たした銘柄を自動表示します。</p>
-    <div class="grid" id="stock-list"></div>
-</div>
-
-<footer>© 2026 AIスコア投資研究所</footer>
+<h1>CSV読み込みテスト</h1>
+<div id="stock-list"></div>
 
 <!-- PapaParse CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
 <script>
-// 同じリポジトリ内の CSV を読み込む
+// CSV URL（同じリポジトリに置く）
 const csvUrl = 'stocjs.csv';
 
 Papa.parse(csvUrl, {
@@ -88,35 +25,19 @@ Papa.parse(csvUrl, {
     skipEmptyLines: true,
     complete: function(results){
         const container = document.getElementById('stock-list');
-        const data = results.data;
-
-        if(!data || data.length === 0){
-            container.innerHTML = '<p style="color:red;">CSVが空か、読み込みに失敗しました。</p>';
-            return;
-        }
-
-        data.forEach(stock => {
-            if(!stock['銘柄名']) return; // 空行スキップ
+        results.data.forEach(stock => {
+            if(!stock['銘柄名']) return;
             const div = document.createElement('div');
-            div.className = 'card';
-            div.innerHTML = `
-                <h2>${stock['銘柄名']} (${stock['銘柄コード']})</h2>
-                <div class="desc-box">
-                    AIスコア: ${stock['AIスコア']}<br>
-                    A3スコア: ${stock['A3スコア']}<br>
-                    価格: ${stock['価格']}
-                </div>
-            `;
+            div.className = 'stock';
+            div.textContent = `${stock['銘柄名']} (${stock['銘柄コード']}) - AIスコア: ${stock['AIスコア']}, A3: ${stock['A3スコア']}, 価格: ${stock['価格']}`;
             container.appendChild(div);
         });
     },
     error: function(err){
-        console.error('CSV読み込みエラー:', err);
-        const container = document.getElementById('stock-list');
-        container.innerHTML = '<p style="color:red;">CSVの読み込みに失敗しました。</p>';
+        document.getElementById('stock-list').textContent = 'CSV読み込みエラー';
+        console.error(err);
     }
 });
 </script>
-
 </body>
 </html>
