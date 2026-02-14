@@ -74,7 +74,8 @@ nav a:hover{
 /* ヒーロー画像 */
 .hero img{
     max-width:100%;
-    height:auto;
+    max-height:400px; /* 最大高さを設定 */
+    object-fit:cover; /* はみ出しを防ぐ */
     border-radius:12px;
     margin-top:20px;
 }
@@ -171,6 +172,10 @@ p{
     font-size:16px;
 }
 
+.hero img{
+    max-height:500px; /* PCでは少し大きめに */
+}
+
 }
 
 /* ========================= */
@@ -200,6 +205,7 @@ nav a{
 .hero img{
     margin-top:16px;
     border-radius:10px;
+    max-height:250px; /* スマホで小さめに */
 }
 
 p{
@@ -229,8 +235,7 @@ p{
 
 <!-- サイト名下に画像追加 -->
 <img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" 
-     alt="トップ画像" 
-     style="width:100%; height:auto;">
+     alt="トップ画像">
 
 </section>
 
