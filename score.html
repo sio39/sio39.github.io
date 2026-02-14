@@ -2,40 +2,54 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>CSV読み込みテスト</title>
+<title>監視銘柄リスト</title>
 <style>
-body { font-family:sans-serif; background:#0b0e14; color:#e8edf7; padding:20px; }
-.stock { background:#121722; padding:10px; margin:5px 0; border-radius:6px; border:1px solid #1f2633; }
+body { font-family: sans-serif; background: #0b0e14; color: #e8edf7; padding: 20px; }
+table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+th, td { border: 1px solid #444; padding: 8px; text-align: left; }
+th { background: #121722; color: #4da3ff; }
+tr:nth-child(even) { background: #1a1f2b; }
 </style>
 </head>
 <body>
-<h1>CSV読み込みテスト</h1>
-<div id="stock-list"></div>
+<h1>監視銘柄リスト</h1>
+<table id="stock-table">
+  <thead>
+    <tr>
+      <th>銘柄名</th>
+      <th>銘柄コード</th>
+      <th>AIスコア</th>
+      <th>A3スコア</th>
+      <th>価格</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
 <!-- PapaParse CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-// CSVのパスを変数に入れる
-const csvFile = 'stocjs.csv';
-
-// CSVを読み込む処理
-Papa.parse(csvFile, {
-    download: true,          // ファイルをダウンロード
-    header: true,            // 1行目をヘッダーとして扱う
-    skipEmptyLines: true,    // 空行をスキップ
+Papa.parse('stocjs.csv', {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
     complete: function(results){
-        const container = document.getElementById('stock-list');
+        const tbody = document.querySelector('#stock-table tbody');
         results.data.forEach(row => {
             if(!row['銘柄名']) return; // 空行スキップ
-            const div = document.createElement('div');
-            div.className = 'stock';
-            div.textContent = `${row['銘柄名']} (${row['銘柄コード']}) - AIスコア: ${row['AIスコア']}`;
-            container.appendChild(div);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row['銘柄名']}</td>
+                <td>${row['銘柄コード']}</td>
+                <td>${row['AIスコア']}</td>
+                <td>${row['A3スコア']}</td>
+                <td>${row['価格']}</td>
+            `;
+            tbody.appendChild(tr);
         });
     },
     error: function(err){
-        document.getElementById('stock-list').textContent = 'CSV読み込みエラー';
-        console.error(err);
+        console.error('CSV読み込みエラー:', err);
     }
 });
 </script>
