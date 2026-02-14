@@ -6,8 +6,6 @@
 <title>AIスコア投資研究所</title>
 
 <style>
-
-/* ===== テーマ ===== */
 :root{
     --bg:#0b0e14;
     --panel:#121722;
@@ -62,7 +60,7 @@ nav a:hover{
     color:white;
 }
 
-/* ===== Xボタン ===== */
+/* ===== Xフォローボタン ===== */
 .x-button{
     display:flex;
     align-items:center;
@@ -70,29 +68,37 @@ nav a:hover{
     text-decoration:none;
     font-weight:bold;
     transition:.2s;
+    gap:6px;
 }
 
-/* デスクトップ文字付きボタン */
+/* デスクトップ横長ボタン */
 @media(min-width:601px){
     .x-button{
-        background-color:#1DA1F2;
+        background-color:#000;
         color:white;
-        padding:8px 16px;
-        border-radius:8px;
+        padding:6px 14px;
+        border-radius:20px;
         font-size:14px;
+    }
+    .x-button svg{
+        width:16px;
+        height:16px;
+        fill:white;
     }
 }
 
-/* スマホ丸アイコンボタン */
+/* スマホ丸アイコン＋文字 */
 @media(max-width:600px){
     .x-button{
-        background-color:#000; /* 黒いボタン */
-        width:36px;
-        height:36px;
-        border-radius:50%;
-        font-size:18px;
-        color:white;
-        padding:0;
+        background-color:#000;
+        padding:4px 10px;
+        border-radius:20px;
+        font-size:12px;
+    }
+    .x-button svg{
+        width:14px;
+        height:14px;
+        fill:white;
     }
 }
 
@@ -111,7 +117,6 @@ nav a:hover{
     color:#9aa4b2;
 }
 
-/* ヒーロー画像 */
 .hero img{
     max-width:100%;
     max-height:400px;
@@ -191,68 +196,52 @@ footer{
     color:#7c8798;
 }
 
-/* ========================= */
-/* ===== PC 強化調整 ===== */
+/* ===== PC調整 ===== */
 @media(min-width:1000px){
-
-.container{
-    max-width:1200px;
+    .container{
+        max-width:1200px;
+    }
+    .hero h1{
+        font-size:44px;
+    }
+    .card{
+        padding:26px;
+    }
+    p{
+        font-size:16px;
+    }
+    .hero img{
+        max-height:500px;
+    }
 }
 
-.hero h1{
-    font-size:44px;
-}
-
-.card{
-    padding:26px;
-}
-
-p{
-    font-size:16px;
-}
-
-.hero img{
-    max-height:500px;
-}
-
-}
-
-/* ========================= */
-/* ===== スマホ最適化 ===== */
+/* ===== スマホ調整 ===== */
 @media(max-width:600px){
-
-header{
-    padding:14px 16px;
-    flex-direction:column;
-    align-items:flex-start;
+    header{
+        padding:14px 16px;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+    nav{
+        width:100%;
+        margin-top:8px;
+    }
+    nav a{
+        margin-right:12px;
+        margin-bottom:6px;
+    }
+    .hero h1{
+        font-size:26px;
+    }
+    .hero img{
+        margin-top:16px;
+        border-radius:10px;
+        max-height:250px;
+    }
+    p{
+        font-size:14px;
+    }
 }
-
-nav{
-    width:100%;
-    margin-top:8px;
-}
-
-nav a{
-    margin-right:12px;
-    margin-bottom:6px;
-}
-
-.hero h1{
-    font-size:26px;
-}
-
-.hero img{
-    margin-top:16px;
-    border-radius:10px;
-    max-height:250px;
-}
-
-p{
-    font-size:14px;
-}
-
-}
-
 </style>
 </head>
 
@@ -267,10 +256,12 @@ p{
 <a href="https://sio39.github.io/score.html">監視銘柄</a>
 </nav>
 
-<!-- Xリンク -->
+<!-- Xフォローリンク -->
 <a href="https://x.com/N0oZk" target="_blank" rel="noopener noreferrer" class="x-button">
-✕
+<svg viewBox="0 0 24 24"><path d="M23.954 4.569c-.885.392-1.83.656-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.564-2.005.974-3.127 1.195-.897-.956-2.178-1.555-3.594-1.555-2.717 0-4.917 2.203-4.917 4.917 0 .39.045.765.127 1.124-4.083-.205-7.702-2.159-10.125-5.134-.423.722-.666 1.561-.666 2.457 0 1.697.865 3.194 2.179 4.072-.803-.026-1.558-.247-2.219-.616v.062c0 2.372 1.688 4.348 3.933 4.794-.412.111-.849.171-1.296.171-.317 0-.626-.03-.928-.086.627 1.956 2.444 3.376 4.6 3.414-1.68 1.318-3.8 2.105-6.102 2.105-.396 0-.788-.023-1.175-.069 2.179 1.396 4.768 2.209 7.548 2.209 9.053 0 14-7.496 14-13.986 0-.21 0-.423-.016-.634.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+<span>フォロー</span>
 </a>
+
 </header>
 
 <section class="hero">
@@ -310,4 +301,38 @@ p{
 </a>
 </div>
 
-<div cla
+<div class="card">
+<h2>監視銘柄</h2>
+
+<div class="desc-box">
+AIスコア条件（A3・A5・ギャップ比）を満たした
+監視候補銘柄を掲載しています。<br>
+掲載は投資推奨ではなく一次抽出です。<br>
+売買判断は出来高・RVOL・VWAP等を確認後に行います。
+</div>
+<a href="score.html" class="button">
+監視銘柄リスト
+</a>
+
+</div>
+
+<div class="card">
+<h2>サイト目的</h2>
+
+<div class="desc-box">
+感情を排除し定量データを基準とした投資判断を構築。
+個人投資家が長期生存するための武器を研究します。
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
+
+</body>
+</html>
