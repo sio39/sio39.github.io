@@ -1,13 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>監視銘柄リスト</title>
+
+<style>
+/* ===== 全体 ===== */
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
+    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+    background:#0b0e14;
+    color:#e8edf7;
+}
+
+/* ===== コンテナ ===== */
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+/* ===== グリッド ===== */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
+}
+
+/* ===== カード ===== */
+.card{
+    background:#121722;
+    border:1px solid #1f2633;
+    border-radius:12px;
+    padding:22px;
+    transition:.15s;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+.card:hover{
+    transform:translateY(-6px);
+    border-color:#4da3ff;
+}
+.card h2{
+    margin-top:0;
+    color:#4da3ff;
+}
+
+/* ===== 説明ボックス ===== */
+.desc-box{
+    background:linear-gradient(145deg,#121722,#1a2130);
+    border:1px solid #1f2633;
+    border-left:4px solid #4da3ff;
+    padding:12px;
+    border-radius:10px;
+    margin-top:8px;
+}
+
+/* ===== ヘッダー ===== */
+header{
+    background:#0f1420;
+    border-bottom:1px solid #1f2633;
+    padding:14px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+header .logo{
+    font-size:20px;
+    font-weight:bold;
+}
+header nav a{
+    color:#aab4c5;
+    text-decoration:none;
+    margin-left:20px;
+    font-size:14px;
+    transition:.2s;
+}
+header nav a:hover{
+    color:white;
+}
+
+/* ===== フッター ===== */
+footer{
+    margin-top:50px;
+    text-align:center;
+    padding:20px;
+    border-top:1px solid #1f2633;
+    color:#7c8798;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+    <div class="logo">AI Trade Lab</div>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="ai-score.html">AIスコア解説</a>
+        <a href="score.html">監視銘柄</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h1>監視銘柄リスト</h1>
+    <p>AIスコア条件を満たした銘柄を自動で表示します。</p>
+    <div class="grid" id="stock-list"></div>
+</div>
+
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
+
+<!-- ===== PapaParse CDN ===== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
 <script>
+// GitHub Raw URL に置き換え
 const csvUrl = 'https://raw.githubusercontent.com/sio39/sio39.github.io/main/stocjs.csv';
 
 Papa.parse(csvUrl, {
     download: true,
     header: true,
+    skipEmptyLines: true,
     complete: function(results) {
         const container = document.getElementById('stock-list');
         results.data.forEach(stock => {
-            if(!stock['銘柄名']) return; 
+            if(!stock['銘柄名']) return; // 空行をスキップ
+
             const div = document.createElement('div');
             div.className = 'card';
             div.innerHTML = `
@@ -23,6 +147,11 @@ Papa.parse(csvUrl, {
     },
     error: function(err){
         console.error('CSV読み込みエラー:', err);
+        const container = document.getElementById('stock-list');
+        container.innerHTML = `<p style="color:red;">CSVの読み込みに失敗しました。</p>`;
     }
 });
 </script>
+
+</body>
+</html>
