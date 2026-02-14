@@ -10,21 +10,53 @@ body {
     color: #e8edf7;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
     padding: 20px;
+    position: relative;
 }
 h1 {
     color: #4da3ff;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 iframe {
     width: 100%;
-    height: 600px; /* 表が大きい場合は高さを調整 */
+    height: 600px;
     border: none;
+    margin-top: 20px;
+}
+.top-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #4da3ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.top-link:hover {
+    text-decoration: underline;
+}
+.notice {
+    background-color: #1a1f2c;
+    border-left: 4px solid #4da3ff;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    font-size: 0.9em;
 }
 </style>
 </head>
 <body>
 
+<a class="top-link" href="https://sio39.github.io/">トップ</a>
+
 <h1>監視銘柄リスト</h1>
+
+<div class="notice">
+    ※ 注意事項<br>
+    - 全銘柄からの自動抽出ではなく、気になった銘柄のみを手動で算出しています。<br>
+    - 更新は手動で行っています。そのため、スコアにはタイムラグが生じる場合があります。<br>
+    - 計算に用いる要素（営業利益率、ROE、PERなど）は毎日急激に変動するものではありません。<br>
+    - 決算発表時などは、来期予想によってスコアが大きく変わることがあります。<br>
+    - リアルタイム性は必要ない方向けの目安としてご利用ください。
+</div>
 
 <iframe 
 src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTfc-cWPkuFopkiD3PD-6zhBTg40I6U5mxseKReyVEZCBCFhuZeworPmefDQwZit7zAWP-mlX2YLo3r/pubhtml?widget=true&amp;headers=false">
