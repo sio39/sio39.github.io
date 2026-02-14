@@ -2,18 +2,37 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>監視銘柄リスト</title>
+<title>スプレッドシート読み込み</title>
 <style>
-body { font-family: sans-serif; background: #0b0e14; color: #e8edf7; padding: 20px; }
-table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-th, td { border: 1px solid #444; padding: 8px; text-align: left; }
-th { background: #121722; color: #4da3ff; }
-tr:nth-child(even) { background: #1a1f2b; }
+body{
+    background:#0b0e14;
+    color:#e8edf7;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+    padding:20px;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+th, td{
+    border:1px solid #444;
+    padding:8px;
+}
+th{
+    background:#121722;
+    color:#4da3ff;
+}
+tr:nth-child(even){
+    background:#1a1f2b;
+}
 </style>
 </head>
 <body>
-<h1>監視銘柄リスト</h1>
-<table id="stock-table">
+
+<h1>Google スプレッドシートから読み込む表</h1>
+
+<table id="sheet-table">
   <thead>
     <tr>
       <th>銘柄名</th>
@@ -26,17 +45,21 @@ tr:nth-child(even) { background: #1a1f2b; }
   <tbody></tbody>
 </table>
 
-<!-- PapaParse CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-Papa.parse('stocjs.csv', {
+// Google Sheets を CSV 形式で取得するURL
+const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTfc-cWPkuFopkiD3PD-6zhBTg40I6U5mxseKReyVEZCBCFhuZeworPmefDQwZit7zAWP-mlX2YLo3r/pub?output=csv';
+
+Papa.parse(csvUrl, {
     download: true,
     header: true,
     skipEmptyLines: true,
     complete: function(results){
-        const tbody = document.querySelector('#stock-table tbody');
+        const tbody = document.querySelector('#sheet-table tbody');
+
         results.data.forEach(row => {
-            if(!row['銘柄名']) return; // 空行スキップ
+            // 空行をスキップ
+            if(!row['銘柄名']) return;
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${row['銘柄名']}</td>
@@ -50,8 +73,10 @@ Papa.parse('stocjs.csv', {
     },
     error: function(err){
         console.error('CSV読み込みエラー:', err);
+        document.querySelector('#sheet-table tbody').innerHTML = '<tr><td colspan="5">読み込みエラー</td></tr>';
     }
 });
 </script>
+
 </body>
 </html>
