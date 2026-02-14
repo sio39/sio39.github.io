@@ -64,21 +64,36 @@ nav a:hover{
 
 /* ===== Xボタン ===== */
 .x-button{
-    background-color:#1DA1F2;
-    color:white;
-    padding:8px 16px;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:bold;
-    font-size:14px;
-    transition:.2s;
     display:flex;
     align-items:center;
     justify-content:center;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.2s;
 }
 
-.x-button:hover{
-    background-color:#0d8ddb;
+/* デスクトップ文字付きボタン */
+@media(min-width:601px){
+    .x-button{
+        background-color:#1DA1F2;
+        color:white;
+        padding:8px 16px;
+        border-radius:8px;
+        font-size:14px;
+    }
+}
+
+/* スマホ丸アイコンボタン */
+@media(max-width:600px){
+    .x-button{
+        background-color:#000; /* 黒いボタン */
+        width:36px;
+        height:36px;
+        border-radius:50%;
+        font-size:18px;
+        color:white;
+        padding:0;
+    }
 }
 
 /* ===== ヒーロー ===== */
@@ -200,12 +215,6 @@ p{
     max-height:500px;
 }
 
-/* PCでは文字付きボタン表示 */
-.x-button::after{
-    content:" フォローする @N0oZk";
-    margin-left:6px;
-}
-
 }
 
 /* ========================= */
@@ -242,18 +251,6 @@ p{
     font-size:14px;
 }
 
-/* スマホでは文字を消して鳩マークだけ表示 */
-.x-button::after{
-    content:""; /* 文字なし */
-}
-
-.x-button{
-    width:36px;
-    height:36px;
-    padding:0;
-    border-radius:50%;
-    font-size:18px;
-}
 }
 
 </style>
@@ -270,8 +267,9 @@ p{
 <a href="https://sio39.github.io/score.html">監視銘柄</a>
 </nav>
 
+<!-- Xリンク -->
 <a href="https://x.com/N0oZk" target="_blank" rel="noopener noreferrer" class="x-button">
-🕊
+✕
 </a>
 </header>
 
@@ -312,38 +310,4 @@ p{
 </a>
 </div>
 
-<div class="card">
-<h2>監視銘柄</h2>
-
-<div class="desc-box">
-AIスコア条件（A3・A5・ギャップ比）を満たした
-監視候補銘柄を掲載しています。<br>
-掲載は投資推奨ではなく一次抽出です。<br>
-売買判断は出来高・RVOL・VWAP等を確認後に行います。
-</div>
-<a href="score.html" class="button">
-監視銘柄リスト
-</a>
-
-</div>
-
-<div class="card">
-<h2>サイト目的</h2>
-
-<div class="desc-box">
-感情を排除し定量データを基準とした投資判断を構築。
-個人投資家が長期生存するための武器を研究します。
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<footer>
-© 2026 AIスコア投資研究所
-</footer>
-
-</body>
-</html>
+<div cla
