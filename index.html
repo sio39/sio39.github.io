@@ -2,91 +2,80 @@
 <html lang="ja">
 <head>
 
-<!-- Google tag -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-5JCN1FB7ML');
-</script>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIスコア投資研究所</title>
 
 <link rel="stylesheet" href="style.css">
 
-<style>
-
-/* ===== ヘッダーレイアウト改良 ===== */
-
-header{
-    display:flex;
-    flex-direction:column;
-    padding:10px;
-}
-
-/* ロゴ＋ナビ＋Xを横並びにするバー */
-.top-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-}
-
-/* ナビ折り返しOK */
-nav{
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    flex:1;
-}
-
-nav a{
-    padding:6px 10px;
-    background:#333;
-    color:white;
-    text-decoration:none;
-    border-radius:6px;
-    font-size:14px;
-}
-
-/* Xボタン固定 */
-.twitter-button{
-    display:flex;
-    align-items:center;
-    gap:5px;
-    background:#1DA1F2;
-    color:white;
-    padding:6px 10px;
-    border-radius:6px;
-    text-decoration:none;
-    margin-left:10px;
-    white-space:nowrap;
-}
-
-.twitter-button svg{
-    width:16px;
-    height:16px;
-    fill:white;
-}
-
-/* スマホ最適化 */
-@media (max-width:600px){
-
-    nav a{
-        font-size:12px;
-        padding:5px 8px;
-    }
-
-    .twitter-button{
-        font-size:12px;
-        padding:5px 8px;
-    }
-}
-
-</style>
-
 </head>
 
 <body>
+
+<header>
+
+<div class="logo">AI Trade Lab</div>
+
+<div class="top-row">
+
+<nav>
+<a href="index.html">TOP</a>
+<a href="ai-score.html">AIスコア解説</a>
+<a href="score.html">監視銘柄</a>
+<a href="tool.html">投資ツール</a>
+</nav>
+
+<a href="https://x.com/N0oZk"
+target="_blank"
+rel="noopener noreferrer"
+class="twitter-button">
+フォロー
+</a>
+
+</div>
+</header>
+
+
+<section class="hero">
+<h1>AIスコア投資研究所</h1>
+<p>才能がなくても生き残る為の研究サイト</p>
+
+<img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png">
+</section>
+
+
+<div class="container">
+
+<div class="desc-box">
+個人投資家の負けを減らしたい――私自身の試行錯誤から得た手法を無料公開しています。
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h2>AIスコアとは</h2>
+<div class="desc-box">
+独自アルゴリズムにより割安度・収益性・成長性を数値化。
+</div>
+<a href="ai-score.html" class="button">詳細解説</a>
+</div>
+
+<div class="card">
+<h2>監視銘柄</h2>
+<div class="desc-box">
+AIスコア条件を満たした銘柄抽出リスト。
+</div>
+<a href="score.html" class="button">監視銘柄</a>
+</div>
+
+</div>
+
+</div>
+
+
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
+
+</body>
+</html>
