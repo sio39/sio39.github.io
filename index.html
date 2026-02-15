@@ -3,128 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>投資研究ノート</title>
-
-<style>
-
-/* =======================
-   基本
-======================= */
-
-body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-    background:#0b0b0b;
-    color:#eee;
-}
-
-/* =======================
-   ヘッダー
-======================= */
-
-header{
-    background:#111;
-    padding:10px 15px;
-    border-bottom:1px solid #333;
-}
-
-/* ナビ + X 横並び */
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-}
-
-/* ナビ */
-nav{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-}
-
-nav a{
-    color:#ddd;
-    text-decoration:none;
-    padding:6px 10px;
-    background:#1a1a1a;
-    border-radius:6px;
-    font-size:14px;
-}
-
-nav a:hover{
-    background:#333;
-}
-
-/* Xボタン */
-.x-follow{
-    margin-left:10px;
-}
-
-/* =======================
-   メイン
-======================= */
-
-main{
-    max-width:1000px;
-    margin:auto;
-    padding:25px 15px;
-}
-
-/* 画像調整（重要） */
-
-main img{
-    max-width:100%;
-    height:auto;
-    border-radius:12px;
-    margin-bottom:20px;
-}
-
-/* PCで大きすぎ対策 */
-.hero{
-    max-width:650px;
-    display:block;
-    margin:auto;
-}
-
-/* =======================
-   説明文
-======================= */
-
-.intro{
-    background:#111;
-    padding:20px;
-    border-radius:12px;
-    line-height:1.8;
-}
-
-/* =======================
-   スマホ調整
-======================= */
-
-@media (max-width:700px){
-
-    .topbar{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .x-follow{
-        margin-top:10px;
-    }
-
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <header>
 
-<div class="topbar">
+<div class="logo">投資研究ノート</div>
 
+<div class="top-row">
 <nav>
 <a href="#">ホーム</a>
 <a href="#">監視銘柄</a>
@@ -133,11 +22,11 @@ main img{
 <a href="#">ブログ</a>
 </nav>
 
-<div class="x-follow">
-<a href="https://twitter.com/" target="_blank">
-<img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/x.svg" width="28">
+<a class="twitter-button"
+href="https://twitter.com/"
+target="_blank">
+Xフォロー
 </a>
-</div>
 
 </div>
 </header>
@@ -145,9 +34,9 @@ main img{
 
 <main>
 
-<img src="your-image.jpg" class="hero">
+<img src="image/main.jpg" class="hero">
 
-<div class="intro">
+<section class="intro">
 
 <p>
 個人投資家の負けを減らしたい――私自身の試行錯誤から得た手法を、無料で公開しています。
@@ -161,7 +50,7 @@ main img{
 勝つための方法は一朝一夕には身につきません。しかし、正しい知識や工夫を取り入れることで、無駄な損失を減らし、少しずつ改善していくことは可能です。私の経験や考えを参考にして、皆さんの投資ライフが少しでも安定する助けになれば幸いです。
 </p>
 
-</div>
+</section>
 
 </main>
 
