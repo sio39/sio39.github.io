@@ -1,58 +1,370 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-5JCN1FB7ML');
+</script>
+    
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投資研究ノート</title>
-<link rel="stylesheet" href="style.css">
+<title>AIスコア投資研究所</title>
+
+<style>
+:root{
+    --bg:#0b0e14;
+    --panel:#121722;
+    --border:#1f2633;
+    --text:#e8edf7;
+    --accent:#4da3ff;
+    --twitter:#1da1f2; /* 水色 */
+}
+
+/* ===== 基本 ===== */
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
+    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* ===== ヘッダー ===== */
+header{
+    background:#0f1420;
+    border-bottom:1px solid var(--border);
+    padding:14px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    flex-wrap:wrap;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:bold;
+}
+
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:16px;
+}
+
+nav a{
+    color:#aab4c5;
+    text-decoration:none;
+    font-size:14px;
+    transition:.2s;
+}
+
+nav a:hover{
+    color:white;
+}
+
+/* ===== Twitterボタン ===== */
+.twitter-button{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.2s;
+    gap:6px;
+    background-color:var(--twitter);
+    color:white;
+}
+
+/* PC用 */
+@media(min-width:601px){
+    .twitter-button{
+        padding:6px 14px;
+        border-radius:20px;
+        font-size:14px;
+    }
+    .twitter-button svg{
+        width:16px;
+        height:16px;
+        fill:white;
+    }
+}
+
+/* スマホ用 */
+@media(max-width:600px){
+    .twitter-button{
+        padding:4px 10px;
+        border-radius:20px;
+        font-size:12px;
+    }
+    .twitter-button svg{
+        width:14px;
+        height:14px;
+        fill:white;
+    }
+}
+
+/* ===== ヒーロー ===== */
+.hero{
+    text-align:center;
+    padding:70px 20px 50px;
+}
+
+.hero h1{
+    font-size:36px;
+    margin-bottom:12px;
+}
+
+.hero p{
+    color:#9aa4b2;
+}
+
+.hero img{
+    max-width:100%;
+    max-height:400px;
+    object-fit:cover;
+    border-radius:12px;
+    margin-top:20px;
+}
+
+/* ===== コンテナ ===== */
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+/* ===== カードグリッド ===== */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
+}
+
+/* ===== カード ===== */
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px;
+    transition:.15s;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    border-color:var(--accent);
+}
+
+.card h2{
+    margin-top:0;
+    color:var(--accent);
+}
+
+/* ===== 説明BOX ===== */
+.desc-box{
+    background:linear-gradient(145deg,#121722,#1a2130);
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent);
+    padding:18px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+/* ===== ボタン ===== */
+.button{
+    display:inline-block;
+    margin-top:14px;
+    padding:10px 16px;
+    border-radius:8px;
+    background:var(--accent);
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.button:hover{
+    transform:scale(1.05);
+}
+
+/* ===== フッター ===== */
+footer{
+    margin-top:50px;
+    text-align:center;
+    padding:20px;
+    border-top:1px solid var(--border);
+    color:#7c8798;
+}
+
+/* ===== PC調整 ===== */
+@media(min-width:1000px){
+    .container{
+        max-width:1200px;
+    }
+    .hero h1{
+        font-size:44px;
+    }
+    .card{
+        padding:26px;
+    }
+    p{
+        font-size:16px;
+    }
+    .hero img{
+        max-height:500px;
+    }
+}
+
+/* ===== スマホ調整 ===== */
+@media(max-width:600px){
+    header{
+        padding:14px 16px;
+        flex-direction:column;
+        align-items:flex-start;
+    }
+    nav{
+        width:100%;
+        margin-top:8px;
+    }
+    nav a{
+        margin-right:12px;
+        margin-bottom:6px;
+    }
+    .hero h1{
+        font-size:26px;
+    }
+    .hero img{
+        margin-top:16px;
+        border-radius:10px;
+        max-height:250px;
+    }
+    p{
+        font-size:14px;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <header>
+<div class="logo">AI Trade Lab</div>
 
-<div class="logo">投資研究ノート</div>
-
-<div class="top-row">
 <nav>
-<a href="#">ホーム</a>
-<a href="#">監視銘柄</a>
-<a href="#">AIスコア</a>
-<a href="#">投資ツール</a>
-<a href="#">ブログ</a>
+<a href="index.html">TOP</a>
+<a href="ai-score.html">AIスコア解説</a>
+<a href="https://sio39.github.io/score.html">監視銘柄</a>
+<a href="tool.html">投資ツール</a>
 </nav>
 
-<a class="twitter-button"
-href="https://twitter.com/"
-target="_blank">
-Xフォロー
+<!-- Twitterボタン -->
+<a href="https://x.com/N0oZk" target="_blank" rel="noopener noreferrer" class="twitter-button">
+<svg viewBox="0 0 24 24">
+<path d="M23.954 4.569c-.885.392-1.83.656-2.825.775
+1.014-.611 1.794-1.574 2.163-2.723-.951.564-2.005.974-3.127
+1.195-.897-.956-2.178-1.555-3.594-1.555-2.717
+0-4.917 2.203-4.917 4.917 0 .39.045.765.127
+1.124-4.083-.205-7.702-2.159-10.125-5.134-.423.722-.666
+1.561-.666 2.457 0 1.697.865 3.194 2.179
+4.072-.803-.026-1.558-.247-2.219-.616v.062c0
+2.372 1.688 4.348 3.933 4.794-.412.111-.849.171-1.296.171-.317
+0-.626-.03-.928-.086.627 1.956 2.444 3.376
+4.6 3.414-1.68 1.318-3.8 2.105-6.102
+2.105-.396 0-.788-.023-1.175-.069 2.179
+1.396 4.768 2.209 7.548 2.209 9.053 0
+14-7.496 14-13.986 0-.21 0-.423-.016-.634.962-.695
+1.797-1.562 2.457-2.549z"/>
+</svg>
+<span>フォロー</span>
 </a>
 
-</div>
 </header>
 
+<section class="hero">
+<h1>AIスコア投資研究所</h1>
+<p>才能がなくても生き残る為の研究サイト</p>
 
-<main>
-
-<img src="image/main.jpg" class="hero">
-
-<section class="intro">
-
-<p>
-個人投資家の負けを減らしたい――私自身の試行錯誤から得た手法を、無料で公開しています。
-</p>
-
-<p>
-個人投資家の約9割が負けている現実をご存じでしょうか。私自身も何度も失敗を繰り返し、試行錯誤の連続でした。現在も完全に成功したわけではありませんが、少しでも負ける個人投資家を減らしたいという思いから、無料で公開できる範囲で私の手法を共有することにしました。
-</p>
-
-<p>
-勝つための方法は一朝一夕には身につきません。しかし、正しい知識や工夫を取り入れることで、無駄な損失を減らし、少しずつ改善していくことは可能です。私の経験や考えを参考にして、皆さんの投資ライフが少しでも安定する助けになれば幸いです。
-</p>
+<img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" 
+     alt="トップ画像">
 
 </section>
 
-</main>
+<div class="container">
+
+<div class="desc-box">
+<p>個人投資家の負けを減らしたい――私自身の試行錯誤から得た手法を、無料で公開しています。</p>
+</div>
+
+<div class="desc-box">
+<p>個人投資家の約9割が負けている現実をご存じでしょうか。私自身も何度も失敗を繰り返し、試行錯誤の連続でした。現在も完全に成功したわけではありませんが、少しでも負ける個人投資家を減らしたいという思いから、無料で公開できる範囲で私の手法を共有することにしました。</p>
+
+<p>勝つための方法は一朝一夕には身につきません。しかし、正しい知識や工夫を取り入れることで、無駄な損失を減らし、少しずつ改善していくことは可能です。私の経験や考えを参考にして、皆さんの投資ライフが少しでも安定する助けになれば幸いです。</p>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h2>AIスコアとは</h2>
+
+<div class="desc-box">
+独自アルゴリズムにより銘柄の
+割安度・収益性・成長性を数値化し、
+監視銘柄抽出を行う評価システム。
+</div>
+
+<a href="ai-score.html" class="button">
+詳細解説を見る
+</a>
+</div>
+
+<div class="card">
+<h2>監視銘柄</h2>
+
+<div class="desc-box">
+AIスコア条件（A3・A5・ギャップ比）を満たした
+監視候補銘柄を掲載しています。<br>
+掲載は投資推奨ではなく一次抽出です。<br>
+売買判断は出来高・RVOL・VWAP等を確認後に行います。
+</div>
+<a href="score.html" class="button">
+監視銘柄リスト
+</a>
+
+</div>
+
+<div class="card">
+<h2>サイト目的</h2>
+
+<div class="desc-box">
+感情を排除し定量データを基準とした投資判断を構築。
+個人投資家が長期生存するための武器を研究します。
+</div>
+
+</div>
+
+</div>
+
+</div>
+    
+<!-- お問い合わせボタンをフッター直前に配置 -->
+<div style="text-align:center; margin-top:20px;">
+  <a href="mailto:majisakume39@gmail.com" class="button">お問い合わせ</a>
+</div>
+
+    
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
 
 </body>
 </html>
