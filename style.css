@@ -39,10 +39,12 @@ header {
 /* ⭐ ナビ＋X 横並び用コンテナ */
 .top-row{
     display:flex;
+    flex-wrap:wrap;
     justify-content: space-between;
-    align-items:flex-start;
-    margin-top:6px;
+    align-items:center;
+    width:100%;
 }
+
 
 /* ===== ナビ ===== */
 nav {
