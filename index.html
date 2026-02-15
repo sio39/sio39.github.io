@@ -1,135 +1,92 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js) -->
+
+<!-- Google tag -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-5JCN1FB7ML');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JCN1FB7ML');
 </script>
-    
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIスコア投資研究所</title>
 
 <link rel="stylesheet" href="style.css">
 
+<style>
+
+/* ===== ヘッダーレイアウト改良 ===== */
+
+header{
+    display:flex;
+    flex-direction:column;
+    padding:10px;
+}
+
+/* ロゴ＋ナビ＋Xを横並びにするバー */
+.top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+/* ナビ折り返しOK */
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    flex:1;
+}
+
+nav a{
+    padding:6px 10px;
+    background:#333;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    font-size:14px;
+}
+
+/* Xボタン固定 */
+.twitter-button{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:#1DA1F2;
+    color:white;
+    padding:6px 10px;
+    border-radius:6px;
+    text-decoration:none;
+    margin-left:10px;
+    white-space:nowrap;
+}
+
+.twitter-button svg{
+    width:16px;
+    height:16px;
+    fill:white;
+}
+
+/* スマホ最適化 */
+@media (max-width:600px){
+
+    nav a{
+        font-size:12px;
+        padding:5px 8px;
+    }
+
+    .twitter-button{
+        font-size:12px;
+        padding:5px 8px;
+    }
+}
+
+</style>
 
 </head>
 
 <body>
-
-<header>
-<div class="logo">AI Trade Lab</div>
-
-<nav>
-<a href="index.html">TOP</a>
-<a href="ai-score.html">AIスコア解説</a>
-<a href="https://sio39.github.io/score.html">監視銘柄</a>
-<a href="tool.html">投資ツール</a>
-</nav>
-
-<!-- Twitterボタン -->
-<a href="https://x.com/N0oZk" target="_blank" rel="noopener noreferrer" class="twitter-button">
-<svg viewBox="0 0 24 24">
-<path d="M23.954 4.569c-.885.392-1.83.656-2.825.775
-1.014-.611 1.794-1.574 2.163-2.723-.951.564-2.005.974-3.127
-1.195-.897-.956-2.178-1.555-3.594-1.555-2.717
-0-4.917 2.203-4.917 4.917 0 .39.045.765.127
-1.124-4.083-.205-7.702-2.159-10.125-5.134-.423.722-.666
-1.561-.666 2.457 0 1.697.865 3.194 2.179
-4.072-.803-.026-1.558-.247-2.219-.616v.062c0
-2.372 1.688 4.348 3.933 4.794-.412.111-.849.171-1.296.171-.317
-0-.626-.03-.928-.086.627 1.956 2.444 3.376
-4.6 3.414-1.68 1.318-3.8 2.105-6.102
-2.105-.396 0-.788-.023-1.175-.069 2.179
-1.396 4.768 2.209 7.548 2.209 9.053 0
-14-7.496 14-13.986 0-.21 0-.423-.016-.634.962-.695
-1.797-1.562 2.457-2.549z"/>
-</svg>
-<span>フォロー</span>
-</a>
-
-</header>
-
-<section class="hero">
-<h1>AIスコア投資研究所</h1>
-<p>才能がなくても生き残る為の研究サイト</p>
-
-<img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" 
-     alt="トップ画像">
-
-</section>
-
-<div class="container">
-
-<div class="desc-box">
-<p>個人投資家の負けを減らしたい――私自身の試行錯誤から得た手法を、無料で公開しています。</p>
-</div>
-
-<div class="desc-box">
-<p>個人投資家の約9割が負けている現実をご存じでしょうか。私自身も何度も失敗を繰り返し、試行錯誤の連続でした。現在も完全に成功したわけではありませんが、少しでも負ける個人投資家を減らしたいという思いから、無料で公開できる範囲で私の手法を共有することにしました。</p>
-
-<p>勝つための方法は一朝一夕には身につきません。しかし、正しい知識や工夫を取り入れることで、無駄な損失を減らし、少しずつ改善していくことは可能です。私の経験や考えを参考にして、皆さんの投資ライフが少しでも安定する助けになれば幸いです。</p>
-</div>
-
-<div class="grid">
-
-<div class="card">
-<h2>AIスコアとは</h2>
-
-<div class="desc-box">
-独自アルゴリズムにより銘柄の
-割安度・収益性・成長性を数値化し、
-監視銘柄抽出を行う評価システム。
-</div>
-
-<a href="ai-score.html" class="button">
-詳細解説を見る
-</a>
-</div>
-
-<div class="card">
-<h2>監視銘柄</h2>
-
-<div class="desc-box">
-AIスコア条件（A3・A5・ギャップ比）を満たした
-監視候補銘柄を掲載しています。<br>
-掲載は投資推奨ではなく一次抽出です。<br>
-売買判断は出来高・RVOL・VWAP等を確認後に行います。
-</div>
-<a href="score.html" class="button">
-監視銘柄リスト
-</a>
-
-</div>
-
-<div class="card">
-<h2>サイト目的</h2>
-
-<div class="desc-box">
-感情を排除し定量データを基準とした投資判断を構築。
-個人投資家が長期生存するための武器を研究します。
-</div>
-
-</div>
-
-</div>
-
-</div>
-    
-<!-- お問い合わせボタンをフッター直前に配置 -->
-<div style="text-align:center; margin-top:20px;">
-  <a href="mailto:majisakume39@gmail.com" class="button">お問い合わせ</a>
-</div>
-
-    
-<footer>
-© 2026 AIスコア投資研究所
-</footer>
-
-</body>
-</html>

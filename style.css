@@ -21,25 +21,35 @@ header {
     background: #0f1420;
     border-bottom: 1px solid var(--border);
     padding: 14px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     position: sticky;
     top: 0;
     z-index: 1000;
-    flex-wrap: wrap;
+
+    /* ⭐変更 */
+    display:flex;
+    flex-direction: column;
 }
 
+/* ロゴ */
 .logo {
     font-size: 20px;
     font-weight: bold;
 }
 
+/* ⭐ ナビ＋X 横並び用コンテナ */
+.top-row{
+    display:flex;
+    justify-content: space-between;
+    align-items:flex-start;
+    margin-top:6px;
+}
+
+/* ===== ナビ ===== */
 nav {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 16px;
+    gap: 12px;
+    flex:1;
 }
 
 nav a {
@@ -60,188 +70,3 @@ nav a:hover {
     justify-content: center;
     text-decoration: none;
     font-weight: bold;
-    transition: .2s;
-    gap: 6px;
-    background-color: var(--twitter);
-    color: white;
-}
-
-/* PC用 */
-@media(min-width:601px) {
-    .twitter-button {
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 14px;
-    }
-
-    .twitter-button svg {
-        width: 16px;
-        height: 16px;
-        fill: white;
-    }
-}
-
-/* スマホ用 */
-@media(max-width:600px) {
-    .twitter-button {
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-    }
-
-    .twitter-button svg {
-        width: 14px;
-        height: 14px;
-        fill: white;
-    }
-}
-
-/* ===== ヒーロー ===== */
-.hero {
-    text-align: center;
-    padding: 70px 20px 50px;
-}
-
-.hero h1 {
-    font-size: 36px;
-    margin-bottom: 12px;
-}
-
-.hero p {
-    color: #9aa4b2;
-}
-
-.hero img {
-    max-width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: 12px;
-    margin-top: 20px;
-}
-
-/* ===== コンテナ ===== */
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-}
-
-/* ===== カードグリッド ===== */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 22px;
-}
-
-/* ===== カード ===== */
-.card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 22px;
-    transition: .15s;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-}
-
-.card:hover {
-    transform: translateY(-6px);
-    border-color: var(--accent);
-}
-
-.card h2 {
-    margin-top: 0;
-    color: var(--accent);
-}
-
-/* ===== 説明BOX ===== */
-.desc-box {
-    background: linear-gradient(145deg, #121722, #1a2130);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    padding: 18px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-/* ===== ボタン ===== */
-.button {
-    display: inline-block;
-    margin-top: 14px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    background: var(--accent);
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: bold;
-    transition: .2s;
-}
-
-.button:hover {
-    transform: scale(1.05);
-}
-
-/* ===== フッター ===== */
-footer {
-    margin-top: 50px;
-    text-align: center;
-    padding: 20px;
-    border-top: 1px solid var(--border);
-    color: #7c8798;
-}
-
-/* ===== PC調整 ===== */
-@media(min-width:1000px) {
-    .container {
-        max-width: 1200px;
-    }
-
-    .hero h1 {
-        font-size: 44px;
-    }
-
-    .card {
-        padding: 26px;
-    }
-
-    p {
-        font-size: 16px;
-    }
-
-    .hero img {
-        max-height: 500px;
-    }
-}
-
-/* ===== スマホ調整 ===== */
-@media(max-width:600px) {
-    header {
-        padding: 14px 16px;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    nav {
-        width: 100%;
-        margin-top: 8px;
-    }
-
-    nav a {
-        margin-right: 12px;
-        margin-bottom: 6px;
-    }
-
-    .hero h1 {
-        font-size: 26px;
-    }
-
-    .hero img {
-        margin-top: 16px;
-        border-radius: 10px;
-        max-height: 250px;
-    }
-
-    p {
-        font-size: 14px;
-    }
-}
