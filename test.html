@@ -13,259 +13,71 @@
     
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIスコア解説</title>
-
+<title>監視銘柄リスト</title>
 <style>
-
-/* ===== 共通テーマ ===== */
-:root{
-    --bg:#ffffff;
-    --panel:#f5f7fa;
-    --border:#dcdcdc;
-    --text:#222;
-    --accent:#4da3ff;
-    --highlight:#ffd166;
+body {
+    background: #ffffff;
+    color: #222;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    padding: 20px;
+    position: relative;
 }
 
-
-/* ===== 基本 ===== */
-body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
-    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.7;
+h1 {
+    color: #222;
+    margin-bottom: 10px;
 }
 
-/* ===== ヘッダー（共通）===== */
-header{
-    background:#0f1420;
-    border-bottom:1px solid var(--border);
-    padding:14px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
+iframe {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+    background:#fff;
 }
 
-.logo{
-    font-size:20px;
-    font-weight:bold;
+.top-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #4da3ff;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-nav{
-    display:flex;
-    flex-wrap:wrap;
+.top-link:hover {
+    text-decoration: underline;
 }
 
-nav a{
-    color:#aab4c5;
-    text-decoration:none;
-    margin-left:20px;
-    font-size:14px;
-    padding:6px 0;
+.notice {
+    background-color: #f5f7fa;
+    border-left: 4px solid #4da3ff;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    font-size: 0.9em;
 }
-
-nav a:hover{
-    color:white;
-}
-
-/* ===== コンテンツ ===== */
-.container{
-    max-width:900px;
-    margin:auto;
-    padding:40px 20px;
-}
-
-h1{
-    font-size:32px;
-    margin-bottom:25px;
-    border-bottom:2px solid var(--border);
-    padding-bottom:10px;
-}
-
-h2{
-    color:var(--accent);
-    margin-top:0;
-}
-
-/* ===== カード ===== */
-.card{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:22px;
-    margin-top:20px;
-}
-
-/* ===== テキスト ===== */
-p{
-    line-height:1.9;
-}
-
-ul{
-    padding-left:20px;
-}
-
-.highlight{
-    color:var(--highlight);
-    font-weight:bold;
-}
-
-
-/* ================================= */
-/* ===== スマホレスポンシブ対応 ===== */
-/* ================================= */
-
-@media (max-width:768px){
-
-header{
-    padding:12px 16px;
-}
-
-nav{
-    width:100%;
-    justify-content:space-around;
-    margin-top:8px;
-}
-
-nav a{
-    margin-left:0;
-    font-size:13px;
-}
-
-.container{
-    padding:20px 14px;
-}
-
-h1{
-    font-size:24px;
-}
-
-.card{
-    padding:18px;
-}
-
-p{
-    font-size:15px;
-}
-
-ul{
-    font-size:15px;
-}
-
-}
-
-@media (max-width:420px){
-
-.logo{
-    font-size:16px;
-}
-
-h1{
-    font-size:21px;
-}
-
-p{
-    font-size:14px;
-}
-
-}
-
 </style>
-</head>
 
+</head>
 <body>
 
-<header>
-<div class="logo">AI Trade Lab</div>
+<a class="top-link" href="https://sio39.github.io/">トップ</a>
 
-<nav>
-<a href="index.html">TOP</a>
-<a href="ai-score.html">AIスコア解説</a>
-<a href="score.html" class="button">監視銘柄</a>
-</nav>
-</header>
+<h1>監視銘柄リスト</h1>
 
-<div class="container">
-
-<h1>AIスコアの考え方</h1>
-
-<p>
-AIスコアは独自アルゴリズムにより銘柄の
-<strong>割安度・収益性・成長性</strong>を数値化し、
-感情に依存しない監視銘柄抽出を目的とした評価指標です。
-</p>
-
-<div class="card">
-<h2>A3スコア（基礎評価）</h2>
-
-<ul>
-<li>利益率</li>
-<li>ROE</li>
-<li>PER</li>
-</ul>
-
-<p>
-<span class="highlight">120点以上でクリア</span><br>
-企業の収益体力が一定水準以上と判断します。
-</p>
+<div class="notice">
+    ※ 注意事項<br>
+    - 全銘柄からの自動抽出ではなく、気になった銘柄のみを手動で算出しています。<br>
+    - 更新は手動で行っています。そのため、スコアにはタイムラグが生じる場合があります。<br>
+    - 計算に用いる要素（営業利益率、ROE、PERなど）は毎日急激に変動するものではありません。<br>
+    - 決算発表時などは、来期予想によってスコアが大きく変わることがあります。<br>
+    - リアルタイム性は必要ない方向けの目安としてご利用ください。
 </div>
 
-<div class="card">
-<h2>A5スコア（成長評価）</h2>
-
-<ul>
-<li>売上成長率</li>
-<li>ネットキャッシュ</li>
-</ul>
-
-<p>
-<span class="highlight">ギャップ比2.5以上でクリア</span><br>
-市場評価との乖離があり監視価値のある銘柄を抽出します。
-</p>
-</div>
-
-<div class="card">
-<h2>監視銘柄採用条件</h2>
-
-<ul>
-<li>A3クリア</li>
-<li>A5クリア</li>
-<li>ギャップ比条件通過</li>
-</ul>
-
-</div>
-
-<div class="card">
-<h2>注意点</h2>
-
-<p>
-決算直前や成長鈍化兆候がある場合、
-スコアが高くても投資判断は保留とします。
-AIスコアは過去データ評価であり、
-未来の構造変化を完全には反映しないためです。
-</p>
-</div>
-
-<div class="card">
-<h2>実戦トレードでの位置付け</h2>
-
-<p>
-AIスコアは銘柄選定の入口に過ぎません。
-監視銘柄に追加された後、
-当日の出来高・RVOL・VWAP位置関係などを確認し、
-資金流入状況を検証します。
-</p>
-
-<p>
-最終的な投資判断は市場環境と値動きの総合評価で行います。
-これらの実践的チェックプロセスは今後詳細解説予定です。
-</p>
-</div>
-
-</div>
+<iframe 
+src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTfc-cWPkuFopkiD3PD-6zhBTg40I6U5mxseKReyVEZCBCFhuZeworPmefDQwZit7zAWP-mlX2YLo3r/pubhtml?widget=true&amp;headers=false">
+</iframe>
 
 </body>
 </html>
