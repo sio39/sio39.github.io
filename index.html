@@ -1,28 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-5JCN1FB7ML');
-</script>
-    
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIスコア投資研究所</title>
 
 <style>
 :root{
-    --bg:#0b0e14;
-    --panel:#121722;
-    --border:#1f2633;
-    --text:#e8edf7;
-    --accent:#4da3ff;
-    --twitter:#1da1f2; /* X色 */
+    --bg:#ffffff;          /* 背景白 */
+    --panel:#f5f7fa;       /* カード背景薄グレー */
+    --border:#dcdcdc;      /* 境界線薄灰 */
+    --text:#222222;        /* 文字は濃いグレー */
+    --accent:#4da3ff;      /* 強調色 */
+    --twitter:#1da1f2;     /* X色 */
 }
 
 /* ===== 基本 ===== */
@@ -36,7 +26,7 @@ body{
 
 /* ===== ヘッダー ===== */
 header{
-    background:#0f1420;
+    background:#ffffff;
     border-bottom:1px solid var(--border);
     padding:14px 40px;
     display:flex;
@@ -51,6 +41,7 @@ header{
 .logo{
     font-size:20px;
     font-weight:bold;
+    color:var(--accent);
 }
 
 nav{
@@ -61,14 +52,21 @@ nav{
 }
 
 nav a{
-    color:#aab4c5;
+    color:var(--text);
     text-decoration:none;
-    font-size:14px;
+    font-size:16px;
+    font-weight: bold;  /* 太字 */
+    padding-bottom:4px;
     transition:.2s;
 }
 
 nav a:hover{
-    color:white;
+    color:var(--accent);
+}
+
+nav a.active{
+    color:var(--accent);
+    border-bottom:2px solid var(--accent);
 }
 
 /* ===== Twitter/Xボタン ===== */
@@ -82,37 +80,15 @@ nav a:hover{
     gap:6px;
     background-color:var(--twitter);
     color:white;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:14px;
 }
 
-/* SVGの色を強制白に */
 .twitter-button svg{
     fill:white !important;
-}
-
-/* PC用 */
-@media(min-width:601px){
-    .twitter-button{
-        padding:6px 14px;
-        border-radius:20px;
-        font-size:14px;
-    }
-    .twitter-button svg{
-        width:16px;
-        height:16px;
-    }
-}
-
-/* スマホ用 */
-@media(max-width:600px){
-    .twitter-button{
-        padding:4px 10px;
-        border-radius:20px;
-        font-size:12px;
-    }
-    .twitter-button svg{
-        width:14px;
-        height:14px;
-    }
+    width:16px;
+    height:16px;
 }
 
 /* ===== ヒーロー ===== */
@@ -127,7 +103,7 @@ nav a:hover{
 }
 
 .hero p{
-    color:#9aa4b2;
+    color:#555;
 }
 
 .hero img{
@@ -148,7 +124,7 @@ nav a:hover{
 /* ===== カードグリッド ===== */
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    grid-template-columns:1fr; /* 常に縦1列 */
     gap:22px;
 }
 
@@ -159,11 +135,10 @@ nav a:hover{
     border-radius:12px;
     padding:22px;
     transition:.15s;
-    box-shadow:0 8px 24px rgba(0,0,0,0.35);
 }
 
 .card:hover{
-    transform:translateY(-6px);
+    transform:translateY(-4px);
     border-color:var(--accent);
 }
 
@@ -174,7 +149,7 @@ nav a:hover{
 
 /* ===== 説明BOX ===== */
 .desc-box{
-    background:linear-gradient(145deg,#121722,#1a2130);
+    background:#e8eef7;
     border:1px solid var(--border);
     border-left:4px solid var(--accent);
     padding:18px;
@@ -200,13 +175,44 @@ nav a:hover{
     transform:scale(1.05);
 }
 
+/* ===== ギャップ比表（例） ===== */
+.table-wrapper{
+    overflow-x:auto;
+    margin-top:20px;
+}
+
+table{
+    border-collapse:collapse;
+    width:100%;
+    font-size:14px;
+}
+
+th, td{
+    border:1px solid var(--border);
+    padding:6px 10px;
+    text-align:center;
+}
+
+th{
+    background:#f0f4fa;
+    color:#222;
+}
+
+td.high{
+    background:#ffcccc;  /* 高ギャップ比＝赤 */
+}
+
+td.low{
+    background:#ccffcc;  /* 低ギャップ比＝緑 */
+}
+
 /* ===== フッター ===== */
 footer{
     margin-top:50px;
     text-align:center;
     padding:20px;
     border-top:1px solid var(--border);
-    color:#7c8798;
+    color:#555;
 }
 
 /* ===== PC調整 ===== */
@@ -264,13 +270,12 @@ footer{
 <div class="logo">AI Trade Lab</div>
 
 <nav>
-<a href="index.html">TOP</a>
+<a href="index.html" class="active">TOP</a>
 <a href="ai-score.html">AIスコア解説</a>
-<a href="https://sio39.github.io/score.html">監視銘柄</a>
-<a href="tool.html">投資ツール</a>
+<a href="https://sio39.github.io/score.html">監視銘柄リスト</a>
+<a href="tool.html">ツール</a>
 </nav>
 
-<!-- Twitter/Xボタン -->
 <a href="https://x.com/N0oZk" target="_blank" rel="noopener noreferrer" class="twitter-button">
 <svg viewBox="0 0 24 24">
 <path d="M23.954 4.569c-.885.392-1.83.656-2.825.775
@@ -290,25 +295,20 @@ footer{
 </svg>
 <span>フォロー</span>
 </a>
-
 </header>
 
 <section class="hero">
 <h1>AIスコア投資研究所</h1>
 <p>才能がなくても生き残る為の研究サイト</p>
-
 <img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" 
      alt="トップ画像">
-
 </section>
 
 <div class="container">
 
 <div class="desc-box">
 <p>個人投資家の負けを減らしたい――私自身の試行錯誤から得た手法を、無料で公開しています。</p>
-</div>
 
-<div class="desc-box">
 <p>個人投資家の約9割が負けている現実をご存じでしょうか。私自身も何度も失敗を繰り返し、試行錯誤の連続でした。現在も完全に成功したわけではありませんが、少しでも負ける個人投資家を減らしたいという思いから、無料で公開できる範囲で私の手法を共有することにしました。</p>
 
 <p>勝つための方法は一朝一夕には身につきません。しかし、正しい知識や工夫を取り入れることで、無駄な損失を減らし、少しずつ改善していくことは可能です。私の経験や考えを参考にして、皆さんの投資ライフが少しでも安定する助けになれば幸いです。</p>
@@ -318,50 +318,33 @@ footer{
 
 <div class="card">
 <h2>AIスコアとは</h2>
-
 <div class="desc-box">
 独自アルゴリズムにより銘柄の
 割安度・収益性・成長性を数値化し、
 監視銘柄抽出を行う評価システム。
 </div>
-
-<a href="ai-score.html" class="button">
-詳細解説を見る
-</a>
+<a href="ai-score.html" class="button">詳細解説を見る</a>
 </div>
 
 <div class="card">
 <h2>監視銘柄</h2>
-
 <div class="desc-box">
 AIスコア条件（A3・A5・ギャップ比）を満たした
 監視候補銘柄を掲載しています。<br>
 掲載は投資推奨ではなく一次抽出です。<br>
 売買判断は出来高・RVOL・VWAP等を確認後に行います。
 </div>
-<a href="score.html" class="button">
-監視銘柄リスト
-</a>
-
+<a href="score.html" class="button">監視銘柄リスト</a>
 </div>
 
 <div class="card">
 <h2>サイト目的</h2>
-
 <div class="desc-box">
 感情を排除し定量データを基準とした投資判断を構築。
 個人投資家が長期生存するための武器を研究します。
 </div>
-
 </div>
 
-</div>
-
-</div>
-    
-<!-- お問い合わせボタン -->
-<div style="text-align:center; margin-top:20px;">
-  <a href="mailto:majisakume39@gmail.com" class="button">お問い合わせ</a>
 </div>
 
 <footer>
