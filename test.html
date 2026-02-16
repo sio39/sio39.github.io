@@ -1,45 +1,46 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-
-<!-- Google tag -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
 <script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-5JCN1FB7ML');
-</script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-5JCN1FB7ML');
+</script>
+    
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AIスコア投資研究所</title>
+<title>AIスコア解説</title>
 
 <style>
 
+/* ===== 共通テーマ ===== */
 :root{
     --bg:#ffffff;
     --panel:#f5f7fa;
     --border:#dcdcdc;
     --text:#222;
     --accent:#4da3ff;
-    --twitter:#1da1f2;
+    --highlight:#ffd166;
 }
 
-/* ===== 基本 ===== */
 
+/* ===== 基本 ===== */
 body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
     Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
     background:var(--bg);
     color:var(--text);
+    line-height:1.7;
 }
 
-/* ===== ヘッダー ===== */
-
+/* ===== ヘッダー（共通）===== */
 header{
-    background:white;
+    background:#0f1420;
     border-bottom:1px solid var(--border);
     padding:14px 40px;
     display:flex;
@@ -51,143 +52,123 @@ header{
 .logo{
     font-size:20px;
     font-weight:bold;
-    color:var(--accent);
 }
-
-/* ===== ナビ ===== */
 
 nav{
     display:flex;
     flex-wrap:wrap;
-    gap:18px;
 }
 
 nav a{
-    color:var(--text);
+    color:#aab4c5;
     text-decoration:none;
-    font-size:16px;
-    font-weight:bold;
+    margin-left:20px;
+    font-size:14px;
+    padding:6px 0;
 }
 
 nav a:hover{
-    color:var(--accent);
-}
-
-nav a.active{
-    color:var(--accent);
-    border-bottom:2px solid var(--accent);
-}
-
-/* ===== Xボタン ===== */
-
-.twitter-button{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    background:var(--twitter);
     color:white;
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:13px;
-    text-decoration:none;
-}
-
-.twitter-button svg{
-    fill:white !important;
-    width:14px;
-    height:14px;
-}
-
-/* ===== ヒーロー ===== */
-
-.hero{
-    text-align:center;
-    padding:60px 20px 40px;
-}
-
-.hero h1{
-    font-size:34px;
-}
-
-/* ⭐画像サイズ調整済 */
-.hero img{
-    display:block;
-    margin:20px auto 0;
-    width:65%;
-    max-width:520px;
-    height:auto;
-    border-radius:12px;
 }
 
 /* ===== コンテンツ ===== */
-
 .container{
-    max-width:1000px;
+    max-width:900px;
     margin:auto;
-    padding:20px;
+    padding:40px 20px;
 }
 
-/* 常に縦並び */
+h1{
+    font-size:32px;
+    margin-bottom:25px;
+    border-bottom:2px solid var(--border);
+    padding-bottom:10px;
+}
 
+h2{
+    color:var(--accent);
+    margin-top:0;
+}
+
+/* ===== カード ===== */
 .card{
     background:var(--panel);
     border:1px solid var(--border);
     border-radius:12px;
     padding:22px;
-    margin-bottom:20px;
+    margin-top:20px;
 }
 
-.desc-box{
-    background:#e8eef7;
-    border-left:4px solid var(--accent);
-    padding:18px;
-    border-radius:10px;
-    margin-bottom:20px;
+/* ===== テキスト ===== */
+p{
+    line-height:1.9;
 }
 
-.button{
-    display:inline-block;
-    margin-top:14px;
-    padding:10px 16px;
-    border-radius:8px;
-    background:var(--accent);
-    color:white;
-    text-decoration:none;
-    font-size:14px;
+ul{
+    padding-left:20px;
+}
+
+.highlight{
+    color:var(--highlight);
     font-weight:bold;
 }
 
-/* ===== フッター ===== */
 
-footer{
-    margin-top:50px;
-    text-align:center;
-    padding:20px;
-    border-top:1px solid var(--border);
-    color:#555;
-}
+/* ================================= */
+/* ===== スマホレスポンシブ対応 ===== */
+/* ================================= */
 
-/* ===== スマホ ===== */
-
-@media(max-width:600px){
+@media (max-width:768px){
 
 header{
-    padding:14px 16px;
-    flex-direction:column;
-    align-items:flex-start;
+    padding:12px 16px;
 }
 
 nav{
     width:100%;
+    justify-content:space-around;
     margin-top:8px;
 }
 
-.hero h1{
-    font-size:26px;
+nav a{
+    margin-left:0;
+    font-size:13px;
 }
 
-.hero img{
-    width:90%;
+.container{
+    padding:20px 14px;
+}
+
+h1{
+    font-size:24px;
+}
+
+.card{
+    padding:18px;
+}
+
+p{
+    font-size:15px;
+}
+
+ul{
+    font-size:15px;
+}
+
+}
+
+@media (max-width:420px){
+
+.logo{
+    font-size:16px;
+}
+
+h1{
+    font-size:21px;
+}
+
+p{
+    font-size:14px;
 }
 
 }
@@ -201,77 +182,90 @@ nav{
 <div class="logo">AI Trade Lab</div>
 
 <nav>
-<a href="index.html" class="active">TOP</a>
+<a href="index.html">TOP</a>
 <a href="ai-score.html">AIスコア解説</a>
-<a href="https://sio39.github.io/score.html">監視銘柄リスト</a>
-<a href="tool.html">ツール</a>
+<a href="score.html" class="button">監視銘柄</a>
 </nav>
-
-<a href="https://x.com/N0oZk" target="_blank" class="twitter-button">
-<svg viewBox="0 0 24 24">
-<path d="M23.954 4.569c-.885.392-1.83.656-2.825.775
-1.014-.611 1.794-1.574 2.163-2.723-.951.564-2.005.974-3.127
-1.195-.897-.956-2.178-1.555-3.594-1.555-2.717
-0-4.917 2.203-4.917 4.917 0 .39.045.765.127
-1.124-4.083-.205-7.702-2.159-10.125-5.134-.423.722-.666
-1.561-.666 2.457 0 1.697.865 3.194 2.179
-4.072-.803-.026-1.558-.247-2.219-.616v.062c0
-2.372 1.688 4.348 3.933 4.794-.412.111-.849.171-1.296.171-.317
-0-.626-.03-.928-.086.627 1.956 2.444 3.376
-4.6 3.414-1.68 1.318-3.8 2.105-6.102
-2.105-.396 0-.788-.023-1.175-.069 2.179
-1.396 4.768 2.209 7.548 2.209 9.053 0
-14-7.496 14-13.986 0-.21 0-.423-.016-.634.962-.695
-1.797-1.562 2.457-2.549z"/>
-</svg>
-フォロー
-</a>
-
 </header>
-
-<section class="hero">
-<h1>AIスコア投資研究所</h1>
-<p>才能がなくても生き残る為の研究サイト</p>
-
-<img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png">
-</section>
 
 <div class="container">
 
-<div class="desc-box">
+<h1>AIスコアの考え方</h1>
+
 <p>
-個人投資家の負けを減らしたい――私自身の試行錯誤から得た手法を無料公開しています。
+AIスコアは独自アルゴリズムにより銘柄の
+<strong>割安度・収益性・成長性</strong>を数値化し、
+感情に依存しない監視銘柄抽出を目的とした評価指標です。
+</p>
+
+<div class="card">
+<h2>A3スコア（基礎評価）</h2>
+
+<ul>
+<li>利益率</li>
+<li>ROE</li>
+<li>PER</li>
+</ul>
+
+<p>
+<span class="highlight">120点以上でクリア</span><br>
+企業の収益体力が一定水準以上と判断します。
 </p>
 </div>
 
 <div class="card">
-<h2>AIスコアとは</h2>
-<div class="desc-box">
-独自アルゴリズムにより銘柄の割安度・収益性・成長性を数値化し監視銘柄抽出を行う評価システム。
-</div>
-<a href="ai-score.html" class="button">詳細解説を見る</a>
+<h2>A5スコア（成長評価）</h2>
+
+<ul>
+<li>売上成長率</li>
+<li>ネットキャッシュ</li>
+</ul>
+
+<p>
+<span class="highlight">ギャップ比2.5以上でクリア</span><br>
+市場評価との乖離があり監視価値のある銘柄を抽出します。
+</p>
 </div>
 
 <div class="card">
-<h2>監視銘柄</h2>
-<div class="desc-box">
-AIスコア条件（A3・A5・ギャップ比）を満たした監視候補銘柄を掲載しています。
-</div>
-<a href="score.html" class="button">監視銘柄リスト</a>
+<h2>監視銘柄採用条件</h2>
+
+<ul>
+<li>A3クリア</li>
+<li>A5クリア</li>
+<li>ギャップ比条件通過</li>
+</ul>
+
 </div>
 
 <div class="card">
-<h2>サイト目的</h2>
-<div class="desc-box">
-感情を排除し定量データ基準の投資判断を構築。個人投資家が長期生存する武器を研究。
+<h2>注意点</h2>
+
+<p>
+決算直前や成長鈍化兆候がある場合、
+スコアが高くても投資判断は保留とします。
+AIスコアは過去データ評価であり、
+未来の構造変化を完全には反映しないためです。
+</p>
 </div>
+
+<div class="card">
+<h2>実戦トレードでの位置付け</h2>
+
+<p>
+AIスコアは銘柄選定の入口に過ぎません。
+監視銘柄に追加された後、
+当日の出来高・RVOL・VWAP位置関係などを確認し、
+資金流入状況を検証します。
+</p>
+
+<p>
+最終的な投資判断は市場環境と値動きの総合評価で行います。
+これらの実践的チェックプロセスは今後詳細解説予定です。
+</p>
 </div>
 
 </div>
-
-<footer>
-© 2026 AIスコア投資研究所
-</footer>
 
 </body>
 </html>
