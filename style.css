@@ -1,14 +1,9 @@
-/* =========================================
-   AI Trade Lab 共通スタイル（安定版）
-   ========================================= */
-
 :root{
     --bg:#ffffff;
-    --panel:#f6f8fb;
-    --border:#e2e6ef;
-    --text:#111;
-    --accent:#1a73e8;
-    --highlight:#ff9900;
+    --panel:#f5f7fa;
+    --border:#dcdcdc;
+    --text:#222;
+    --accent:#4da3ff;
     --twitter:#1da1f2;
 }
 
@@ -32,6 +27,150 @@ header{
     justify-content:space-between;
     align-items:center;
     flex-wrap:wrap;
-    position:sticky;
-    top:0;
-    z-ind
+}
+
+.logo{
+    font-size:20px;
+    font-weight:bold;
+    color:var(--accent);
+}
+
+/* ===== ナビ ===== */
+
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+}
+
+nav a{
+    color:var(--text);
+    text-decoration:none;
+    font-size:16px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    color:var(--accent);
+}
+
+nav a.active{
+    color:var(--accent);
+    border-bottom:2px solid var(--accent);
+}
+
+/* ===== Xボタン ===== */
+
+.twitter-button{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--twitter);
+    color:white;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    text-decoration:none;
+}
+
+.twitter-button svg{
+    fill:white !important;
+    width:14px;
+    height:14px;
+}
+
+/* ===== ヒーロー ===== */
+
+.hero{
+    text-align:center;
+    padding:60px 20px 40px;
+}
+
+.hero h1{
+    font-size:34px;
+}
+
+/* 🔴 画像サイズ修正（重要） */
+.hero img{
+    max-width:100%;
+    max-height:340px;   /* ← 前と近いサイズ */
+    object-fit:cover;
+    border-radius:12px;
+    margin-top:18px;
+}
+
+/* ===== コンテンツ ===== */
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+/* 常に縦並び */
+.grid{
+    display:block;
+}
+
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px;
+    margin-bottom:20px;
+}
+
+.desc-box{
+    background:#e8eef7;
+    border-left:4px solid var(--accent);
+    padding:18px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.button{
+    display:inline-block;
+    margin-top:14px;
+    padding:10px 16px;
+    border-radius:8px;
+    background:var(--accent);
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:bold;
+}
+
+/* ===== フッター ===== */
+
+footer{
+    margin-top:50px;
+    text-align:center;
+    padding:20px;
+    border-top:1px solid var(--border);
+    color:#555;
+}
+
+/* ===== スマホ ===== */
+
+@media(max-width:600px){
+
+header{
+    padding:14px 16px;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+nav{
+    width:100%;
+    margin-top:8px;
+}
+
+.hero h1{
+    font-size:26px;
+}
+
+.hero img{
+    max-height:220px;
+}
+
+}
