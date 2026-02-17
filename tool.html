@@ -37,6 +37,9 @@ section{
 
 <body>
 
+<!-- 共通ナビを読み込む場所 -->
+<div id="header-placeholder"></div>
+
 <h1>投資に役立つツール</h1>
 
 <p>このページではAIスコア投資を支えるツールを紹介します。</p>
@@ -102,5 +105,13 @@ FX口座（XMなど）から無料で利用可能で、ビットコインなど�
 
 </section>
 
+<script>
+fetch('nav.html')
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('header-placeholder').innerHTML = html;
+  })
+  .catch(err => console.error('ナビの読み込みに失敗:', err));
+</script>
 </body>
 </html>
