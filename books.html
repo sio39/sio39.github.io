@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>本紹介 - AIスコア投資研究所</title>
+
+<style>
+:root{
+    --bg:#ffffff;
+    --panel:#f5f7fa;
+    --border:#dcdcdc;
+    --text:#222;
+    --accent:#4da3ff;
+    --twitter:#1da1f2;
+}
+
+/* ===== 基本 ===== */
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
+    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* ===== カード ===== */
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    margin-top:0;
+}
+
+.desc-box{
+    background:#e8eef7;
+    border-left:4px solid var(--accent);
+    padding:18px;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+/* ===== コンテナ ===== */
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+/* ===== フッター ===== */
+footer{
+    margin-top:50px;
+    text-align:center;
+    padding:20px;
+    border-top:1px solid var(--border);
+    color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 共通ナビを読み込む -->
+<div id="header-placeholder"></div>
+
+<div class="container">
+
+  <!-- 本のサンプル紹介 -->
+  <div class="card">
+  <h2>バフェット関連本</h2>
+  <div class="desc-box">
+    投資本はいろいろありますが、具体的手法で役立つものはほとんどありません。  
+    しかし、バフェット関連本だけは非常に具体的に投資手法が記載されており、  
+    実践的な参考になりました。できれば何冊か読むのがおすすめです。
+
+    <ul style="margin-top:12px; padding-left:20px;">
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/5115514d.d7a4323e.5115514e.e7ba726a/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frenet3%2F0010842417%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
+          バフェットの財務諸表を読む力
+        </a>
+      </li>
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/11705267.df316b9b.11705268.e90429a6/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbookfan%2Fbk-4532149770%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
+          億万長者をめざすバフェットの銘柄選択術
+        </a>
+      </li>
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F16948003%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
+          バフェットのマネーマインド
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<footer>
+© 2026 AIスコア投資研究所
+</footer>
+
+<!-- nav.html を読み込むスクリプト -->
+<script>
+fetch('nav.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('header-placeholder').innerHTML = data;
+  });
+</script>
+
+</body>
+</html>
