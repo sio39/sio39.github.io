@@ -1,106 +1,93 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投資ツール集</title>
+<div class="header">
+  <div class="logo">AIスコア投資研究所</div>
 
-<link rel="stylesheet" href="style.css">
+  <nav>
+    <a href="index.html" class="active">TOP</a>
+    <a href="ai-score.html">AIスコア解説</a>
+    <a href="https://sio39.github.io/score.html" target="_blank">監視銘柄リスト</a>
+    <a href="tool.html">ツール</a>
+  </nav>
+
+  <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">
+    <svg viewBox="0 0 24 24" width="17" height="17" style="vertical-align:middle;">
+      <path d="M23.954 4.569c-.885.392-1.83.656-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.564-2.005.974-3.127 1.195-.897-.956-2.178-1.555-3.594-1.555-2.717 0-4.917 2.203-4.917 4.917 0 .39.045.765.127 1.124-4.083-.205-7.702-2.159-10.125-5.134-.423.722-.666 1.561-.666 2.457 0 1.697.865 3.194 2.179 4.072-.803-.026-1.558-.247-2.219-.616v.062c0 2.372 1.688 4.348 3.933 4.794-.412.111-.849.171-1.296.171-.317 0-.626-.03-.928-.086.627 1.956 2.444 3.376 4.6 3.414-1.68 1.318-3.8 2.105-6.102 2.105-.396 0-.788-.023-1.175-.069 2.179 1.396 4.768 2.209 7.548 2.209 9.053 0 14-7.496 14-13.986 0-.21 0-.423-.016-.634.962-.695 1.797-1.562 2.457-2.549z" fill="white"/>
+    </svg>
+    フォロー
+  </a>
+</div>
 
 <style>
-body{
-    line-height:1.8;
-}
+  /* ヘッダー全体 */
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #dcdcdc;
+    gap: 12px;
+  }
 
-section{
-    margin-bottom:40px;
-}
+  /* ロゴ */
+  .logo {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4da3ff;
+  }
 
-.tool-btn{
-    display:inline-block;
-    font-size:18px;
-    font-weight:bold;
-    padding:12px 24px;
-    background:#ff6600;
-    color:#ffffff;
-    text-decoration:none;
-    border-radius:8px;
-    margin-top:12px;
-}
+  /* ナビゲーション */
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 8px; /* スマホ時の余白確保 */
+  }
 
-.tool-btn:hover{
-    background:#ff8533;
-}
+  nav a {
+    color: #222;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  nav a:hover,
+  nav a.active {
+    color: #4da3ff;
+  }
+
+  /* Twitterボタン */
+  .twitter-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #1da1f2;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-top: 8px; /* ナビとの間隔 */
+  }
+
+  .twitter-button svg {
+    display: inline-block;
+  }
+
+  /* スマホ対応 */
+  @media (max-width: 600px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    nav {
+      margin-top: 12px;
+      gap: 12px;
+    }
+
+    .twitter-button {
+      margin-top: 12px;
+    }
+  }
 </style>
-</head>
-
-
-<body>
-
-<h1>投資に役立つツール</h1>
-
-<p>このページではAIスコア投資を支えるツールを紹介します。</p>
-
-<section>
-<h2>
-<a href="https://chat.openai.com" target="_blank">
-ChatGPT
-</a>
-</h2>
-
-<p>
-汎用型AIとして、銘柄分析の整理、アイデア出し、コード生成、記事作成補助など幅広く活用できます。
-投資判断そのものを任せるツールではありませんが、情報整理や仮説構築の速度を大きく高めてくれます。
-</p>
-
-<p>
-無料版でも一般的な個人投資家の用途であれば十分実用的で、私自身も日常的な調査・文章作成・
-サイト構築補助などに活用しています。より高度な分析や長文処理を行う場合のみ有料版を検討すればOKでしょう。
-</p>
-</section>
-
-
-<section>
-  <h2>
-    <a href="https://marketspeed.jp/ms2_rss/" target="_blank">
-      楽天RSS
-    </a>
-  </h2>
-
-  <p>
-    楽天証券の <strong>リアルタイム株価取得ツール（楽天RSS）</strong> を使えば、Excel上に銘柄価格や板情報を自動で取り込むことができます。  
-    手動入力の手間が省けるので、分析効率が大幅にアップします。
-  </p>
-
-  <p>
-    さらに、独自の計算式を組み合わせれば、AIスコアの算出や監視銘柄の自動評価も可能です。  
-    個人投資家でも機関投資家のようにデータを活用できる環境を構築できます。
-  </p>
-
-  <p>
-    まだ楽天証券の口座をお持ちでない方は、ぜひ以下のリンクから口座開設してください。  
-    <a href="https://account.rakuten-sec.co.jp/ApplicationTop/introduceFriend.do?introClientCd=u6mgoVV5MGk%3D&hash=0e1ba608f16b7ca713deb76f462d6924&introBranchCd=TiswAUMUGvU%3D&routeKey=SEC01001&urlSendDt=7zKD03nuwNQH9UBAaAOoYA%3D%3D&sendSnsKbn=1" target="_blank" style="color:#4da3ff; font-weight:bold; text-decoration:underline;">
-      ▶ 楽天証券で口座を開設する（紹介特典あり）
-    </a>
-  </p>
-</section>
-
-
-
-<section>
-<h2>※MT4（MetaTrader4）</h2>
-
-<p>
-MT4（MetaTrader4）は世界中のトレーダーに利用されている高機能チャート分析ツールです。
-豊富なテクニカル指標やカスタムインジケーターに対応しており、売買判断の精度を高めるための環境を構築できます。
-FX口座（XMなど）から無料で利用可能で、ビットコインなど暗号資産のチャート分析にも対応しています。
-</p>
-
- <a href="https://www.xmtrading.com/jp/referral?token=u2ugPwHW1Udaj8Z7wPFyrw">
-      ▶ MT4が使えるXMで口座を開設する（紹介特典あり）
-    </a>
-
-</section>
-
-</body>
-</html>
