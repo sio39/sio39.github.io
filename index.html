@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+
+<!-- Google tag -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JCN1FB7ML');
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>本紹介 - AIスコア投資研究所</title>
+<title>AIスコア投資研究所</title>
 
 <style>
+
 :root{
     --bg:#ffffff;
     --panel:#f5f7fa;
@@ -16,6 +27,7 @@
 }
 
 /* ===== 基本 ===== */
+
 body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
@@ -24,7 +36,99 @@ body{
     color:var(--text);
 }
 
-/* ===== カード ===== */
+/* ===== ヘッダー ===== */
+
+header{
+    background:white;
+    border-bottom:1px solid var(--border);
+    padding:14px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:bold;
+    color:var(--accent);
+}
+
+/* ===== ナビ ===== */
+
+nav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+}
+
+nav a{
+    color:var(--text);
+    text-decoration:none;
+    font-size:16px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    color:var(--accent);
+}
+
+nav a.active{
+    color:var(--accent);
+    border-bottom:2px solid var(--accent);
+}
+
+/* ===== Xボタン ===== */
+
+.twitter-button{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--twitter);
+    color:white;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    text-decoration:none;
+}
+
+.twitter-button svg{
+    fill:white !important;
+    width:14px;
+    height:14px;
+}
+
+/* ===== ヒーロー ===== */
+
+.hero{
+    text-align:center;
+    padding:60px 20px 40px;
+}
+
+.hero h1{
+    font-size:34px;
+}
+
+/* ⭐画像サイズ調整済 */
+.hero img{
+    display:block;
+    margin:20px auto 0;
+    width:65%;
+    max-width:520px;
+    height:auto;
+    border-radius:12px;
+}
+
+/* ===== コンテンツ ===== */
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+/* 常に縦並び */
+
 .card{
     background:var(--panel);
     border:1px solid var(--border);
@@ -33,26 +137,28 @@ body{
     margin-bottom:20px;
 }
 
-.card h2{
-    margin-top:0;
-}
-
 .desc-box{
     background:#e8eef7;
     border-left:4px solid var(--accent);
     padding:18px;
     border-radius:10px;
-    margin-top:10px;
+    margin-bottom:20px;
 }
 
-/* ===== コンテナ ===== */
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
+.button{
+    display:inline-block;
+    margin-top:14px;
+    padding:10px 16px;
+    border-radius:8px;
+    background:var(--accent);
+    color:white;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:bold;
 }
 
 /* ===== フッター ===== */
+
 footer{
     margin-top:50px;
     text-align:center;
@@ -60,65 +166,116 @@ footer{
     border-top:1px solid var(--border);
     color:#555;
 }
+
+/* ===== スマホ ===== */
+
+@media(max-width:600px){
+
+header{
+    padding:14px 16px;
+    flex-direction:column;
+    align-items:flex-start;
+}
+
+nav{
+    width:100%;
+    margin-top:8px;
+}
+
+.hero h1{
+    font-size:26px;
+}
+
+.hero img{
+    width:90%;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- 共通ナビを読み込む -->
-<div id="header-placeholder"></div>
+<header>
+<div class="logo">AIスコア投資研究所</div>
+
+<nav>
+<a href="index.html" class="active">TOP</a>
+<a href="ai-score.html">AIスコア解説</a>
+<a href="https://sio39.github.io/score.html">監視銘柄リスト</a>
+<a href="tool.html">ツール</a>
+</nav>
+
+<a href="https://x.com/N0oZk" target="_blank" class="twitter-button">
+<svg viewBox="0 0 24 24">
+<path d="M23.954 4.569c-.885.392-1.83.656-2.825.775
+1.014-.611 1.794-1.574 2.163-2.723-.951.564-2.005.974-3.127
+1.195-.897-.956-2.178-1.555-3.594-1.555-2.717
+0-4.917 2.203-4.917 4.917 0 .39.045.765.127
+1.124-4.083-.205-7.702-2.159-10.125-5.134-.423.722-.666
+1.561-.666 2.457 0 1.697.865 3.194 2.179
+4.072-.803-.026-1.558-.247-2.219-.616v.062c0
+2.372 1.688 4.348 3.933 4.794-.412.111-.849.171-1.296.171-.317
+0-.626-.03-.928-.086.627 1.956 2.444 3.376
+4.6 3.414-1.68 1.318-3.8 2.105-6.102
+2.105-.396 0-.788-.023-1.175-.069 2.179
+1.396 4.768 2.209 7.548 2.209 9.053 0
+14-7.496 14-13.986 0-.21 0-.423-.016-.634.962-.695
+1.797-1.562 2.457-2.549z"/>
+</svg>
+フォロー
+</a>
+
+</header>
+
+<section class="hero">
+<h1>AIスコア投資研究所</h1>
+<p>才能がなくても生き残る為の研究サイト</p>
+
+<img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png">
+</section>
 
 <div class="container">
 
-  <!-- 本のサンプル紹介 -->
-  <div class="card">
-  <h2>バフェット関連本</h2>
-  <div class="desc-box">
-    投資本はいろいろありますが、具体的手法で役立つものはほとんどありません。  
-    しかし、バフェット関連本だけは非常に具体的に投資手法が記載されており、  
-    実践的な参考になりました。できれば何冊か読むのがおすすめです。
+<div class="card">
+<h2>理念</h2>
+<div class="desc-box">
+負けている個人投資家を救いたい――熱い想いから私自身の試行錯誤から得た手法を無料公開しています。
+</div>
+</div>
 
-    <ul style="margin-top:12px; padding-left:20px;">
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/5115514d.d7a4323e.5115514e.e7ba726a/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frenet3%2F0010842417%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
-          バフェットの財務諸表を読む力
-        </a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/11705267.df316b9b.11705268.e90429a6/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbookfan%2Fbk-4532149770%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
-          億万長者をめざすバフェットの銘柄選択術
-        </a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F16948003%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
-          バフェットのマネーマインド
-        </a>
-      </li>
-    </ul>
-  </div>
+
+<div class="card">
+<h2>AIスコア解説</h2>
+<div class="desc-box">
+独自アルゴリズムにより銘柄の割安度・収益性・成長性を数値化し監視銘柄抽出を行う評価システム。
+</div>
+<a href="ai-score.html" class="button">詳細解説を見る</a>
 </div>
 
 <div class="card">
-  <h2>お金持ち父さんシリーズ</h2>
-  <div class="desc-box">
-    マインド系の投資書ですが、資産運用やお金の考え方を具体的に学べます。  
-    特に初心者が「稼ぐ力」と「資産形成」の意識を身につけるのに最適です。
-
-    <ul style="margin-top:12px; padding-left:20px;">
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12488205%2F" target="_blank" rel="nofollow sponsored noopener">
-          金持ち父さん　貧乏父さん:アメリカの金持ちが教えてくれるお金の哲学
-        </a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10c8cca6.b2c00bc9.10c8cca7.b8fbdcfa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frakutenkobo-ebooks%2F81d709853f483e8dada9e251dd3814fc%2F" target="_blank" rel="nofollow sponsored noopener">
-          金持ち父さんのキャッシュフロー・クワドラント　ーー経済的自由があなたのものになる
-        </a>
-      </li>
-    </ul>
-  </div>
+<h2>監視銘柄リスト</h2>
+<div class="desc-box">
+AIスコア条件（A3・A5・ギャップ比）を満たした監視候補銘柄を掲載しています。
+</div>
+<a href="score.html" class="button">監視銘柄リストを見る</a>
 </div>
 
+<div class="card">
+<h2>ツール</h2>
+<div class="desc-box">
+投資に役立つツール集
+</div>
+<a href="tool.html"class="button">ツール集を見る</a>
+</div>
+
+
+<div class="card">
+<h2>サイト目的</h2>
+<div class="desc-box">
+感情を排除し定量データ基準の投資判断を構築。個人投資家が長期生存する武器を研究。
+</div>
 </div>
 
 </div>
@@ -126,15 +283,6 @@ footer{
 <footer>
 © 2026 AIスコア投資研究所
 </footer>
-
-<!-- nav.html を読み込むスクリプト -->
-<script>
-fetch('nav.html')
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById('header-placeholder').innerHTML = data;
-  });
-</script>
 
 </body>
 </html>
