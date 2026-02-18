@@ -3,138 +3,230 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>本紹介 - AIスコア投資研究所</title>
+<title>投資ツール集 | AIスコア投資研究所</title>
 
 <style>
-:root{
-    --bg:#ffffff;
-    --panel:#f5f7fa;
-    --border:#dcdcdc;
-    --text:#222;
-    --accent:#4da3ff;
-    --twitter:#1da1f2;
-}
+    /* 基本設定（サイト共通） */
+    :root {
+        --primary-color: #4da3ff;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #334155;
+        --text-sub: #64748b;
+        --border-color: #e2e8f0;
+        /* 各ツールのアクセントカラー */
+        --chatgpt-color: #10a37f;
+        --rakuten-color: #bf0000;
+        --mt4-color: #1e293b;
+        --book-color: #4da3ff;
+    }
 
-/* ===== 基本 ===== */
-body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
-    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-}
+    body {
+        font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        line-height: 1.7;
+        color: var(--text-main);
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 120px 20px 60px 20px;
+        background-color: var(--bg-color);
+    }
 
-/* ===== カード ===== */
-.card{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:22px;
-    margin-bottom:20px;
-}
+    /* ヘッダー (固定 - AIリストと共通) */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+        box-sizing: border-box;
+    }
 
-.card h2{
-    margin-top:0;
-}
+    .logo {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--primary-color);
+        letter-spacing: -0.5px;
+    }
 
-.desc-box{
-    background:#e8eef7;
-    border-left:4px solid var(--accent);
-    padding:18px;
-    border-radius:10px;
-    margin-top:10px;
-}
+    nav { display: flex; gap: 20px; }
+    nav a {
+        color: var(--text-sub);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--primary-color); }
 
-/* ===== コンテナ ===== */
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
+    .twitter-button {
+        background: #000;
+        color: white;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: none;
+    }
 
-/* ===== フッター ===== */
-footer{
-    margin-top:50px;
-    text-align:center;
-    padding:20px;
-    border-top:1px solid var(--border);
-    color:#555;
-}
+    /* メインコンテンツ装飾 */
+    h1 {
+        text-align: center;
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+        color: #1e293b;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: var(--text-sub);
+        font-size: 0.9rem;
+        margin-bottom: 40px;
+    }
+
+    /* ツールカード */
+    .tool-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tool-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+    }
+
+    /* 個別カラー */
+    .chatgpt-card::before { background: var(--chatgpt-color); }
+    .rakuten-card::before { background: var(--rakuten-color); }
+    .mt4-card::before { background: var(--mt4-color); }
+    .book-card::before { background: var(--book-color); }
+
+    .tool-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+    }
+
+    .tool-text {
+        font-size: 0.95rem;
+        color: #475569;
+        margin-bottom: 20px;
+    }
+
+    /* アクションボタン */
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-decoration: none;
+        transition: 0.2s;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+
+    .btn-primary { background: var(--primary-color); color: white; }
+    .btn-primary:hover { opacity: 0.8; }
+    .btn-outline { border: 1px solid var(--primary-color); color: var(--primary-color); }
+    .btn-outline:hover { background: var(--primary-color); color: white; }
+
+    .footer-note {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #cbd5e1;
+        margin-top: 60px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    @media (max-width: 600px) {
+        .header { justify-content: center; gap: 10px; padding: 10px; }
+        nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
+        body { padding-top: 160px; }
+    }
 </style>
 </head>
 
 <body>
 
-<!-- 共通ナビを読み込む -->
-<div id="header-placeholder"></div>
+<header class="header">
+    <div class="logo">AIスコア投資研究所</div>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="ai-score.html">解説</a>
+        <a href="https://sio39.github.io/score.html" target="_blank">リスト</a>
+        <a href="tool.html" class="active">ツール</a>
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+</header>
 
-<div class="container">
+<main>
+    <h1>投資に役立つツール</h1>
+    <p class="subtitle">AIスコア投資を支える厳選ツールを紹介します</p>
 
-  <!-- 本のサンプル紹介 -->
-  <div class="card">
-  <h2>バフェット関連本</h2>
-  <div class="desc-box">
-    投資本はいろいろありますが、具体的手法で役立つものはほとんどありません。  
-    しかし、バフェット関連本だけは非常に具体的に投資手法が記載されており、  
-    実践的な参考になりました。できれば何冊か読むのがおすすめです。
+    <div class="tool-card chatgpt-card">
+        <div class="tool-title">ChatGPT / AIツール</div>
+        <p class="tool-text">
+            銘柄分析や思考整理を高速化する汎用型AI。投資判断の仮説構築に最適です。
+            ClaudeやGeminiなどの最新AIも併用することで、分析の幅がさらに広がります。
+        </p>
+        <a href="ai.html" class="btn btn-primary">▶ AIツールリストを見る</a>
+        <a href="https://chat.openai.com" target="_blank" class="btn btn-outline">公式サイト</a>
+    </div>
 
-    <ul style="margin-top:12px; padding-left:20px;">
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/5115514d.d7a4323e.5115514e.e7ba726a/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frenet3%2F0010842417%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
-          バフェットの財務諸表を読む力
-        </a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/11705267.df316b9b.11705268.e90429a6/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbookfan%2Fbk-4532149770%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
-          億万長者をめざすバフェットの銘柄選択術
-        </a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F16948003%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
-          バフェットのマネーマインド
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>
+    <div class="tool-card rakuten-card">
+        <div class="tool-title">楽天RSS</div>
+        <p class="tool-text">
+            Excelにリアルタイム株価を自動取り込み。独自の計算式と組み合わせれば、AIスコアの算出や監視銘柄の評価を完全自動化できます。分析効率を劇的に高める必須ツールです。
+        </p>
+        <a href="https://account.rakuten-sec.co.jp/ApplicationTop/introduceFriend.do?introClientCd=u6mgoVV5MGk%3D&hash=0e1ba608f16b7ca713deb76f462d6924&introBranchCd=TiswAUMUGvU%3D&routeKey=SEC01001&urlSendDt=7zKD03nuwNQH9UBAaAOoYA%3D%3D&sendSnsKbn=1" 
+           target="_blank" class="btn btn-primary">▶ 楽天証券で口座開設（紹介特典あり）</a>
+    </div>
 
-<div class="card">
-  <h2>お金持ち父さんシリーズ</h2>
-  <div class="desc-box">
-    マインド系の投資書ですが、資産運用やお金の考え方を具体的に学べます。  
-    特に初心者が「稼ぐ力」と「資産形成」の意識を身につけるのに最適です。
+    <div class="tool-card mt4-card">
+        <div class="tool-title">MetaTrader 4 (MT4)</div>
+        <p class="tool-text">
+            世界標準の高機能チャート分析ツール。カスタムインジケーターを活用した高度な分析が可能です。
+            FXや仮想通貨のテクニカル分析環境として非常に優れています。
+        </p>
+        <a href="https://www.xmtrading.com/jp/referral?token=u2ugPwHW1Udaj8Z7wPFyrw" 
+           target="_blank" class="btn btn-primary">▶ XMでMT4を利用する</a>
+    </div>
 
-    <ul style="margin-top:12px; padding-left:20px;">
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12488205%2F" target="_blank" rel="nofollow sponsored noopener">
-          金持ち父さん　貧乏父さん:アメリカの金持ちが教えてくれるお金の哲学
-        </a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10c8cca6.b2c00bc9.10c8cca7.b8fbdcfa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frakutenkobo-ebooks%2F81d709853f483e8dada9e251dd3814fc%2F" target="_blank" rel="nofollow sponsored noopener">
-          金持ち父さんのキャッシュフロー・クワドラント　ーー経済的自由があなたのものになる
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>
+    <div class="tool-card book-card">
+        <div class="tool-title">投資関連本</div>
+        <p class="tool-text">
+            AIツールだけでなく、基礎となる投資理論や実践的手法の学習も重要です。
+            当研究所が厳選した、投資家として成長するために読むべき書籍リストをまとめています。
+        </p>
+        <a href="books.html" class="btn btn-primary">▶ おすすめ投資本リスト</a>
+    </div>
+</main>
 
-</div>
-
-</div>
-
-<footer>
-© 2026 AIスコア投資研究所
+<footer class="footer-note">
+    &copy; 2026 AIスコア投資研究所
 </footer>
-
-<!-- nav.html を読み込むスクリプト -->
-<script>
-fetch('nav.html')
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById('header-placeholder').innerHTML = data;
-  });
-</script>
 
 </body>
 </html>
