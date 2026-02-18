@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIリスト | AIスコア投資研究所</title>
+
+<style>
+    /* 基本設定 */
+    :root {
+        --primary-color: #4da3ff;
+        --chatgpt-color: #10a37f;
+        --gemini-color: #1a73e8;
+        --grok-color: #000000;
+        --bg-color: #f8fafc;
+    }
+
+    body {
+        font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        line-height: 1.7;
+        color: #334155;
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 120px 20px 60px 20px;
+        background-color: var(--bg-color);
+    }
+
+    /* ヘッダー (固定) */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+        box-sizing: border-box;
+    }
+
+    .logo {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--primary-color);
+        letter-spacing: -0.5px;
+    }
+
+    nav {
+        display: flex;
+        gap: 20px;
+    }
+
+    nav a {
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+    nav a:hover { color: var(--primary-color); }
+
+    .twitter-button {
+        background: #000; /* Xブランドカラー */
+        color: white;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    /* メインコンテンツ */
+    h1 {
+        text-align: center;
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+        color: #1e293b;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 40px;
+    }
+
+    .category-label {
+        display: inline-block;
+        background: #334155;
+        color: #fff;
+        padding: 2px 12px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    /* AIセクションカード */
+    .ai-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ai-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+    }
+
+    .chatgpt::before { background-color: var(--chatgpt-color); }
+    .gemini::before { background-color: var(--gemini-color); }
+    .grok::before { background-color: var(--grok-color); }
+
+    .ai-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .ai-name {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #1e293b;
+    }
+
+    .ai-vendor {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        background: #f1f5f9;
+        padding: 2px 8px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .ai-text {
+        font-size: 0.95rem;
+        color: #475569;
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .status-msg {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #94a3b8;
+        margin-top: 40px;
+        font-style: italic;
+    }
+
+    .footer-note {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #cbd5e1;
+        margin-top: 60px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    /* レスポンシブ調整 */
+    @media (max-width: 600px) {
+        .header { justify-content: center; gap: 10px; padding: 10px; }
+        nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
+        body { padding-top: 160px; }
+    }
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">AIスコア投資研究所</div>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="ai-score.html">解説</a>
+        <a href="https://sio39.github.io/score.html" target="_blank">リスト</a>
+        <a href="tool.html">ツール</a>
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+</header>
+
+<main>
+    <h1>AIツールリスト</h1>
+    <p class="subtitle">投資分析・リサーチを加速させる厳選ツール</p>
+
+    <div class="category-label">■ 汎用型AI</div>
+
+    <div class="ai-card chatgpt">
+        <div class="ai-header">
+            <div class="ai-name">ChatGPT</div>
+            <span class="ai-vendor">OpenAI</span>
+        </div>
+        <p class="ai-text">銘柄分析の整理や思考の具体化に最適。アイデア出しから文章作成まで、分析の下準備を高速化する万能ツールです。</p>
+    </div>
+
+    <div class="ai-card gemini">
+        <div class="ai-header">
+            <div class="ai-name">Gemini</div>
+            <span class="ai-vendor">Google</span>
+        </div>
+        <p class="ai-text">Google検索と連携した高い調査能力が強み。複数ソースの把握や初期リサーチを効率化し、情報の裏付けを強力に支えます。</p>
+    </div>
+
+    <div class="ai-card grok">
+        <div class="ai-header">
+            <div class="ai-name">Grok</div>
+            <span class="ai-vendor">xAI</span>
+        </div>
+        <p class="ai-text">X（旧Twitter）と連携し、リアルタイムの熱量を把握。SNSトレンドや市場の「今」の空気感を読み解くのに適しています。</p>
+    </div>
+
+    <div class="status-msg">以下、随時追加予定...</div>
+</main>
+
+<footer class="footer-note">
+    &copy; 2026 AIスコア投資研究所
+</footer>
+
+</body>
+</html>
