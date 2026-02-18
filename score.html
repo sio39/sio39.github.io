@@ -11,133 +11,174 @@
     
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>監視銘柄リスト</title>
+<title>監視銘柄リスト | AIスコア投資研究所</title>
+
 <style>
-    /* 基本スタイル */
+    /* 基本設定（サイト共通） */
     :root {
-        --primary-color: #007bff;
-        --bg-color: #f8f9fa;
+        --primary-color: #4da3ff;
+        --bg-color: #f8fafc;
         --card-bg: #ffffff;
-        --text-color: #333;
-        --accent-color: #e7f3ff;
+        --text-main: #334155;
+        --text-sub: #64748b;
+        --border-color: #e2e8f0;
+        --accent-pale: #e7f3ff;
     }
 
     body {
-        background-color: var(--bg-color);
-        color: var(--text-color);
         font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-        margin: 0;
-        padding: 20px;
-        line-height: 1.6;
-    }
-
-    .container {
-        max-width: 1000px;
+        line-height: 1.7;
+        color: var(--text-main);
+        max-width: 1000px; /* スプレッドシート用に幅を広く設定 */
         margin: 0 auto;
-        position: relative;
+        padding: 120px 20px 60px 20px;
+        background-color: var(--bg-color);
     }
 
-    /* ヘッダー・ナビゲーション */
-    header {
+    /* ヘッダー (共通固定デザイン) */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        border-bottom: 1px solid var(--border-color);
         display: flex;
-        justify-content: space-between;
+        flex-wrap: wrap;
         align-items: center;
-        margin-bottom: 20px;
+        justify-content: space-between;
+        padding: 12px 24px;
+        box-sizing: border-box;
     }
 
-    h1 {
-        font-size: 1.5rem;
-        margin: 0;
-        color: #111;
-        font-weight: 700;
-        border-left: 5px solid var(--primary-color);
-        padding-left: 12px;
-    }
-
-    .top-link {
-        display: inline-block;
-        padding: 8px 16px;
-        background: var(--card-bg);
+    .logo {
+        font-size: 18px;
+        font-weight: 800;
         color: var(--primary-color);
+        letter-spacing: -0.5px;
         text-decoration: none;
-        font-size: 0.9rem;
+    }
+
+    nav { display: flex; gap: 20px; }
+    nav a {
+        color: var(--text-sub);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--primary-color); }
+
+    .twitter-button {
+        background: #000;
+        color: white;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 13px;
         font-weight: bold;
-        border: 1px solid var(--primary-color);
-        border-radius: 6px;
-        transition: all 0.2s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    .top-link:hover {
-        background: var(--primary-color);
-        color: #fff;
+    /* メインタイトル */
+    h1 {
+        text-align: center;
+        font-size: 1.6rem;
+        margin-bottom: 30px;
+        color: #1e293b;
     }
 
-    /* 注意事項セクション */
-    .notice {
-        background-color: var(--accent-color);
-        border-radius: 8px;
-        padding: 15px 20px;
-        margin-bottom: 25px;
-        font-size: 0.85rem;
-        color: #445;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    /* 注意事項カード */
+    .notice-card {
+        background: var(--accent-pale);
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 30px;
+        border: 1px solid #d0e7ff;
+        position: relative;
     }
 
     .notice-title {
         display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
+        font-weight: 800;
+        margin-bottom: 10px;
         color: var(--primary-color);
+        font-size: 1rem;
     }
 
-    .notice ul {
+    .notice-card ul {
         margin: 0;
         padding-left: 1.2rem;
+        font-size: 0.85rem;
+        color: #475569;
     }
 
-    .notice li {
+    .notice-card li {
         margin-bottom: 4px;
     }
 
     /* スプレッドシート埋め込みエリア */
     .spreadsheet-container {
         background: var(--card-bg);
-        border-radius: 10px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        border: 1px solid #eee;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border: 1px solid var(--border-color);
     }
 
     iframe {
         width: 100%;
-        height: 700px; /* 少し高さを出しました */
+        height: 750px;
         border: none;
         display: block;
     }
 
+    /* フッター */
+    .footer-note {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-top: 60px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+
     /* モバイル対応 */
     @media (max-width: 600px) {
-        body { padding: 15px; }
-        header { flex-direction: column; align-items: flex-start; gap: 15px; }
-        .top-link { align-self: flex-end; }
-        iframe { height: 500px; }
+        .header { justify-content: center; gap: 10px; padding: 10px; }
+        nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
+        body { padding-top: 160px; }
+        iframe { height: 550px; }
     }
 </style>
 </head>
+
 <body>
 
-<div class="container">
-    <header>
-        <h1>監視銘柄リスト</h1>
-        <a class="top-link" href="https://sio39.github.io/">トップへ戻る</a>
-    </header>
+<header class="header">
+    <a href="index.html" class="logo">AIスコア投資研究所</a>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="ai-score.html">AIスコア解説</a>
+        <a href="https://sio39.github.io/score.html" class="active">監視銘柄</a>
+        <a href="tool.html">ツール</a>
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+</header>
 
-    <div class="notice">
+<main>
+    <h1>監視銘柄リスト</h1>
+
+    <div class="notice-card">
         <span class="notice-title">💡 注意事項</span>
         <ul>
             <li>全銘柄からの自動抽出ではなく、気になった銘柄のみを手動で算出しています。</li>
-            <li>更新は手動で行っています。そのため、スコアにはタイムラグが生じる場合があります。</li>
-            <li>計算に用いる要素（営業利益率、ROE、PERなど）は毎日急激に変動するものではありません。</li>
+            <li>更新は手動のため、スコアにはタイムラグが生じる場合があります。</li>
+            <li>計算要素（営業利益率、ROE等）は毎日急激に変動するものではありません。</li>
             <li>決算発表時などは、来期予想によってスコアが大きく変わることがあります。</li>
             <li>リアルタイム性は必要ない方向けの目安としてご利用ください。</li>
         </ul>
@@ -148,7 +189,11 @@
             src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTfc-cWPkuFopkiD3PD-6zhBTg40I6U5mxseKReyVEZCBCFhuZeworPmefDQwZit7zAWP-mlX2YLo3r/pubhtml?widget=true&amp;headers=false">
         </iframe>
     </div>
-</div>
+</main>
+
+<footer class="footer-note">
+    &copy; 2026 AIスコア投資研究所
+</footer>
 
 </body>
 </html>
