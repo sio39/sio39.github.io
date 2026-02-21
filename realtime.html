@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>銘柄データ自動更新ボード</title>
+    <style>
+        body { 
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; 
+            margin: 0; padding: 20px; background-color: #f0f2f5; text-align: center;
+        }
+        h1 { font-size: 1.5rem; color: #333; margin-top: 0; }
+        
+        /* 読み込み時間のスタイル（グレー） */
+        .load-time { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+        
+        /* Excel更新日時のスタイル（赤） */
+        .csv-time { font-size: 0.95rem; font-weight: bold; color: #d9534f; margin-bottom: 15px; }
+
+        .table-container { 
+            width: 70%; min-width: 350px; margin: 0 auto;
+            background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow-x: auto; border: 1px solid #ddd;
+        }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th, td { border: 1px solid #e0e0e0; padding: 10px 12px; text-align: center; font-size: 0.85rem; }
+        th { background-color: #444; color: white; }
+        tr:nth-child(even) { background-color: #f8f9fa; }
+        .error-msg { color: red; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>銘柄リアルタイムボード</h1>
+    
+    <div id="last-load" class="load-time">ブラウザ読み込み中...</div>
+    <div id="csv-update-time" class="csv-time">CSVデータ確認中...</div>
+    
+    <div id="error-display" class="error-msg"></div>
+
+    <div class="table-container">
+        <table id="csv-table">
+            <thead id="table-header"></thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadCSV() {
+            const csvFilePath = 'data_push.csv';
+            const tableHeader = document.getElementById('table-header');
+            const tableBody = document.getElementById('table-body');
+            const lastLoadDisp = document.getElementById('last-load');
+            const csvTimeDisp = document.getElementById('csv-update-time');
+            const errorDisplay = document.getElementById('error-display');
+
+            try {
+                // キャッシュを無視して最新を取得
+                const response = await fetch(csvFilePath, { cache: "no-store" });
+                if (!response.ok) throw new Error('CSVファイルが見つかりません');
+
+                const data = await response.text();
+                const rows = data.split(/\r?\n/).filter(row => row.trim() !== '');
+                
+                tableHeader.innerHTML = '';
+                tableBody.innerHTML = '';
+                errorDisplay.textContent = '';
+
+                let headerColCount = 0;
+
+                rows.forEach((row, index) => {
+                    // CSV内のUpdate:行を抽出
+                    if (row.includes("Update:")) {
+                        const timeVal = row.replace("Update:", "").replace(/"/g, '').split(',')[0];
+                        csvTimeDisp.textContent = 'CSV最終更新(Excel出力): ' + timeVal;
+                        return;
+                    }
+
+                    const columns = row.split(','); 
+                    const tr = document.createElement('tr');
+
+                    if (index === 0) {
+                        headerColCount = columns.length;
+                        columns.forEach(col => {
+                            const th = document.createElement('th');
+                            th.textContent = col.replace(/"/g, '');
+                            tr.appendChild(th);
+                        });
+                        tableHeader.appendChild(tr);
+                    } else {
+                        for (let i = 0; i < headerColCount; i++) {
+                            const td = document.createElement('td');
+                            td.textContent = (columns[i] || "").replace(/"/g, '');
+                            tr.appendChild(td);
+                        }
+                        tableBody.appendChild(tr);
+                    }
+                });
+
+                // ブラウザが最後に読み込んだ時刻を更新
+                lastLoadDisp.textContent = '最終読み込み(ブラウザ): ' + new Date().toLocaleString();
+
+            } catch (error) {
+                errorDisplay.textContent = '【エラー】' + error.message;
+            }
+        }
+
+        loadCSV();
+        setInterval(loadCSV, 30000);
+    </script>
+</body>
+</html>
