@@ -1,85 +1,42 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>銘柄データ確認</title>
-    <style>
-        body { font-family: "Helvetica Neue", Arial, sans-serif; margin: 10px; background-color: #f0f2f5; }
-        h1 { font-size: 1.5rem; color: #333; text-align: center; }
-        .table-container { overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; white-space: nowrap; table-layout: fixed; } /* 列幅を固定気味にする */
-        th, td { border: 1px solid #e0e0e0; padding: 10px; text-align: center; min-width: 80px; overflow: hidden; }
-        th { background-color: #444; color: white; position: sticky; top: 0; }
-        tr:nth-child(even) { background-color: #f8f9fa; }
-        .update-time { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
-    </style>
-</head>
-<body>
+<style>
+    body { 
+        font-family: "Helvetica Neue", Arial, sans-serif; 
+        margin: 20px; 
+        background-color: #f0f2f5; 
+        display: flex;         /* 中央寄せのための設定 */
+        flex-direction: column;
+        align-items: center;   /* 左右の中央に配置 */
+    }
 
-    <h1>銘柄リアルタイムボード</h1>
-    <div id="last-update" class="update-time">読み込み中...</div>
+    h1 { font-size: 1.5rem; color: #333; margin-bottom: 10px; }
 
-    <div class="table-container">
-        <table id="csv-table">
-            <thead id="table-header"></thead>
-            <tbody id="table-body"></tbody>
-        </table>
-    </div>
+    /* テーブルを囲む枠のサイズを70%に制限 */
+    .table-container { 
+        width: 70%;            /* 画面横幅の70%にする */
+        min-width: 350px;      /* スマホで小さくなりすぎないよう最低幅を設定 */
+        max-width: 1200px;     /* 逆に巨大なモニターで広がりすぎないよう上限を設定 */
+        overflow-x: auto;      /* データが入り切らない場合は枠内だけでスクロール */
+        background: white; 
+        border-radius: 8px; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border: 1px solid #ddd;
+    }
 
-    <script>
-        // 文字列をCSVのルールに従って配列に分ける（高度な分割）
-        function parseCSVLine(text) {
-            const m = text.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)|(?<=,|^)\s*(".*?"|[^",\s]+)(?=\s*,|\s*$)|(?<=,|^)\s*(?=\s*,|\s*$)/g);
-            return m ? m.map(v => v.replace(/^"|"$/g, '').trim()) : [];
-        }
+    table { 
+        width: 100%;           /* コンテナ(70%の枠)に対して100%で表示 */
+        border-collapse: collapse; 
+        white-space: nowrap; 
+    }
 
-        async function loadCSV() {
-            const csvFilePath = 'data_push.csv';
-            try {
-                const response = await fetch(`${csvFilePath}?t=${new Date().getTime()}`);
-                const data = await response.text();
-                const rows = data.split(/\r?\n/).filter(row => row.trim() !== '');
-                
-                const tableHeader = document.getElementById('table-header');
-                const tableBody = document.getElementById('table-body');
-                tableHeader.innerHTML = '';
-                tableBody.innerHTML = '';
+    th, td { 
+        border: 1px solid #e0e0e0; 
+        padding: 8px 12px;     /* 少し余白を詰めてスリムに */
+        text-align: center; 
+        font-size: 0.85rem;    /* 文字も少し小さくしてスタイリッシュに */
+    }
 
-                let headerColCount = 0;
-
-                rows.forEach((row, index) => {
-                    // カンマで分割（空のセルも保持する方式）
-                    const columns = row.split(','); 
-                    const tr = document.createElement('tr');
-
-                    if (index === 0) {
-                        headerColCount = columns.length; // 1行目の列数を基準にする
-                        columns.forEach(col => {
-                            const th = document.createElement('th');
-                            th.textContent = col.replace(/"/g, '');
-                            tr.appendChild(th);
-                        });
-                        tableHeader.appendChild(tr);
-                    } else {
-                        // 1行目の列数に合わせてセルを作成（ズレ防止）
-                        for (let i = 0; i < headerColCount; i++) {
-                            const td = document.createElement('td');
-                            td.textContent = (columns[i] || "").replace(/"/g, ''); // データがなければ空文字
-                            tr.appendChild(td);
-                        }
-                        tableBody.appendChild(tr);
-                    }
-                });
-
-                document.getElementById('last-update').textContent = '最終更新: ' + new Date().toLocaleString();
-            } catch (error) {
-                document.getElementById('last-update').textContent = 'データ更新待ち...';
-            }
-        }
-
-        loadCSV();
-        setInterval(loadCSV, 30000);
-    </script>
-</body>
-</html>
+    th { background-color: #444; color: white; position: sticky; top: 0; }
+    tr:nth-child(even) { background-color: #f8f9fa; }
+    
+    .update-time { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
+</style>
