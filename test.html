@@ -2,17 +2,17 @@ Option Explicit
 
 Dim nextRun As Date
 
-' --- Alt + F8 でこれを実行 ---
+' --- Alt + F8 から実行 ---
 Sub StartAutoExport()
     Call AutoExportAndPush
     
-    ' 5分間隔でタイマーセット
+    ' 5分間隔
     nextRun = Now + TimeValue("00:05:00")
     Application.OnTime nextRun, "StartAutoExport"
     Application.StatusBar = "【稼働中】次回実行: " & Format(nextRun, "HH:mm:ss")
 End Sub
 
-' --- 自動更新を止めたいときはこれを実行 ---
+' --- 停止 ---
 Sub StopAutoExport()
     On Error Resume Next
     Application.OnTime nextRun, "StartAutoExport", , False
@@ -27,13 +27,13 @@ Sub AutoExportAndPush()
     Dim pushFolder As String, pushPath As String
     Dim shellCmd As String
     
-    ' ★フォルダパスを環境に合わせて確認してください
+    ' フォルダパスの確認
     pushFolder = "C:\Users\majis\OneDrive\デスクトップ\sio39.github.io\"
     pushPath = pushFolder & "data_push.csv"
 
     On Error GoTo ErrorHandler
     
-    ' 1. 古いファイルを物理的に削除して更新日時をリセット
+    ' ファイルの初期化（更新日時を確実に新しくする）
     If Dir(pushPath) <> "" Then
         On Error Resume Next
         SetAttr pushPath, vbNormal
@@ -42,22 +42,22 @@ Sub AutoExportAndPush()
     End If
     DoEvents
 
-    ' 2. データのコピー (A1:J31)
+    ' データコピー
     Set ws = ThisWorkbook.Worksheets("Sheet1")
     Set tempWB = Workbooks.Add
     ws.Range("A1:J31").Copy
     tempWB.Sheets(1).Range("A1").PasteSpecial xlPasteValues
     
-    ' 3. A32セルに「データの実際の更新時刻」を刻印
+    ' CSV内に更新時刻を書き込む
     tempWB.Sheets(1).Range("A32").Value = "Update:" & Format(Now, "yyyy/mm/dd HH:mm:ss")
     
-    ' 4. CSVとして保存 (UTF8)
+    ' 保存
     Application.DisplayAlerts = False
     tempWB.SaveAs Filename:=pushPath, FileFormat:=xlCSVUTF8
     tempWB.Close False
     Application.DisplayAlerts = True
     
-    ' 5. Git Push (履歴エラーを強制回避するリセット付き)
+    ' Git Push (履歴リセット機能付き)
     shellCmd = "cmd /c cd /d """ & pushFolder & """ && " & _
                "git rebase --abort >nul 2>&1 & " & _
                "git fetch origin main && " & _
@@ -71,5 +71,5 @@ Sub AutoExportAndPush()
 
 ErrorHandler:
     Application.DisplayAlerts = True
-    MsgBox "エラーが発生しました: " & Err.Description
+    MsgBox "エラー: " & Err.Description
 End Sub
