@@ -1,129 +1,75 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>銘柄データ自動更新ボード</title>
-    <style>
-        /* 全体の設定 */
-        body { 
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; 
-            margin: 0; 
-            padding: 20px; 
-            background-color: #f0f2f5; 
-            text-align: center; /* 文字を中央に */
-        }
+Option Explicit
 
-        h1 { font-size: 1.5rem; color: #333; margin-top: 0; }
+Dim nextRun As Date
 
-        /* テーブルを囲む枠（ここで幅を70%に制限） */
-        .table-container { 
-            width: 70%;            /* 画面横幅の70% */
-            min-width: 350px;      /* スマホでの最小幅 */
-            margin: 20px auto;     /* 上下20px、左右は自動（中央寄せ） */
-            background: white; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            overflow-x: auto;      /* はみ出したら横スクロール */
-            border: 1px solid #ddd;
-        }
+' --- Alt + F8 でこれを実行 ---
+Sub StartAutoExport()
+    Call AutoExportAndPush
+    
+    ' 5分間隔でタイマーセット
+    nextRun = Now + TimeValue("00:05:00")
+    Application.OnTime nextRun, "StartAutoExport"
+    Application.StatusBar = "【稼働中】次回実行: " & Format(nextRun, "HH:mm:ss")
+End Sub
 
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            white-space: nowrap; 
-        }
+' --- 自動更新を止めたいときはこれを実行 ---
+Sub StopAutoExport()
+    On Error Resume Next
+    Application.OnTime nextRun, "StartAutoExport", , False
+    Application.StatusBar = False
+    MsgBox "自動更新を停止しました。"
+End Sub
 
-        th, td { 
-            border: 1px solid #e0e0e0; 
-            padding: 10px 12px; 
-            text-align: center; 
-            font-size: 0.85rem;
-        }
+' --- メイン処理 ---
+Sub AutoExportAndPush()
+    Dim ws As Worksheet
+    Dim tempWB As Workbook
+    Dim pushFolder As String, pushPath As String
+    Dim shellCmd As String
+    
+    ' ★フォルダパスを環境に合わせて確認してください
+    pushFolder = "C:\Users\majis\OneDrive\デスクトップ\sio39.github.io\"
+    pushPath = pushFolder & "data_push.csv"
 
-        th { background-color: #444; color: white; }
-        tr:nth-child(even) { background-color: #f8f9fa; }
-        
-        .update-time { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
-        .error-msg { color: red; font-weight: bold; margin-top: 20px; }
-    </style>
-</head>
-<body>
+    On Error GoTo ErrorHandler
+    
+    ' 1. 古いファイルを物理的に削除して更新日時をリセット
+    If Dir(pushPath) <> "" Then
+        On Error Resume Next
+        SetAttr pushPath, vbNormal
+        Kill pushPath
+        On Error GoTo ErrorHandler
+    End If
+    DoEvents
 
-    <h1>銘柄リアルタイムボード</h1>
-    <div id="last-update" class="update-time">接続中...</div>
-    <div id="error-display" class="error-msg"></div>
+    ' 2. データのコピー (A1:J31)
+    Set ws = ThisWorkbook.Worksheets("Sheet1")
+    Set tempWB = Workbooks.Add
+    ws.Range("A1:J31").Copy
+    tempWB.Sheets(1).Range("A1").PasteSpecial xlPasteValues
+    
+    ' 3. A32セルに「データの実際の更新時刻」を刻印
+    tempWB.Sheets(1).Range("A32").Value = "Update:" & Format(Now, "yyyy/mm/dd HH:mm:ss")
+    
+    ' 4. CSVとして保存 (UTF8)
+    Application.DisplayAlerts = False
+    tempWB.SaveAs Filename:=pushPath, FileFormat:=xlCSVUTF8
+    tempWB.Close False
+    Application.DisplayAlerts = True
+    
+    ' 5. Git Push (履歴エラーを強制回避するリセット付き)
+    shellCmd = "cmd /c cd /d """ & pushFolder & """ && " & _
+               "git rebase --abort >nul 2>&1 & " & _
+               "git fetch origin main && " & _
+               "git reset --mixed origin/main && " & _
+               "git add . && " & _
+               "git commit -m ""AutoUpdate_" & Format(Now, "HHmm_ss") & """ && " & _
+               "git push origin main || pause"
+    
+    Shell shellCmd, vbNormalFocus
+    Exit Sub
 
-    <div class="table-container">
-        <table id="csv-table">
-            <thead id="table-header"></thead>
-            <tbody id="table-body"></tbody>
-        </table>
-    </div>
-
-    <script>
-        async function loadCSV() {
-            const csvFilePath = 'data_push.csv';
-            const tableHeader = document.getElementById('table-header');
-            const tableBody = document.getElementById('table-body');
-            const errorDisplay = document.getElementById('error-display');
-
-            try {
-                // キャッシュ回避のためにURLに時間を付与
-                const response = await fetch(`${csvFilePath}?t=${new Date().getTime()}`);
-                
-                if (!response.ok) {
-                    throw new Error('CSVファイルが見つかりません（data_push.csv）');
-                }
-
-                const data = await response.text();
-                const rows = data.split(/\r?\n/).filter(row => row.trim() !== '');
-                
-                if (rows.length === 0) {
-                    throw new Error('CSVファイルが空です');
-                }
-
-                tableHeader.innerHTML = '';
-                tableBody.innerHTML = '';
-                errorDisplay.textContent = ''; // エラーを消去
-
-                let headerColCount = 0;
-
-                rows.forEach((row, index) => {
-                    const columns = row.split(','); 
-                    const tr = document.createElement('tr');
-
-                    if (index === 0) {
-                        headerColCount = columns.length;
-                        columns.forEach(col => {
-                            const th = document.createElement('th');
-                            th.textContent = col.replace(/"/g, '');
-                            tr.appendChild(th);
-                        });
-                        tableHeader.appendChild(tr);
-                    } else {
-                        for (let i = 0; i < headerColCount; i++) {
-                            const td = document.createElement('td');
-                            let cellData = columns[i] || "";
-                            td.textContent = cellData.replace(/"/g, '');
-                            tr.appendChild(td);
-                        }
-                        tableBody.appendChild(tr);
-                    }
-                });
-
-                document.getElementById('last-update').textContent = '最終読み込み: ' + new Date().toLocaleString();
-
-            } catch (error) {
-                console.error(error);
-                errorDisplay.textContent = '【エラー】' + error.message;
-            }
-        }
-
-        // 実行
-        loadCSV();
-        // 30秒ごとに自動更新
-        setInterval(loadCSV, 30000);
-    </script>
-</body>
-</html>
+ErrorHandler:
+    Application.DisplayAlerts = True
+    MsgBox "エラーが発生しました: " & Err.Description
+End Sub
