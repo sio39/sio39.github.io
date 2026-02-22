@@ -11,19 +11,24 @@
         --primary-color: #4da3ff;
         --chatgpt-color: #10a37f;
         --gemini-color: #1a73e8;
-        --claude-color: #d97757; /* Claude用の色を追加 */
+        --claude-color: #d97757;
         --grok-color: #000000;
+        --deepseek-color: #007bff; /* DeepSeek用の色を追加 */
         --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #334155;
+        --text-sub: #64748b;
     }
 
     body {
         font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
         line-height: 1.7;
-        color: #334155;
-        max-width: 700px;
+        color: var(--text-main);
+        max-width: 800px; /* 少し幅を広げてゆとりを持たせました */
         margin: 0 auto;
         padding: 120px 20px 60px 20px;
         background-color: var(--bg-color);
+        word-break: break-all;
     }
 
     /* ヘッダー (固定) */
@@ -32,20 +37,19 @@
         top: 0;
         left: 0;
         width: 100%;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(5px);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
         z-index: 9999;
         border-bottom: 1px solid #e2e8f0;
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 24px;
+        padding: 15px 40px;
         box-sizing: border-box;
     }
 
     .logo {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 800;
         color: var(--primary-color);
         letter-spacing: -0.5px;
@@ -53,14 +57,14 @@
 
     nav {
         display: flex;
-        gap: 20px;
+        gap: 25px;
     }
 
     nav a {
-        color: #64748b;
+        color: var(--text-sub);
         text-decoration: none;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 15px;
         transition: 0.2s;
     }
 
@@ -69,50 +73,58 @@
     .twitter-button {
         background: #000;
         color: white;
-        padding: 6px 16px;
+        padding: 8px 18px;
         border-radius: 30px;
         font-size: 13px;
         font-weight: bold;
         text-decoration: none;
         transition: 0.3s;
     }
+    .twitter-button:hover { opacity: 0.8; transform: translateY(-1px); }
 
     /* メインコンテンツ */
     h1 {
         text-align: center;
-        font-size: 1.6rem;
+        font-size: 2rem;
         margin-bottom: 10px;
         color: #1e293b;
     }
 
     .subtitle {
         text-align: center;
-        color: #64748b;
-        font-size: 0.9rem;
-        margin-bottom: 40px;
+        color: var(--text-sub);
+        font-size: 1rem;
+        margin-bottom: 50px;
     }
 
     .category-label {
         display: inline-block;
         background: #334155;
         color: #fff;
-        padding: 2px 12px;
-        border-radius: 4px;
-        font-size: 0.8rem;
+        padding: 4px 16px;
+        border-radius: 6px;
+        font-size: 0.85rem;
         font-weight: bold;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        letter-spacing: 0.05em;
     }
 
     /* AIセクションカード */
     .ai-card {
-        background: #fff;
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 24px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 28px;
+        margin-bottom: 28px;
+        box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
         border: 1px solid #e2e8f0;
         position: relative;
         overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .ai-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px -10px rgba(0, 0, 0, 0.1);
     }
 
     .ai-card::before {
@@ -129,16 +141,17 @@
     .gemini::before { background-color: var(--gemini-color); }
     .claude::before { background-color: var(--claude-color); }
     .grok::before { background-color: var(--grok-color); }
+    .deepseek::before { background-color: var(--deepseek-color); }
 
     .ai-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
     }
 
     .ai-name {
-        font-size: 1.25rem;
+        font-size: 1.4rem;
         font-weight: 800;
         color: #1e293b;
     }
@@ -146,46 +159,62 @@
     .ai-name a {
         color: inherit;
         text-decoration: none;
+        border-bottom: 2px solid transparent;
+        transition: 0.2s;
+    }
+    
+    .ai-card:hover .ai-name a {
+        border-bottom-color: #e2e8f0;
     }
 
     .ai-vendor {
         font-size: 0.75rem;
-        color: #94a3b8;
+        color: #64748b;
         background: #f1f5f9;
-        padding: 2px 8px;
-        border-radius: 4px;
+        padding: 4px 10px;
+        border-radius: 20px;
         text-transform: uppercase;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: 0.02em;
     }
 
     .ai-text {
-        font-size: 0.95rem;
+        font-size: 1rem;
         color: #475569;
         margin: 0;
-        line-height: 1.6;
+        line-height: 1.8;
     }
 
     .status-msg {
         text-align: center;
-        font-size: 0.9rem;
+        font-size: 1rem;
         color: #94a3b8;
-        margin-top: 40px;
-        font-style: italic;
+        margin-top: 50px;
+        padding: 20px;
+        border: 2px dashed #e2e8f0;
+        border-radius: 12px;
     }
 
     .footer-note {
         text-align: center;
-        font-size: 0.8rem;
-        color: #cbd5e1;
-        margin-top: 60px;
-        padding-top: 20px;
+        font-size: 0.85rem;
+        color: #94a3b8;
+        margin-top: 80px;
+        padding-top: 30px;
         border-top: 1px solid #e2e8f0;
     }
 
-    @media (max-width: 600px) {
-        .header { justify-content: center; gap: 10px; padding: 10px; }
-        nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
-        body { padding-top: 160px; }
+    /* モバイル最適化 */
+    @media (max-width: 650px) {
+        .header { 
+            padding: 10px 15px; 
+            flex-direction: column;
+            height: auto;
+        }
+        .logo { margin-bottom: 10px; }
+        nav { margin-bottom: 10px; gap: 15px; }
+        body { padding-top: 180px; }
+        .ai-header { flex-direction: column; align-items: flex-start; gap: 8px; }
     }
 </style>
 </head>
@@ -196,7 +225,7 @@
     <div class="logo">AIスコア投資研究所</div>
     <nav>
         <a href="index.html">TOP</a>
-        <a href="https://sio39.github.io/score.html" target="_blank">監視銘柄リスト</a>
+        <a href="https://sio39.github.io/score.html" target="_blank">監視銘柄</a>
         <a href="tool.html">ツール</a>
     </nav>
     <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
@@ -206,7 +235,7 @@
     <h1>AIツールリスト</h1>
     <p class="subtitle">投資分析・リサーチを加速させる厳選ツール</p>
 
-    <div class="category-label">■ 汎用型AI</div>
+    <div class="category-label">GEN AI / 汎用型AI</div>
 
     <div class="ai-card chatgpt">
         <div class="ai-header">
@@ -221,7 +250,7 @@
             <div class="ai-name"><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini</a></div>
             <span class="ai-vendor">Google</span>
         </div>
-        <p class="ai-text">GeminiはGoogle検索との連携による高い調査能力が強みです。複数ソースの把握や初期リサーチを効率化し、情報の裏付けを強力に支えます。コード作成でGPTでうまくいかない時など試してみると成功する時がある。htmlのデザイン修正もGPTよりいい時がある。</p>
+        <p class="ai-text">Google検索との連携による高い調査能力が強み。複数ソースの把握や情報の裏付けを強力に支えます。コード生成やHTMLデザインの修正において、GPTより優れた結果を出すケースも多いです。</p>
     </div>
 
     <div class="ai-card claude">
@@ -229,10 +258,7 @@
             <div class="ai-name"><a href="https://www.anthropic.com/claude" target="_blank" rel="noopener noreferrer">Claude</a></div>
             <span class="ai-vendor">Anthropic</span>
         </div>
-        <p class="ai-text">
-            高度な文章生成や要約、推論能力に優れ、非常に自然で知的な対話が可能です。
-            複雑な資料の読み込みや、長文の分析において非常に高い精度を発揮します。
-        </p>
+        <p class="ai-text">高度な文脈理解と推論能力を誇り、非常に自然な対話が可能です。IR資料などの複雑な資料の読み込みや、精密な長文分析において圧倒的な精度を発揮します。</p>
     </div>
 
     <div class="ai-card grok">
@@ -240,23 +266,18 @@
             <div class="ai-name"><a href="https://grok.x.ai/" target="_blank" rel="noopener noreferrer">Grok</a></div>
             <span class="ai-vendor">xAI</span>
         </div>
-        <p class="ai-text">X（旧Twitter）との連携により、リアルタイムの動向把握に強みがあります。SNSトレンドや市場の「今」の空気感を読み解く用途に適しています。</p>
+        <p class="ai-text">X（旧Twitter）のリアルタイムデータにアクセス可能。市場の最新トレンドや投資家の「今」の反応を迅速にキャッチアップするのに適しています。</p>
     </div>
 
     <div class="ai-card deepseek">
-    <div class="ai-header">
-        <div class="ai-name">
-            <a href="https://www.deepseek.com/" target="_blank" rel="noopener noreferrer">DeepSeek</a>
+        <div class="ai-header">
+            <div class="ai-name"><a href="https://www.deepseek.com/" target="_blank" rel="noopener noreferrer">DeepSeek</a></div>
+            <span class="ai-vendor">DeepSeek</span>
         </div>
-        <span class="ai-vendor">DeepSeek</span>
+        <p class="ai-text">数学的思考とプログラミングに特化した中国発の強力なモデル。驚異的なコストパフォーマンスと推論能力を両立し、高度なロジック構築やデータ解析に威力を発揮します。</p>
     </div>
-    <p class="ai-text">
-        高度な推論能力とコード生成に強みを持つ大規模言語モデルで、特に数学的思考やプログラミング分野で高い性能を発揮します。
-        オープンモデルとしての透明性とコスト効率の高さも特徴で、研究用途から実務活用まで幅広く活用されています。
-    </p>
-</div>
 
-    <div class="status-msg">以下、随時追加予定...</div>
+    <div class="status-msg">New tools coming soon...</div>
 </main>
 
 <footer class="footer-note">
