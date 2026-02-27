@@ -22,7 +22,7 @@ body{
     Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
     background:var(--bg);
     color:var(--text);
-    padding-top:120px; /* 固定ナビ分追加 */
+    padding-top:120px; /* 固定ナビ分 */
 }
 
 /* ===== 共通ナビ ===== */
@@ -76,6 +76,13 @@ nav a:hover{ color:#4da3ff; }
     gap:6px;
 }
 
+/* ===== コンテナ ===== */
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
 /* ===== カード ===== */
 .card{
     background:var(--panel);
@@ -95,13 +102,6 @@ nav a:hover{ color:#4da3ff; }
     padding:18px;
     border-radius:10px;
     margin-top:10px;
-}
-
-/* ===== コンテナ ===== */
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
 }
 
 /* ===== フッター ===== */
@@ -130,4 +130,32 @@ footer{
 
 <div class="container">
 
-<!-- ここから下は元の内容そのまま -->
+    <div class="card">
+        <h2>おすすめ投資本①</h2>
+        <div class="desc-box">
+            投資の本質を学べる名著。長期視点での資産形成を学びたい方におすすめです。
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>おすすめ投資本②</h2>
+        <div class="desc-box">
+            ファンダメンタル分析を深く理解したい方向け。実践的な内容が豊富です。
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>おすすめ投資本③</h2>
+        <div class="desc-box">
+            メンタルとリスク管理を中心に解説。投資家として長期生存するための必読書。
+        </div>
+    </div>
+
+</div>
+
+<footer>
+&copy; 2026 AIスコア投資研究所
+</footer>
+
+</body>
+</html>
