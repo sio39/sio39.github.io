@@ -22,6 +22,58 @@ body{
     Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
     background:var(--bg);
     color:var(--text);
+    padding-top:120px; /* 固定ナビ分追加 */
+}
+
+/* ===== 共通ナビ ===== */
+.header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(5px);
+    z-index:9999;
+    border-bottom:1px solid #e2e8f0;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 24px;
+    box-sizing:border-box;
+}
+
+.logo{
+    font-size:18px;
+    font-weight:800;
+    color:#4da3ff;
+    letter-spacing:-0.5px;
+    text-decoration:none;
+}
+
+nav{ display:flex; gap:20px; }
+
+nav a{
+    color:#64748b;
+    text-decoration:none;
+    font-weight:600;
+    font-size:16px;
+    transition:0.2s;
+}
+
+nav a:hover{ color:#4da3ff; }
+
+.twitter-button{
+    background:#000;
+    color:white;
+    padding:6px 16px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:bold;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
 }
 
 /* ===== カード ===== */
@@ -65,8 +117,16 @@ footer{
 
 <body>
 
-<!-- 共通ナビを読み込む -->
-<div id="header-placeholder"></div>
+<header class="header">
+    <a href="index.html" class="logo">AIスコア投資研究所</a>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="https://sio39.github.io/score.html">監視銘柄</a>
+        <a href="tool.html">ツール</a>
+        <a href="realtime.html">リアルタイムボード</a>
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+</header>
 
 <div class="container">
 
@@ -95,7 +155,6 @@ footer{
        <li>
         <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F15344384%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">ウォーレン・バフェットはこうして最初の1億ドルを稼いだ 若き日のバフェットに学ぶ最強の投資哲学 [ グレン・アーノルド ]</a>
       </li>
-
     </ul>
   </div>
 </div>
@@ -123,8 +182,6 @@ footer{
       <li>
        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12686638%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">金持ち父さんの投資ガイド（上級編）改訂版 [ ロバート・T．キヨサキ ]</a>
       </li>
-
-
     </ul>
   </div>
 </div>
@@ -147,20 +204,9 @@ footer{
 
 </div>
 
-</div>
-
 <footer>
 © 2026 AIスコア投資研究所
 </footer>
-
-<!-- nav.html を読み込むスクリプト -->
-<script>
-fetch('nav.html')
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById('header-placeholder').innerHTML = data;
-  });
-</script>
 
 </body>
 </html>
