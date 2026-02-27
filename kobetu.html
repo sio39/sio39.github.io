@@ -1,3 +1,132 @@
-        個別銘柄分析
-        
-        <a href="https://sio39.github.io/3350.html">3350 メタプラネット</a>26/02/28更新
+    <!DOCTYPE html>
+<html lang="ja">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5JCN1FB7ML');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個別銘柄分析 | AIスコア投資研究所</title>
+
+    <style>
+        /* --- 共通基本設定 --- */
+        :root {
+            --primary-color: #4da3ff;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 20px 60px 20px;
+            background-color: var(--bg-color);
+        }
+
+        /* --- ヘッダー (固定) --- */
+        .header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-size: 18px; font-weight: 800; color: var(--primary-color);
+            letter-spacing: -0.5px; text-decoration: none;
+        }
+
+        nav { display: flex; gap: 20px; }
+        nav a {
+            color: var(--text-sub); text-decoration: none;
+            font-weight: 600; font-size: 16px; transition: 0.2s;
+        }
+        nav a:hover { color: var(--primary-color); }
+
+        .twitter-button {
+            background: #000; color: white; padding: 6px 16px;
+            border-radius: 30px; font-size: 13px; font-weight: bold;
+            text-decoration: none; display: flex; align-items: center; gap: 6px;
+        }
+
+        /* --- 個別銘柄分析 セクションデザイン --- */
+        h1 { font-size: 1.6rem; color: #1e293b; text-align: center; margin-bottom: 40px; }
+
+        .analysis-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .analysis-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .analysis-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .stock-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stock-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .update-date {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        .arrow-icon {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* --- フッター --- */
+        .footer-note {
+            text-align: center; font-size: 0.8rem; color: #94a3b8;
+            margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color);
+        }
+
+        /* モバイル対応 */
+        @media (max-width: 600px) {
+            .header { justify-content: center; gap: 10px; padding: 10px; }
+            nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
+            body { padding-top: 1
