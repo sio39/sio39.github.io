@@ -1,190 +1,198 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5JCN1FB7ML');
+    </script>
+
     <meta charset="UTF-8">
-    <title>個別銘柄分析：メタプラネットの構造理解</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【個別銘柄分析】メタプラの構造理解 | AIスコア投資研究所</title>
+
     <style>
-        /* サイトの共通スタイルと合わせるための設定 */
-        .analysis-container {
+        /* --- 共通基本設定 --- */
+        :root {
+            --primary-color: #4da3ff;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
             line-height: 1.8;
-            color: #334155;
+            color: var(--text-main);
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f8fafc;
+            padding: 120px 20px 60px 20px;
+            background-color: var(--bg-color);
         }
+
+        /* --- ヘッダー (固定) --- */
+        .header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-size: 18px; font-weight: 800; color: var(--primary-color);
+            letter-spacing: -0.5px; text-decoration: none;
+        }
+
+        nav { display: flex; gap: 20px; }
+        nav a {
+            color: var(--text-sub); text-decoration: none;
+            font-weight: 600; font-size: 16px; transition: 0.2s;
+        }
+        nav a:hover { color: var(--primary-color); }
+
+        .twitter-button {
+            background: #000; color: white; padding: 6px 16px;
+            border-radius: 30px; font-size: 13px; font-weight: bold;
+            text-decoration: none; display: flex; align-items: center; gap: 6px;
+        }
+
+        /* --- コンテンツレイアウト --- */
+        h1 { font-size: 1.6rem; color: #1e293b; text-align: center; margin-bottom: 40px; }
 
         .analysis-card {
-            background: #ffffff;
+            background: var(--card-bg);
             border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 24px;
+            margin-bottom: 25px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
         }
 
-        .analysis-card h2 {
-            font-size: 1.4rem;
-            color: #1e293b;
-            border-left: 6px solid #4da3ff;
-            padding-left: 15px;
-            margin-bottom: 20px;
-            margin-top: 0;
+        .analysis-card::before {
+            content: ""; position: absolute; top: 0; left: 0;
+            width: 6px; height: 100%; background: var(--primary-color);
         }
 
-        .analysis-card h3 {
-            font-size: 1.1rem;
-            color: #1e293b;
-            margin-top: 20px;
+        h2 { font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-top: 0; margin-bottom: 15px; }
+        
+        .section-title { font-weight: bold; color: var(--primary-color); margin-bottom: 5px; display: block; }
+        
+        p { margin-bottom: 15px; }
+        ul { padding-left: 20px; margin-bottom: 15px; }
+        li { margin-bottom: 5px; }
+
+        /* --- フッター --- */
+        .footer-note {
+            text-align: center; font-size: 0.8rem; color: #94a3b8;
+            margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color);
         }
 
-        .highlight-text {
-            color: #1e293b;
-            font-weight: bold;
-            background: linear-gradient(transparent 70%, #dcfce7 70%);
-        }
-
-        .important-box {
-            background-color: #fff9eb;
-            border: 1px solid #fde68a;
-            color: #b45309;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-weight: bold;
-        }
-
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 0.9rem;
-        }
-
-        .comparison-table th, .comparison-table td {
-            border: 1px solid #e2e8f0;
-            padding: 12px;
-            text-align: left;
-        }
-
-        .comparison-table th {
-            background-color: #f1f5f9;
-            color: #475569;
-        }
-
-        .impact-high { color: #e11d48; font-weight: bold; }
-        .impact-low { color: #64748b; }
-
-        .analysis-summary {
-            background: #1e293b;
-            color: #ffffff;
-            padding: 25px;
-            border-radius: 12px;
-            margin-top: 40px;
-        }
-
-        .analysis-summary h2 {
-            color: #4da3ff;
-            border-left: none;
-            padding-left: 0;
-        }
-
-        ul li {
-            margin-bottom: 10px;
+        /* モバイル対応 */
+        @media (max-width: 600px) {
+            .header { justify-content: center; gap: 10px; padding: 10px; }
+            nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
+            body { padding-top: 160px; }
+            h1 { font-size: 1.4rem; }
         }
     </style>
 </head>
+
 <body>
 
-<div class="analysis-container">
-    <h1>【個別銘柄分析】メタプラネット（3350）の構造理解</h1>
+<header class="header">
+    <a href="index.html" class="logo">AIスコア投資研究所</a>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="https://sio39.github.io/score.html">監視銘柄</a>
+        <a href="tool.html">ツール</a>
+        <a href="realtime.html">リアルタイムボード</a>
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+</header>
+
+<main>
+    <h1>【個別銘柄分析】メタプラの構造理解</h1>
 
     <div class="analysis-card">
-        <h2>1. 私の基本スタンス</h2>
-        <p>
-            メタプラネット（以下、メタプラ）は、「ビットコインを活用する財務戦略企業」というよりも、市場を介してビットコインに連動する<span class="highlight-text">“代替ビットコインETF”</span>であると捉えています。
-        </p>
-        <p>
-            企業という形式を取っていますが、株価変動の主因は本業ではなく「ビットコイン」そのものです。
-        </p>
+        <h2>1. 私の立場</h2>
+        <p>メタプラは、<br>
+        「ビットコインを活用する財務戦略企業」というよりも、<br>
+        市場を介してビットコインに連動する“代替ビットコインETF”<br>
+        と捉えている。</p>
+        <p>企業という形式を取っているが、<br>
+        株価変動の主因は本業ではなくビットコインである。</p>
     </div>
 
     <div class="analysis-card">
-        <h2>2. なぜ「代替ETF」と見るのか</h2>
-        <p>メタプラの株価を動かす材料は、主に以下の3点に集約されます。</p>
+        <h2>2. なぜ代替ETFと見るのか</h2>
+        <p>メタプラの株価は、<br>
+        ・ビットコイン価格<br>
+        ・BTC取得IR<br>
+        ・増資発表<br>
+        に大きく反応する。</p>
+        <p>一方で、本体事業の業績変動が株価に与える影響は限定的である。<br>
+        つまり、<br>
+        株価の主因は企業収益ではなく、ビットコイン要因。<br>
+        この構造はETF的である。</p>
+    </div>
+
+    <div class="analysis-card">
+        <h2>3. 株式発行と株数膨張の構造</h2>
+        <p>メタプラはビットコイン取得のために株式発行を行う。<br>
+        結果として、<br>
+        ・発行済株式数は大きく増加<br>
+        ・1株あたりのBPSは薄まりやすい<br>
+        ・企業収益による1株あたり利益のインパクトは小さくなる</p>
+        <p>大量発行された株式構造では、<br>
+        本業収益の増減よりも、<br>
+        保有ビットコインの評価変動の方が株価に与える影響が大きくなる。<br>
+        ここが重要。</p>
+    </div>
+
+    <div class="analysis-card">
+        <h2>4. 1株あたり視点で見る必要性</h2>
+        <p>メタプラを評価する場合、<br>
+        「会社全体」ではなく<br>
+        1株あたりで何が起きているかを見る必要がある。</p>
         <ul>
-            <li><strong>ビットコイン（BTC）価格の変動</strong></li>
-            <li><strong>BTC取得に関するプレスリリース（IR）</strong></li>
-            <li><strong>取得資金のための増資発表</strong></li>
+            <li>1株あたりBTC保有量</li>
+            <li>1株あたり純資産</li>
+            <li>増資価格水準</li>
         </ul>
-        <div class="important-box">
-            本体事業の業績変動が株価に与える影響は極めて限定的であり、この構造は極めて「ETF的」です。
-        </div>
+        <p>株式数が急増する構造では、<br>
+        単純な時価総額比較は意味を持ちにくい。</p>
     </div>
 
     <div class="analysis-card">
-        <h2>3. 株式発行と希薄化の構造</h2>
-        <p>メタプラはBTC取得のために頻繁に株式発行を行います。その結果、以下のループが発生します。</p>
-        <ol>
-            <li>発行済株式数が大きく増加する。</li>
-            <li>1株あたりの純資産（BPS）や利益（EPS）が薄まりやすくなる。</li>
-            <li>企業収益による1株あたり利益のインパクトが相対的に小さくなる。</li>
-        </ol>
-        <p>
-            株式数が膨張する構造下では、本業の増減よりも<span class="highlight-text">「保有ビットコインの評価変動」の方が株価に与える影響が圧倒的に大きく</span>なります。
-        </p>
+        <h2>5. mNAVとプレミアム</h2>
+        <p>mNAVが1を超える局面では、<br>
+        市場はビットコイン価値以上のプレミアムを付けている。</p>
+        <p>この状態で増資を行えば、<br>
+        理論上は<br>
+        1株あたりBTCが増える可能性がある。</p>
+        <p>しかし、mNAVが低い局面での増資は<br>
+        既存株主に不利となる。</p>
+        <p>重要なのは、<br>
+        「増資の善悪」ではなく<br>
+        どの水準で発行しているか。</p>
     </div>
 
     <div class="analysis-card">
-        <h2>4. 「1株あたり視点」での分析の重要性</h2>
-        <p>メタプラを評価する場合、「会社全体」の時価総額ではなく、<strong>1株あたりで何が起きているか</strong>を注視する必要があります。</p>
-        <ul>
-            <li><strong>1株あたりBTC保有量</strong>：増資をしてもこの数値が増えていれば、株主価値は向上していると言える（アクレティブな増資）。</li>
-            <li><strong>mNAVとプレミアム</strong>：修正純資産価値（mNAV）が1を超える（プレミアム）局面での増資は、理論上1株あたりBTCを増やすチャンスとなる。</li>
-        </ul>
-    </div>
-
-    <div class="analysis-card">
-        <h2>5. 要因整理：本体 vs ビットコイン</h2>
-        <table class="comparison-table">
-            <thead>
-                <tr>
-                    <th>カテゴリ</th>
-                    <th>主な要因</th>
-                    <th>株価への影響度</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>本体要因</strong></td>
-                    <td>本業収益、事業拡大、営業利益</td>
-                    <td class="impact-low">限定的</td>
-                </tr>
-                <tr>
-                    <td><strong>ビットコイン要因</strong></td>
-                    <td>BTC価格、取得枚数、評価益、市場センチメント</td>
-                    <td class="impact-high">極めて大きい</td>
-                </tr>
-            </tbody>
-        </table>
-        <p>
-            現状では「ビットコイン要因」が圧倒的であり、私はメタプラを「成長株」ではなく<span class="highlight-text">「ビットコイン連動銘柄」</span>として分析しています。
-        </p>
-    </div>
-
-    <div class="analysis-summary">
-        <h2>結論</h2>
-        <p>メタプラネットは、企業の形をした「ビットコイン価格連動構造」を持つ特殊な銘柄です。</p>
-        <p>評価の軸は常に以下の4点に置くべきです。</p>
-        <ul>
-            <li>ビットコインの価格動向</li>
-            <li>1株あたりのBTC保有量（BTC Yield）</li>
-            <li>mNAV（プレミアム/ディスカウント）の推移</li>
-            <li>増資時の発行価格水準</li>
-        </ul>
-        <p>「本業がどうか」よりも、「ビットコインをどう扱い、資本政策にどう反映させているか」が投資判断の核心です。</p>
-    </div>
-</div>
-
-</body>
-</html>
+        <h2>6. 本体要因 vs ビットコイン要因</h2>
+        <p><span class="section-title">■ 本体要因</span>
+        ・本業収益<br>
+        ・
