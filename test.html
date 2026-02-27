@@ -11,10 +11,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIスコア投資研究所 | TOP</title>
+    <title>【個別銘柄分析】メタプラの構造理解 | AIスコア投資研究所</title>
 
     <style>
-        /* 基本設定 */
+        /* --- 共通基本設定 --- */
         :root {
             --primary-color: #4da3ff;
             --primary-dark: #3b82f6;
@@ -23,8 +23,7 @@
             --text-main: #1e293b;
             --text-sub: #64748b;
             --border-color: #e2e8f0;
-            --accent-gold: #b45309;
-            --accent-gold-bg: #fff9eb;
+            --highlight: #dcfce7;
         }
 
         body {
@@ -38,7 +37,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ヘッダー (固定) */
+        /* --- ヘッダー (固定) --- */
         .header {
             position: fixed;
             top: 0; left: 0; width: 100%;
@@ -64,134 +63,134 @@
             color: var(--text-sub); text-decoration: none;
             font-weight: 600; font-size: 15px; transition: 0.3s;
         }
-        nav a:hover, nav a.active { color: var(--primary-color); }
+        nav a:hover { color: var(--primary-color); }
 
         .twitter-button {
             background: #000; color: white; padding: 8px 18px;
             border-radius: 30px; font-size: 13px; font-weight: bold;
             text-decoration: none; transition: 0.3s;
         }
-        .twitter-button:hover { transform: scale(1.05); }
 
-        /* ヒーローエリア */
-        .hero {
+        /* --- コンテンツレイアウト --- */
+        .page-header {
             text-align: center;
-            margin-bottom: 60px;
-            animation: fadeIn 1s ease-out;
+            margin-bottom: 50px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .page-header span {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 0.1rem;
         }
 
-        .hero h1 {
-            font-size: 2.4rem; font-weight: 900;
-            margin-bottom: 12px; color: var(--text-main);
-            letter-spacing: -1px;
+        h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--text-main);
+            margin-top: 10px;
+            letter-spacing: -0.5px;
         }
 
-        .hero p {
-            color: var(--text-sub); font-size: 1.1rem;
-            margin-bottom: 35px; font-weight: 500;
-        }
-
-        .hero img {
-            width: 100%; max-width: 640px;
-            height: auto; border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            border: 1px solid var(--border-color);
-        }
-
-        /* セクションタイトル */
-        .section-intro {
-            text-align: center; margin-bottom: 40px;
-        }
-
-        /* コンテンツカード */
-        .content-card {
+        .analysis-card {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 28px;
+            padding: 35px;
+            margin-bottom: 30px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
             position: relative;
         }
 
-        .content-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .card-title {
-            font-size: 1.35rem; font-weight: 800;
-            margin-bottom: 14px; color: var(--text-main);
-            display: flex; align-items: center; gap: 10px;
-        }
-
-        .card-title::before {
-            content: ""; display: inline-block;
-            width: 4px; height: 24px;
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 5px;
+            height: 26px;
             background: var(--primary-color);
             border-radius: 2px;
         }
 
-        .card-text {
-            font-size: 1rem; color: #475569;
-            margin-bottom: 24px;
-        }
-
-        /* バッジ装飾 */
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
+        .important-line {
+            background: linear-gradient(transparent 70%, var(--highlight) 70%);
             font-weight: bold;
-            vertical-align: middle;
-            margin-left: 8px;
+            padding: 0 2px;
         }
-        .badge-beta { background: var(--accent-gold-bg); color: var(--accent-gold); border: 1px solid #fde68a; }
 
-        /* ボタン */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 28px;
-            border-radius: 8px;
+        .point-box {
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .point-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        /* --- テーブルデザイン --- */
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
             font-size: 0.95rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: 0.3s;
-            background: var(--primary-color);
-            color: white;
-            box-shadow: 0 4px 10px rgba(77, 163, 255, 0.3);
         }
 
-        .btn:hover {
-            background: var(--primary-dark);
-            box-shadow: 0 6px 15px rgba(77, 163, 255, 0.4);
-            transform: translateX(4px);
+        .analysis-table th, .analysis-table td {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            text-align: left;
         }
 
-        .btn::after {
-            content: "→"; margin-left: 8px; transition: 0.3s;
+        .analysis-table th {
+            background-color: #f8fafc;
+            color: var(--text-sub);
+            font-weight: bold;
         }
 
-        /* 理念・目的カードの特殊装飾 */
-        .card-special {
-            background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
+        .impact-high {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        /* --- 結論カード --- */
+        .conclusion-card {
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+            color: #ffffff;
             border: none;
         }
 
-        /* フッター */
+        .conclusion-card h2 {
+            color: #ffffff;
+        }
+
+        .conclusion-card h2::before {
+            background: var(--primary-color);
+        }
+
+        .conclusion-card p {
+            color: #cbd5e1;
+        }
+
+        /* --- フッター --- */
         .footer-note {
-            text-align: center; font-size: 0.85rem; color: #94a3b8;
-            margin-top: 80px; padding: 40px 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 80px;
+            padding: 40px 0;
             border-top: 1px solid var(--border-color);
         }
 
@@ -200,8 +199,9 @@
             .header { justify-content: center; gap: 10px; padding: 12px; }
             nav { order: 3; width: 100%; justify-content: center; gap: 16px; margin-top: 8px; }
             body { padding-top: 180px; }
-            .hero h1 { font-size: 1.8rem; }
-            .content-card { padding: 24px; }
+            h1 { font-size: 1.6rem; }
+            .analysis-card { padding: 25px; }
+            .analysis-table th, .analysis-table td { padding: 10px; font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -211,7 +211,7 @@
 <header class="header">
     <a href="index.html" class="logo">AIスコア投資研究所</a>
     <nav>
-        <a href="index.html" class="active">TOP</a>
+        <a href="index.html">TOP</a>
         <a href="https://sio39.github.io/score.html">監視銘柄</a>
         <a href="tool.html">ツール</a>
         <a href="realtime.html">リアルタイムボード</a>
@@ -220,64 +220,110 @@
 </header>
 
 <main>
-    <section class="hero">
-        <h1>AIスコア投資研究所</h1>
-        <p>～ロジックで選び、リアルを見て買う～</p>
-        <img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" alt="AIスコア分析イメージ">
-    </section>
+    <div class="page-header">
+        <span>STOCK ANALYSIS</span>
+        <h1>【個別銘柄分析】メタプラの構造理解</h1>
+    </div>
 
-    <div class="content-card card-special">
-        <div class="card-title">理念</div>
-        <p class="card-text">
-            <strong>「負けている個人投資家を救いたい」</strong><br>
-            その一心で、私自身の試行錯誤から導き出した独自のロジックと手法をすべて無料で公開しています。
+    <div class="analysis-card">
+        <h2>1. 私の立場</h2>
+        <p>
+            メタプラネットは、「ビットコインを活用する財務戦略企業」というよりも、<br>
+            市場を介してビットコインに連動する<span class="important-line">“代替ビットコインETF”</span>であると捉えています。
+        </p>
+        <p>企業という形式を取っていますが、株価変動の主因は本業ではなく「ビットコイン」そのものです。</p>
+    </div>
+
+    <div class="analysis-card">
+        <h2>2. なぜ代替ETFと見るのか</h2>
+        <p>メタプラの株価は、以下の要素に極めて敏感に反応します。</p>
+        <div class="point-box">
+            <ul>
+                <li><strong>ビットコイン価格の推移</strong></li>
+                <li><strong>BTC取得に関するIR（プレスリリース）</strong></li>
+                <li><strong>ビットコイン取得を目的とした増資発表</strong></li>
+            </ul>
+        </div>
+        <p>
+            一方で、本体事業の業績変動が株価に与える影響は限定的です。つまり、<span class="important-line">株価の主因は企業収益ではなく「ビットコイン要因」</span>であり、この構造こそが極めてETF的です。
         </p>
     </div>
 
-    <div class="content-card">
-        <div class="card-title">AIスコア解説</div>
-        <p class="card-text">
-            独自アルゴリズムにより銘柄の割安度・収益性・成長性を数値化。感情を排除し、定量的なデータに基づいて「監視すべき銘柄」を抽出する評価システムです。
-        </p>
-        <a href="ai-score.html" class="btn">詳細ロジックを学ぶ</a>
+    <div class="analysis-card">
+        <h2>3. 株式発行と株数膨張の構造</h2>
+        <p>メタプラはビットコイン取得のために株式発行を積極的に行います。その結果として以下の現象が生じます。</p>
+        <ul>
+            <li>発行済株式数が大きく増加する</li>
+            <li>1株あたりの純資産（BPS）が薄まりやすい</li>
+            <li>企業収益による「1株あたり利益」のインパクトが相対的に小さくなる</li>
+        </ul>
+        <p>大量発行された株式構造下では、本業収益の増減よりも、<span class="important-line">保有ビットコインの評価変動が株価に与える影響が支配的</span>になります。ここが分析の出発点です。</p>
     </div>
 
-    <div class="content-card">
-        <div class="card-title">監視銘柄リスト</div>
-        <p class="card-text">
-            AIスコアの厳格な条件（A3・A5・ギャップ比）をクリアした精鋭銘柄を公開中。あなたのウォッチリストの参考に。
-        </p>
-        <a href="https://sio39.github.io/score.html" class="btn">銘柄リストをチェック</a>
+    <div class="analysis-card">
+        <h2>4. 1株あたり視点で見る必要性</h2>
+        <p>メタプラを評価する場合、「会社全体」ではなく<span class="important-line">「1株あたり」で何が起きているか</span>を見る必要があります。株式数が急増する構造では、単純な時価総額比較は意味を持ちにくいためです。</p>
+        <div class="point-box">
+            <strong>チェックすべき最重要項目：</strong>
+            <ul>
+                <li>1株あたりBTC保有量</li>
+                <li>1株あたり純資産</li>
+                <li>増資価格の水準（既存株主にとっての妥当性）</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="content-card">
-        <div class="card-title">ツール集</div>
-        <p class="card-text">
-            日々の投資判断を圧倒的に効率化し、分析の精度を向上させるために厳選した便利ツール群を紹介します。
-        </p>
-        <a href="tool.html" class="btn">ツール一覧を見る</a>
+    <div class="analysis-card">
+        <h2>5. mNAVとプレミアム</h2>
+        <p>mNAV（修正純資産価値）が1を超える局面では、市場はビットコインの裏付け価値以上の「プレミアム」を付けています。</p>
+        <p>このプレミアム状態で増資を行えば、理論上は<span class="important-line">既存株主の「1株あたりBTC保有量」を増加させる</span>ことが可能です。しかし、mNAVが低い局面での増資は既存株主にとって不利に働きます。</p>
+        <p>重要なのは「増資の善悪」そのものではなく、<strong>「どの水準（プレミアム/ディスカウント）で発行しているか」</strong>にあります。</p>
     </div>
 
-    <div class="content-card">
-        <div class="card-title">リアルタイムボード<span class="badge badge-beta">試験運用中</span></div>
-        <p class="card-text">
-            監視銘柄の「今」を捉える5分間隔のライブデータボード。市場の資金流入状況を視覚的に把握するための実験的機能です。
+    <div class="analysis-card">
+        <h2>6. 本体要因 vs ビットコイン要因</h2>
+        <p>現状のメタプラにおける、株価変動因子の寄与度を整理します。</p>
+        <table class="analysis-table">
+            <thead>
+                <tr>
+                    <th>カテゴリ</th>
+                    <th>具体的な要因</th>
+                    <th>株価への影響</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>本体要因</strong></td>
+                    <td>本業収益、事業拡大、営業利益</td>
+                    <td>限定的</td>
+                </tr>
+                <tr>
+                    <td><strong>ビットコイン要因</strong></td>
+                    <td>BTC価格、取得枚数、評価益、市場センチメント</td>
+                    <td class="impact-high">極めて大きい</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+            私はメタプラを「企業成長株」としてではなく、<span class="important-line">「市場を通じたビットコイン・レバレッジ銘柄」</span>として分析しています。
         </p>
-        <a href="realtime.html" class="btn">ボードを起動する</a>
     </div>
 
-    <div class="content-card">
-        <div class="card-title">個別銘柄分析</div>
-        <p class="card-text">
-            特定の注目銘柄について、その背後にある構造や資本政策まで踏み込んだ深掘り解説を行っています。
+    <div class="analysis-card conclusion-card">
+        <h2>7. 結論</h2>
+        <p>
+            メタプラは、企業の形をした<strong>「ビットコイン価格連動構造」</strong>を持つ銘柄です。評価する際は、以下の指標を軸に据えるべきです。
         </p>
-        <a href="kobetu.html" class="btn">深い分析を読む</a>
-    </div>
-
-    <div class="content-card card-special">
-        <div class="card-title">サイトの目的</div>
-        <p class="card-text">
-            相場に溢れる感情的なノイズを削ぎ落とし、<strong>「再現性のあるデータ基準の投資判断」</strong>を構築すること。個人投資家が厳しい市場で生き残り、勝ち続けるための「武器」を日々研究し提供します。
+        <div style="margin: 20px 0;">
+            <ul style="color: #ffffff;">
+                <li>BTC価格のトレンド</li>
+                <li>1株あたりBTC保有量（BTC Yield）</li>
+                <li>mNAVの水準</li>
+                <li>新株の発行価格水準</li>
+            </ul>
+        </div>
+        <p>
+            本体業績以上に、ビットコイン要因の変動が株価を決定づける。これが私の基本スタンスです。
         </p>
     </div>
 </main>
