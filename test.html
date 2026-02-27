@@ -26,15 +26,15 @@
 
         body {
             font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-            line-height: 1.7;
+            line-height: 1.5;
             color: var(--text-main);
-            max-width: 900px;
+            max-width: 1000px; /* PCでの表示幅を少し広げてスクロールを回避 */
             margin: 0 auto;
-            padding: 120px 20px 60px 20px;
+            padding: 110px 10px 60px 10px; /* 左右余白を最小化 */
             background-color: var(--bg-color);
         }
 
-        /* --- ヘッダー (固定) --- */
+        /* --- ヘッダー --- */
         .header {
             position: fixed;
             top: 0; left: 0; width: 100%;
@@ -46,72 +46,75 @@
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 24px;
+            padding: 8px 15px; /* ヘッダーを少しスリムに */
             box-sizing: border-box;
         }
 
-        .logo {
-            font-size: 18px; font-weight: 800; color: var(--primary-color);
-            text-decoration: none; letter-spacing: -0.5px;
-        }
+        .logo { font-size: 17px; font-weight: 800; color: var(--primary-color); text-decoration: none; }
+        nav { display: flex; gap: 12px; }
+        nav a { color: var(--text-sub); text-decoration: none; font-weight: 600; font-size: 14px; }
+        nav a.active { color: var(--primary-color); }
+        .twitter-button { background: #000; color: white; padding: 5px 12px; border-radius: 30px; font-size: 12px; text-decoration: none; font-weight: bold; }
 
-        nav { display: flex; gap: 20px; }
-        nav a {
-            color: var(--text-sub); text-decoration: none;
-            font-weight: 600; font-size: 16px; transition: 0.2s;
-        }
-        nav a:hover, nav a.active { color: var(--primary-color); }
-
-        .twitter-button {
-            background: #000; color: white; padding: 6px 16px;
-            border-radius: 30px; font-size: 13px; font-weight: bold;
-            text-decoration: none; display: flex; align-items: center; gap: 6px;
-        }
-
-        /* --- コンテンツエリア --- */
-        .page-title { text-align: center; font-size: 1.6rem; margin-bottom: 10px; color: #1e293b; }
-        
-        .status-container { text-align: center; margin-bottom: 20px; }
-        .load-time { font-size: 0.8rem; color: #888; }
-        .csv-time { font-size: 0.95rem; font-weight: bold; color: #d9534f; }
+        /* --- コンテンツ --- */
+        .page-title { text-align: center; font-size: 1.4rem; margin-bottom: 5px; color: #1e293b; }
+        .status-container { text-align: center; margin-bottom: 15px; }
+        .load-time { font-size: 0.75rem; color: #888; }
+        .csv-time { font-size: 0.9rem; font-weight: bold; color: #d9534f; }
 
         .info-box {
-            background: #fff; padding: 20px; border-radius: 12px;
-            border: 1px solid var(--border-color); margin-bottom: 25px;
-            font-size: 0.9rem; color: #475569; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            background: #fff; padding: 12px; border-radius: 8px;
+            border: 1px solid var(--border-color); margin-bottom: 15px;
+            font-size: 0.85rem; color: #475569;
         }
 
-        /* --- テーブル設定 --- */
+        /* --- テーブル：ここを大幅に調整 --- */
         .table-container { 
-            width: 100%; background: white; border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow-x: auto;
+            width: 100%; background: white; border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow-x: auto; /* スマホではスクロール可能に */
+            -webkit-overflow-scrolling: touch;
             border: 1px solid var(--border-color);
         }
         
-        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-        th, td { border: 1px solid #e2e8f0; padding: 12px 15px; text-align: center; font-size: 0.85rem; }
-        th { background-color: #1e293b; color: white; font-weight: 600; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            table-layout: auto; /* 内容に合わせて幅を調整 */
+        }
+        
+        th, td { 
+            border: 1px solid #e2e8f0; 
+            padding: 6px 4px; /* 余白を極限まで削減 */
+            text-align: center; 
+            font-size: 0.8rem; /* 文字を少し小さく */
+            letter-spacing: -0.5px; /* 文字間隔を詰める */
+        }
+        
+        th { background-color: #1e293b; color: white; font-weight: 600; white-space: nowrap; }
         tr:nth-child(even) { background-color: #f8fafc; }
         
-        .error-msg { color: #e11d48; font-weight: bold; text-align: center; margin: 20px 0; }
+        /* 数値のカラムを少し強調 */
+        td:nth-child(n+3) { font-family: "Verdana", sans-serif; font-weight: 500; }
 
-        .tool-link { text-align: center; margin-top: 30px; }
+        .tool-link { text-align: center; margin-top: 25px; font-size: 0.9rem; }
         .btn {
-            display: inline-block; padding: 10px 24px; background: var(--primary-color);
-            color: white; text-decoration: none; border-radius: 6px; font-weight: bold;
+            display: inline-block; padding: 8px 20px; background: var(--primary-color);
+            color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 10px;
         }
 
-        /* フッター */
         .footer-note {
-            text-align: center; font-size: 0.8rem; color: #94a3b8;
-            margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color);
+            text-align: center; font-size: 0.75rem; color: #94a3b8;
+            margin-top: 40px; padding-top: 15px; border-top: 1px solid var(--border-color);
         }
 
-        /* モバイル対応 */
+        /* モバイル対応：さらに最適化 */
         @media (max-width: 600px) {
-            .header { justify-content: center; gap: 10px; padding: 10px; }
-            nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
-            body { padding-top: 170px; }
+            .header { justify-content: center; gap: 8px; padding: 8px; }
+            nav { order: 3; width: 100%; justify-content: center; gap: 10px; }
+            body { padding-top: 155px; padding-left: 5px; padding-right: 5px; }
+            th, td { font-size: 0.75rem; padding: 8px 4px; }
+            .info-box { font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -124,7 +127,7 @@
         <a href="index.html">TOP</a>
         <a href="https://sio39.github.io/score.html">監視銘柄</a>
         <a href="tool.html">ツール</a>
-        <a href="realtime.html" class="active">リアルタイムボード</a>
+        <a href="realtime.html" class="active">リアルタイム</a>
     </nav>
     <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
 </header>
@@ -133,18 +136,13 @@
     <h1 class="page-title">銘柄リアルタイムボード</h1>
     
     <div class="status-container">
-        <div id="last-load" class="load-time">ブラウザ読み込み中...</div>
-        <div id="csv-update-time" class="csv-time">CSVデータ確認中...</div>
+        <div id="last-load" class="load-time">更新待ち...</div>
+        <div id="csv-update-time" class="csv-time">読み込み中...</div>
     </div>
     
-    <div id="error-display" class="error-msg"></div>
-
     <div class="info-box">
-        ※自動更新作動中は5分毎に更新されます。<br>
-        ※20日平均出来高は手動入力。最新データではありません。<br>
-        <strong>RVOL×補正係数が1.5以上、且つ前日比プラスなら買いサイン。</strong><br>
-        補正係数は「330÷経過分数」です。<br><br>
-        <span style="color: #d9534f; font-weight: bold;">● 寄り付き直後は値動きが激しい。落ち着いてからのほうがよい。</span>
+        RVOL×補正係数が<strong>1.5以上</strong>、且つ前日比プラスなら買いサイン。<br>
+        <span style="color: #d9534f;">● 寄り付き直後は落ち着いてからの判断を推奨。</span>
     </div>
 
     <div class="table-container">
@@ -155,8 +153,8 @@
     </div>
 
     <div class="tool-link">
-        <p>※これらのリスト作成で使用しているツールはこちら</p>
-        <a href="tool.html" class="btn">▶ 投資ツール一覧はこちら</a>
+        <p>※使用ツールはこちら</p>
+        <a href="tool.html" class="btn">▶ 投資ツール一覧</a>
     </div>
 </main>
 
@@ -166,33 +164,29 @@
 
 <script>
     async function loadCSV() {
-        const csvFilePath = 'data_push.csv'; // ファイルパスが正しいか確認してください
+        const csvFilePath = 'data_push.csv';
         const tableHeader = document.getElementById('table-header');
         const tableBody = document.getElementById('table-body');
         const lastLoadDisp = document.getElementById('last-load');
         const csvTimeDisp = document.getElementById('csv-update-time');
-        const errorDisplay = document.getElementById('error-display');
 
         try {
             const response = await fetch(csvFilePath, { cache: "no-store" });
-            if (!response.ok) throw new Error('CSVファイルが見つかりません (data_push.csv)');
+            if (!response.ok) return;
 
             const data = await response.text();
             const rows = data.split(/\r?\n/).filter(row => row.trim() !== '');
             
-            // 表示をリセット
             tableHeader.innerHTML = '';
             tableBody.innerHTML = '';
-            errorDisplay.textContent = '';
 
             let headerColCount = 0;
             let firstTablerow = true;
 
             rows.forEach((row) => {
-                // CSV内のUpdate:行を抽出して時刻表示に回す
                 if (row.includes("Update:")) {
                     const timeVal = row.replace("Update:", "").replace(/"/g, '').split(',')[0];
-                    csvTimeDisp.textContent = 'CSV最終更新(Excel出力): ' + timeVal;
+                    csvTimeDisp.textContent = 'データ更新: ' + timeVal;
                     return; 
                 }
 
@@ -218,16 +212,15 @@
                 }
             });
 
-            lastLoadDisp.textContent = '最終読み込み(ブラウザ): ' + new Date().toLocaleString();
+            lastLoadDisp.textContent = '最終更新: ' + new Date().toLocaleTimeString();
 
         } catch (error) {
-            errorDisplay.textContent = '【表示エラー】' + error.message;
-            console.error(error);
+            console.error('Fetch error:', error);
         }
     }
 
     loadCSV();
-    setInterval(loadCSV, 30000); // 30秒間隔でチェック
+    setInterval(loadCSV, 30000);
 </script>
 
 </body>
