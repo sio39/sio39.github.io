@@ -1,115 +1,183 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-5JCN1FB7ML');
-    </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-5JCN1FB7ML');
+</script>
+    
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIスコア解説 | AIスコア投資研究所</title>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>銘柄データ自動更新ボード</title>
-    <style>
-        /* --- 共通基本設定 --- */
-        :root {
-            --primary-color: #4da3ff;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #334155;
-            --text-sub: #64748b;
-            --border-color: #e2e8f0;
-        }
+<style>
+    /* 基本設定（サイト共通） */
+    :root {
+        --primary-color: #4da3ff;
+        --bg-color: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #334155;
+        --text-sub: #64748b;
+        --border-color: #e2e8f0;
+        --highlight-bg: #fff9eb;
+        --highlight-text: #b45309;
+    }
 
-        body { 
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; 
-            margin: 0; 
-            padding: 120px 10px 60px 10px; /* 左右の余白を詰め、ヘッダー分を空ける */
-            background-color: var(--bg-color); 
-            text-align: center;
-            max-width: 1100px; /* 表を広げるために少し拡大 */
-            margin: 0 auto;
-        }
+    body {
+        font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        line-height: 1.8;
+        color: var(--text-main);
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 120px 20px 60px 20px;
+        background-color: var(--bg-color);
+    }
 
-        /* --- ヘッダー (固定) --- */
-        .header {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(5px);
-            z-index: 9999;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 24px;
-            box-sizing: border-box;
-            text-align: left;
-        }
+    /* ヘッダー (固定) */
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+        box-sizing: border-box;
+    }
 
-        .logo {
-            font-size: 18px; font-weight: 800; color: var(--primary-color);
-            letter-spacing: -0.5px; text-decoration: none;
-        }
+    .logo {
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--primary-color);
+        letter-spacing: -0.5px;
+        text-decoration: none;
+    }
 
-        nav { display: flex; gap: 20px; }
-        nav a {
-            color: var(--text-sub); text-decoration: none;
-            font-weight: 600; font-size: 16px; transition: 0.2s;
-        }
-        nav a:hover, nav a.active { color: var(--primary-color); }
+    nav { display: flex; gap: 20px; }
+    nav a {
+        color: var(--text-sub);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        transition: 0.2s;
+    }
+    nav a:hover, nav a.active { color: var(--primary-color); }
 
-        .twitter-button {
-            background: #000; color: white; padding: 6px 16px;
-            border-radius: 30px; font-size: 13px; font-weight: bold;
-            text-decoration: none; display: flex; align-items: center; gap: 6px;
-        }
+    .twitter-button {
+        background: #000;
+        color: white;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
 
-        /* --- コンテンツエリア --- */
-        h1 { font-size: 1.5rem; color: #333; margin-top: 0; }
-        .load-time { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
-        .csv-time { font-size: 0.95rem; font-weight: bold; color: #d9534f; margin-bottom: 15px; }
+    /* メインタイトル */
+    h1 {
+        text-align: center;
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+        color: #1e293b;
+    }
 
-        /* --- テーブル：余白とサイズを調整 --- */
-        .table-container { 
-            width: 100%; 
-            background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            overflow-x: auto; border: 1px solid #ddd;
-            margin: 0 auto;
-        }
-        table { 
-            width: 100%; border-collapse: collapse; white-space: nowrap; 
-            table-layout: auto; 
-        }
-        th, td { 
-            border: 1px solid #e0e0e0; 
-            padding: 6px 4px; /* セル内の余白を大幅に削減 */
-            text-align: center; 
-            font-size: 0.82rem; /* 文字サイズを微減 */
-            letter-spacing: -0.3px; /* 文字間隔を少し詰める */
-        }
-        th { background-color: #444; color: white; font-weight: 600; }
-        tr:nth-child(even) { background-color: #f8f9fa; }
-        .error-msg { color: red; font-weight: bold; margin-top: 20px; }
+    .subtitle {
+        text-align: center;
+        color: var(--text-sub);
+        font-size: 0.9rem;
+        margin-bottom: 40px;
+    }
 
-        /* フッター */
-        .footer-note {
-            text-align: center; font-size: 0.8rem; color: #94a3b8;
-            margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color);
-        }
+    /* コンテンツカード */
+    .content-card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
+        position: relative;
+        overflow: hidden;
+    }
 
-        /* モバイル対応 */
-        @media (max-width: 600px) {
-            .header { justify-content: center; gap: 10px; padding: 10px; }
-            nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
-            body { padding-top: 165px; padding-left: 5px; padding-right: 5px; }
-            th, td { font-size: 0.75rem; padding: 8px 3px; }
-        }
-    </style>
+    .content-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+        background: var(--primary-color);
+    }
+
+    h2 {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+    }
+
+    /* テキスト・装飾 */
+    .card-text {
+        font-size: 0.95rem;
+        color: #475569;
+        margin-bottom: 15px;
+    }
+
+    ul {
+        padding-left: 20px;
+        margin-bottom: 15px;
+    }
+
+    li {
+        margin-bottom: 5px;
+        font-size: 0.95rem;
+    }
+
+    .highlight-box {
+        background-color: var(--highlight-bg);
+        border: 1px solid #fde68a;
+        color: var(--highlight-text);
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+    /* フッター */
+    .footer-note {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #94a3b8;
+        margin-top: 60px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* モバイル対応 */
+    @media (max-width: 600px) {
+        .header { justify-content: center; gap: 10px; padding: 10px; }
+        nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
+        body { padding-top: 160px; }
+    }
+</style>
 </head>
+
 <body>
 
 <header class="header">
@@ -118,91 +186,79 @@
         <a href="index.html">TOP</a>
         <a href="https://sio39.github.io/score.html">監視銘柄</a>
         <a href="tool.html">ツール</a>
-        <a href="realtime.html" class="active">リアルタイムボード</a>
+        <a href="realtime.html">リアルタイムボード</a>
     </nav>
     <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
 </header>
 
-    <h1>銘柄リアルタイムボード</h1>
-    
-    <div id="last-load" class="load-time">ブラウザ読み込み中...</div>
-    <div id="csv-update-time" class="csv-time">CSVデータ確認中...</div>
-    
-    <div id="error-display" class="error-msg"></div>
-<p>※自動更新作動中は５分毎に更新されます。<br>
-※20日平均出来高は手動入力。最新データではありません。
-<br>RVOL×補正係数が1.5以上。且つ前日比プラスなら買いサイン。<br>補正係数は「330÷経過分数」です。</p><br><p>寄り付き直後は値動きが激しい。落ち着いてからのほうがよい。</p><br>
-    <div class="table-container">
-        <table id="csv-table">
-            <thead id="table-header"></thead>
-            <tbody id="table-body"></tbody>
-        </table>
+<main>
+    <h1>AIスコアの考え方</h1>
+    <p class="subtitle">感情を排除し、数値で銘柄を評価する独自指標</p>
+
+    <div class="content-card">
+        <h2>コンセプト</h2>
+        <p class="card-text">
+            AIスコアは独自アルゴリズムにより銘柄の<strong>割安度・収益性・成長性</strong>を数値化し、感情に依存しない監視銘柄抽出を目的とした評価指標です。
+        </p>
     </div>
 
-    <script>
-        async function loadCSV() {
-            const csvFilePath = 'data_push.csv';
-            const tableHeader = document.getElementById('table-header');
-            const tableBody = document.getElementById('table-body');
-            const lastLoadDisp = document.getElementById('last-load');
-            const csvTimeDisp = document.getElementById('csv-update-time');
-            const errorDisplay = document.getElementById('error-display');
+    <div class="content-card">
+        <h2>A3スコア（基礎評価）</h2>
+        <ul>
+            <li>営業利益率</li>
+            <li>ROE（自己資本利益率）</li>
+            <li>PER（株価収益率）</li>
+        </ul>
+        <div class="highlight-box">
+            目標：120点以上でクリア
+        </div>
+        <p class="card-text" style="margin-top:10px;">
+            企業の収益体力が一定水準以上であるかを判断します。
+        </p>
+    </div>
 
-            try {
-                const response = await fetch(csvFilePath, { cache: "no-store" });
-                if (!response.ok) throw new Error('CSVファイルが見つかりません');
+    <div class="content-card">
+        <h2>A5スコア（成長評価）</h2>
+        <ul>
+            <li>売上成長率</li>
+            <li>ネットキャッシュ</li>
+        </ul>
+        <div class="highlight-box">
+            目標：ギャップ比2.5以上でクリア
+        </div>
+        <p class="card-text" style="margin-top:10px;">
+            市場評価との乖離があり、監視価値のある銘柄を抽出します。
+        </p>
+    </div>
 
-                const data = await response.text();
-                const rows = data.split(/\r?\n/).filter(row => row.trim() !== '');
-                
-                tableHeader.innerHTML = '';
-                tableBody.innerHTML = '';
-                errorDisplay.textContent = '';
+    <div class="content-card">
+        <h2>監視銘柄採用の条件</h2>
+        <p class="card-text">
+            以下のすべてのフィルターを通過した銘柄のみがリストに掲載されます。
+        </p>
+        <ul>
+            <li>A3スコア 条件通過</li>
+            <li>ギャップ比 条件通過</li>
+        </ul>
+    </div>
 
-                let headerColCount = 0;
+    <div class="content-card">
+        <h2>利用上の注意点</h2>
+        <p class="card-text">
+            決算直前や成長鈍化の兆候がある場合、スコアが高くても投資判断は保留とします。AIスコアは過去データに基づく評価であり、未来の構造変化を完全には反映しないためです。
+        </p>
+    </div>
 
-                rows.forEach((row, index) => {
-                    if (row.includes("Update:")) {
-                        const timeVal = row.replace("Update:", "").replace(/"/g, '').split(',')[0];
-                        csvTimeDisp.textContent = 'CSV最終更新(Excel出力): ' + timeVal;
-                        return;
-                    }
-
-                    const columns = row.split(','); 
-                    const tr = document.createElement('tr');
-
-                    if (index === 0) {
-                        headerColCount = columns.length;
-                        columns.forEach(col => {
-                            const th = document.createElement('th');
-                            th.textContent = col.replace(/"/g, '');
-                            tr.appendChild(th);
-                        });
-                        tableHeader.appendChild(tr);
-                    } else {
-                        for (let i = 0; i < headerColCount; i++) {
-                            const td = document.createElement('td');
-                            td.textContent = (columns[i] || "").replace(/"/g, '');
-                            tr.appendChild(td);
-                        }
-                        tableBody.appendChild(tr);
-                    }
-                });
-
-                lastLoadDisp.textContent = '最終読み込み(ブラウザ): ' + new Date().toLocaleString();
-
-            } catch (error) {
-                errorDisplay.textContent = '【エラー】' + error.message;
-            }
-        }
-
-        loadCSV();
-        setInterval(loadCSV, 30000);
-    </script>
-
-  <br><p>※これらのリスト作成で使用しているツールはこちら↓<br>
-<a href="tool.html">▶投資ツール一覧はこちら</a></p>
-<br>
+    <div class="content-card">
+        <h2>実戦での位置付け</h2>
+        <p class="card-text">
+            AIスコアは銘柄選定の「入口」に過ぎません。監視銘柄に追加された後、当日の出来高・RVOL・VWAPとの位置関係などを確認し、実際の資金流入状況を検証します。
+        </p>
+        <p class="card-text">
+            最終的な投資判断は市場環境と値動きの総合評価で行います。これらの実践的チェックプロセスは今後、詳細を解説予定です。
+        </p>
+    </div>
+</main>
 
 <footer class="footer-note">
     &copy; 2026 AIスコア投資研究所
