@@ -22,7 +22,7 @@ body{
     Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
     background:var(--bg);
     color:var(--text);
-    padding-top:120px; /* 固定ナビ分 */
+    padding-top:120px; /* 固定ナビ分追加 */
 }
 
 /* ===== 共通ナビ ===== */
@@ -76,13 +76,6 @@ nav a:hover{ color:#4da3ff; }
     gap:6px;
 }
 
-/* ===== コンテナ ===== */
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
-
 /* ===== カード ===== */
 .card{
     background:var(--panel);
@@ -102,6 +95,13 @@ nav a:hover{ color:#4da3ff; }
     padding:18px;
     border-radius:10px;
     margin-top:10px;
+}
+
+/* ===== コンテナ ===== */
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
 }
 
 /* ===== フッター ===== */
@@ -130,31 +130,82 @@ footer{
 
 <div class="container">
 
-    <div class="card">
-        <h2>おすすめ投資本①</h2>
-        <div class="desc-box">
-            投資の本質を学べる名著。長期視点での資産形成を学びたい方におすすめです。
-        </div>
-    </div>
+  <!-- 本のサンプル紹介 -->
+  <div class="card">
+  <h2>バフェット関連本</h2>
+  <div class="desc-box">
+    投資本はいろいろありますが、具体的手法で役立つものはほとんどありません。  
+    しかし、バフェット関連本だけは非常に具体的に投資手法が記載されており、  
+    実践的な参考になりました。できれば何冊か読むのがおすすめです。
 
-    <div class="card">
-        <h2>おすすめ投資本②</h2>
-        <div class="desc-box">
-            ファンダメンタル分析を深く理解したい方向け。実践的な内容が豊富です。
-        </div>
-    </div>
+    <ul style="margin-top:12px; padding-left:20px;">
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F5978574%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">バフェットの財務諸表を読む力</a>
+      </li>
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/11705267.df316b9b.11705268.e90429a6/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbookfan%2Fbk-4532149770%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
+          億万長者をめざすバフェットの銘柄選択術
+        </a>
+      </li>
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F16948003%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
+          バフェットのマネーマインド
+        </a>
+      </li>
+       <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F15344384%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">ウォーレン・バフェットはこうして最初の1億ドルを稼いだ 若き日のバフェットに学ぶ最強の投資哲学 [ グレン・アーノルド ]</a>
+      </li>
+    </ul>
+  </div>
+</div>
 
-    <div class="card">
-        <h2>おすすめ投資本③</h2>
-        <div class="desc-box">
-            メンタルとリスク管理を中心に解説。投資家として長期生存するための必読書。
-        </div>
-    </div>
+<div class="card">
+  <h2>お金持ち父さんシリーズ</h2>
+  <div class="desc-box">
+    マインド系の投資書ですが、資産運用やお金の考え方を具体的に学べます。  
+    特に初心者が「稼ぐ力」と「資産形成」の意識を身につけるのに最適です。
+
+    <ul style="margin-top:12px; padding-left:20px;">
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12488205%2F" target="_blank" rel="nofollow sponsored noopener">
+          金持ち父さん　貧乏父さん:アメリカの金持ちが教えてくれるお金の哲学
+        </a>
+      </li>
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/10c8cca6.b2c00bc9.10c8cca7.b8fbdcfa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frakutenkobo-ebooks%2F81d709853f483e8dada9e251dd3814fc%2F" target="_blank" rel="nofollow sponsored noopener">
+          金持ち父さんのキャッシュフロー・クワドラント　ーー経済的自由があなたのものになる
+        </a>
+      </li>
+      <li>
+       <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12686637%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">金持ち父さんの投資ガイド（入門編）</a>
+      </li>
+      <li>
+       <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12686638%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">金持ち父さんの投資ガイド（上級編）改訂版 [ ロバート・T．キヨサキ ]</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <h2>その他</h2>
+  <div class="desc-box">
+    以下は投資とは関係ないですが、おすすめの本です。
+
+    <ul style="margin-top:12px; padding-left:20px;">
+      <li>
+        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F15965832%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">MMT現代貨幣理論入門 [ L・ランダル・レイ ]</a>
+      </li>
+     MMTの基本概念から丁寧に解説された「バイブル」的入門書。
+
+貨幣の本質・政府支出・税金の役割など、理論の基礎をしっかり学べます。
+    </ul>
+  </div>
+</div>
 
 </div>
 
 <footer>
-&copy; 2026 AIスコア投資研究所
+© 2026 AIスコア投資研究所
 </footer>
 
 </body>
