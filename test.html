@@ -1,118 +1,156 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>本紹介 - AIスコア投資研究所</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5JCN1FB7ML');
+    </script>
 
-<style>
-:root{
-    --bg:#ffffff;
-    --panel:#f5f7fa;
-    --border:#dcdcdc;
-    --text:#222;
-    --accent:#4da3ff;
-    --twitter:#1da1f2;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>銘柄リアルタイムボード | AIスコア投資研究所</title>
 
-/* ===== 基本 ===== */
-body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
-    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    padding-top:120px; /* 固定ナビ分追加 */
-}
+    <style>
+        /* --- 共通基本設定 --- */
+        :root {
+            --primary-color: #4da3ff;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+        }
 
-/* ===== 共通ナビ ===== */
-.header{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    background:rgba(255,255,255,0.95);
-    backdrop-filter:blur(5px);
-    z-index:9999;
-    border-bottom:1px solid #e2e8f0;
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:space-between;
-    padding:12px 24px;
-    box-sizing:border-box;
-}
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            max-width: 900px; /* ボード用に少し広く設定 */
+            margin: 0 auto;
+            padding: 120px 20px 60px 20px;
+            background-color: var(--bg-color);
+            text-align: center;
+        }
 
-.logo{
-    font-size:18px;
-    font-weight:800;
-    color:#4da3ff;
-    letter-spacing:-0.5px;
-    text-decoration:none;
-}
+        /* --- ヘッダー (固定) --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            box-sizing: border-box;
+            text-align: left; /* ヘッダー内は左寄せ */
+        }
 
-nav{ display:flex; gap:20px; }
+        .logo {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
 
-nav a{
-    color:#64748b;
-    text-decoration:none;
-    font-weight:600;
-    font-size:16px;
-    transition:0.2s;
-}
+        nav { display: flex; gap: 20px; }
+        nav a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+        nav a:hover, nav a.active { color: var(--primary-color); }
 
-nav a:hover{ color:#4da3ff; }
+        .twitter-button {
+            background: #000;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-.twitter-button{
-    background:#000;
-    color:white;
-    padding:6px 16px;
-    border-radius:30px;
-    font-size:13px;
-    font-weight:bold;
-    text-decoration:none;
-    display:flex;
-    align-items:center;
-    gap:6px;
-}
+        /* --- リアルタイムボード用スタイル --- */
+        h1 { font-size: 1.5rem; color: #1e293b; margin-bottom: 10px; }
+        
+        .load-time { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+        .csv-time { font-size: 0.95rem; font-weight: bold; color: #d9534f; margin-bottom: 15px; }
 
-/* ===== カード ===== */
-.card{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:22px;
-    margin-bottom:20px;
-}
+        .info-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #475569;
+            text-align: left;
+            display: inline-block;
+            max-width: 100%;
+        }
 
-.card h2{
-    margin-top:0;
-}
+        .table-container { 
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+        
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: center; font-size: 0.85rem; }
+        th { background-color: #1e293b; color: white; font-weight: 600; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        
+        .error-msg { color: #e11d48; font-weight: bold; margin-top: 20px; }
 
-.desc-box{
-    background:#e8eef7;
-    border-left:4px solid var(--accent);
-    padding:18px;
-    border-radius:10px;
-    margin-top:10px;
-}
+        .btn-tool {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
 
-/* ===== コンテナ ===== */
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
-}
+        /* --- フッター --- */
+        .footer-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
 
-/* ===== フッター ===== */
-footer{
-    margin-top:50px;
-    text-align:center;
-    padding:20px;
-    border-top:1px solid var(--border);
-    color:#555;
-}
-</style>
+        /* モバイル対応 */
+        @media (max-width: 600px) {
+            .header { justify-content: center; gap: 10px; padding: 10px; }
+            nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
+            body { padding-top: 160px; }
+            h1 { font-size: 1.3rem; }
+        }
+    </style>
 </head>
 
 <body>
@@ -123,90 +161,6 @@ footer{
         <a href="index.html">TOP</a>
         <a href="https://sio39.github.io/score.html">監視銘柄</a>
         <a href="tool.html">ツール</a>
-        <a href="realtime.html">リアルタイムボード</a>
+        <a href="realtime.html" class="active">リアルタイムボード</a>
     </nav>
-    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
-</header>
-
-<div class="container">
-
-  <!-- 本のサンプル紹介 -->
-  <div class="card">
-  <h2>バフェット関連本</h2>
-  <div class="desc-box">
-    投資本はいろいろありますが、具体的手法で役立つものはほとんどありません。  
-    しかし、バフェット関連本だけは非常に具体的に投資手法が記載されており、  
-    実践的な参考になりました。できれば何冊か読むのがおすすめです。
-
-    <ul style="margin-top:12px; padding-left:20px;">
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F5978574%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">バフェットの財務諸表を読む力</a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/11705267.df316b9b.11705268.e90429a6/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbookfan%2Fbk-4532149770%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
-          億万長者をめざすバフェットの銘柄選択術
-        </a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F16948003%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener">
-          バフェットのマネーマインド
-        </a>
-      </li>
-       <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F15344384%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">ウォーレン・バフェットはこうして最初の1億ドルを稼いだ 若き日のバフェットに学ぶ最強の投資哲学 [ グレン・アーノルド ]</a>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<div class="card">
-  <h2>お金持ち父さんシリーズ</h2>
-  <div class="desc-box">
-    マインド系の投資書ですが、資産運用やお金の考え方を具体的に学べます。  
-    特に初心者が「稼ぐ力」と「資産形成」の意識を身につけるのに最適です。
-
-    <ul style="margin-top:12px; padding-left:20px;">
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12488205%2F" target="_blank" rel="nofollow sponsored noopener">
-          金持ち父さん　貧乏父さん:アメリカの金持ちが教えてくれるお金の哲学
-        </a>
-      </li>
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10c8cca6.b2c00bc9.10c8cca7.b8fbdcfa/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Frakutenkobo-ebooks%2F81d709853f483e8dada9e251dd3814fc%2F" target="_blank" rel="nofollow sponsored noopener">
-          金持ち父さんのキャッシュフロー・クワドラント　ーー経済的自由があなたのものになる
-        </a>
-      </li>
-      <li>
-       <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12686637%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">金持ち父さんの投資ガイド（入門編）</a>
-      </li>
-      <li>
-       <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F12686638%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">金持ち父さんの投資ガイド（上級編）改訂版 [ ロバート・T．キヨサキ ]</a>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<div class="card">
-  <h2>その他</h2>
-  <div class="desc-box">
-    以下は投資とは関係ないですが、おすすめの本です。
-
-    <ul style="margin-top:12px; padding-left:20px;">
-      <li>
-        <a href="https://hb.afl.rakuten.co.jp/ichiba/10ac0f59.6f2f3485.10ac0f5a.8816beca/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fbook%2F15965832%2F&link_type=text&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJ0ZXh0Iiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MCwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">MMT現代貨幣理論入門 [ L・ランダル・レイ ]</a>
-      </li>
-     MMTの基本概念から丁寧に解説された「バイブル」的入門書。
-
-貨幣の本質・政府支出・税金の役割など、理論の基礎をしっかり学べます。
-    </ul>
-  </div>
-</div>
-
-</div>
-
-<footer>
-© 2026 AIスコア投資研究所
-</footer>
-
-</body>
-</html>
+    <a href="
