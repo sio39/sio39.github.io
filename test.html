@@ -1,114 +1,133 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>銘柄データ自動更新ボード</title>
-    <style>
-        body { 
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; 
-            margin: 0; padding: 20px; background-color: #f0f2f5; text-align: center;
-        }
-        h1 { font-size: 1.5rem; color: #333; margin-top: 0; }
-        
-        /* 読み込み時間のスタイル（グレー） */
-        .load-time { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
-        
-        /* Excel更新日時のスタイル（赤） */
-        .csv-time { font-size: 0.95rem; font-weight: bold; color: #d9534f; margin-bottom: 15px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>本紹介 - AIスコア投資研究所</title>
 
-        .table-container { 
-            width: 70%; min-width: 350px; margin: 0 auto;
-            background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            overflow-x: auto; border: 1px solid #ddd;
-        }
-        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-        th, td { border: 1px solid #e0e0e0; padding: 10px 12px; text-align: center; font-size: 0.85rem; }
-        th { background-color: #444; color: white; }
-        tr:nth-child(even) { background-color: #f8f9fa; }
-        .error-msg { color: red; font-weight: bold; margin-top: 20px; }
-    </style>
+<style>
+:root{
+    --bg:#ffffff;
+    --panel:#f5f7fa;
+    --border:#dcdcdc;
+    --text:#222;
+    --accent:#4da3ff;
+    --twitter:#1da1f2;
+}
+
+/* ===== 基本 ===== */
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
+    Roboto,"Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding-top:120px; /* 固定ナビ分追加 */
+}
+
+/* ===== 共通ナビ ===== */
+.header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(5px);
+    z-index:9999;
+    border-bottom:1px solid #e2e8f0;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 24px;
+    box-sizing:border-box;
+}
+
+.logo{
+    font-size:18px;
+    font-weight:800;
+    color:#4da3ff;
+    letter-spacing:-0.5px;
+    text-decoration:none;
+}
+
+nav{ display:flex; gap:20px; }
+
+nav a{
+    color:#64748b;
+    text-decoration:none;
+    font-weight:600;
+    font-size:16px;
+    transition:0.2s;
+}
+
+nav a:hover{ color:#4da3ff; }
+
+.twitter-button{
+    background:#000;
+    color:white;
+    padding:6px 16px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:bold;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+/* ===== カード ===== */
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:22px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    margin-top:0;
+}
+
+.desc-box{
+    background:#e8eef7;
+    border-left:4px solid var(--accent);
+    padding:18px;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+/* ===== コンテナ ===== */
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+/* ===== フッター ===== */
+footer{
+    margin-top:50px;
+    text-align:center;
+    padding:20px;
+    border-top:1px solid var(--border);
+    color:#555;
+}
+</style>
 </head>
+
 <body>
 
-    <h1>銘柄リアルタイムボード</h1>
-    
-    <div id="last-load" class="load-time">ブラウザ読み込み中...</div>
-    <div id="csv-update-time" class="csv-time">CSVデータ確認中...</div>
-    
-    <div id="error-display" class="error-msg"></div>
-<p>※自動更新作動中は５分毎に更新されます。<br>
-※20平均出来高は手動入力。最新データではありません。
-<br>RVOL×補正係数が1.5を超えた場合を買いサインとしています。<br>補正係数は「330÷経過分数」が本来の計算式ですが、計算を簡略化するため「300÷経過分数」を使用しています。</p><br>
-    <div class="table-container">
-        <table id="csv-table">
-            <thead id="table-header"></thead>
-            <tbody id="table-body"></tbody>
-        </table>
-    </div>
+<header class="header">
+    <a href="index.html" class="logo">AIスコア投資研究所</a>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="https://sio39.github.io/score.html">監視銘柄</a>
+        <a href="tool.html">ツール</a>
+        <a href="realtime.html">リアルタイムボード</a>
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+</header>
 
-    <script>
-        async function loadCSV() {
-            const csvFilePath = 'data_push.csv';
-            const tableHeader = document.getElementById('table-header');
-            const tableBody = document.getElementById('table-body');
-            const lastLoadDisp = document.getElementById('last-load');
-            const csvTimeDisp = document.getElementById('csv-update-time');
-            const errorDisplay = document.getElementById('error-display');
+<div class="container">
 
-            try {
-                // キャッシュを無視して最新を取得
-                const response = await fetch(csvFilePath, { cache: "no-store" });
-                if (!response.ok) throw new Error('CSVファイルが見つかりません');
-
-                const data = await response.text();
-                const rows = data.split(/\r?\n/).filter(row => row.trim() !== '');
-                
-                tableHeader.innerHTML = '';
-                tableBody.innerHTML = '';
-                errorDisplay.textContent = '';
-
-                let headerColCount = 0;
-
-                rows.forEach((row, index) => {
-                    // CSV内のUpdate:行を抽出
-                    if (row.includes("Update:")) {
-                        const timeVal = row.replace("Update:", "").replace(/"/g, '').split(',')[0];
-                        csvTimeDisp.textContent = 'CSV最終更新(Excel出力): ' + timeVal;
-                        return;
-                    }
-
-                    const columns = row.split(','); 
-                    const tr = document.createElement('tr');
-
-                    if (index === 0) {
-                        headerColCount = columns.length;
-                        columns.forEach(col => {
-                            const th = document.createElement('th');
-                            th.textContent = col.replace(/"/g, '');
-                            tr.appendChild(th);
-                        });
-                        tableHeader.appendChild(tr);
-                    } else {
-                        for (let i = 0; i < headerColCount; i++) {
-                            const td = document.createElement('td');
-                            td.textContent = (columns[i] || "").replace(/"/g, '');
-                            tr.appendChild(td);
-                        }
-                        tableBody.appendChild(tr);
-                    }
-                });
-
-                // ブラウザが最後に読み込んだ時刻を更新
-                lastLoadDisp.textContent = '最終読み込み(ブラウザ): ' + new Date().toLocaleString();
-
-            } catch (error) {
-                errorDisplay.textContent = '【エラー】' + error.message;
-            }
-        }
-
-        loadCSV();
-        setInterval(loadCSV, 30000);
-    </script>
-</body>
-</html>
+<!-- ここから下は元の内容そのまま -->
