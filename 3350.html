@@ -17,96 +17,191 @@
         /* --- 共通基本設定 --- */
         :root {
             --primary-color: #4da3ff;
+            --primary-dark: #3b82f6;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #334155;
+            --text-main: #1e293b;
             --text-sub: #64748b;
             --border-color: #e2e8f0;
+            --highlight: #dcfce7;
         }
 
         body {
             font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
             line-height: 1.8;
             color: var(--text-main);
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
-            padding: 120px 20px 60px 20px;
+            padding: 120px 20px 80px 20px;
             background-color: var(--bg-color);
+            -webkit-font-smoothing: antialiased;
         }
 
         /* --- ヘッダー (固定) --- */
         .header {
             position: fixed;
             top: 0; left: 0; width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
             z-index: 9999;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 24px;
+            padding: 14px 24px;
             box-sizing: border-box;
         }
 
         .logo {
-            font-size: 18px; font-weight: 800; color: var(--primary-color);
+            font-size: 20px; font-weight: 800; color: var(--primary-color);
             letter-spacing: -0.5px; text-decoration: none;
         }
 
-        nav { display: flex; gap: 20px; }
+        nav { display: flex; gap: 24px; }
         nav a {
             color: var(--text-sub); text-decoration: none;
-            font-weight: 600; font-size: 16px; transition: 0.2s;
+            font-weight: 600; font-size: 15px; transition: 0.3s;
         }
         nav a:hover { color: var(--primary-color); }
 
         .twitter-button {
-            background: #000; color: white; padding: 6px 16px;
+            background: #000; color: white; padding: 8px 18px;
             border-radius: 30px; font-size: 13px; font-weight: bold;
-            text-decoration: none; display: flex; align-items: center; gap: 6px;
+            text-decoration: none; transition: 0.3s;
         }
 
         /* --- コンテンツレイアウト --- */
-        h1 { font-size: 1.6rem; color: #1e293b; text-align: center; margin-bottom: 40px; }
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header span {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 0.1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--text-main);
+            margin-top: 10px;
+            letter-spacing: -0.5px;
+        }
 
         .analysis-card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid var(--border-color);
             position: relative;
-            overflow: hidden;
         }
 
-        .analysis-card::before {
-            content: ""; position: absolute; top: 0; left: 0;
-            width: 6px; height: 100%; background: var(--primary-color);
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        h2 { font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-top: 0; margin-bottom: 15px; }
-        
-        .section-title { font-weight: bold; color: var(--primary-color); margin-bottom: 5px; display: block; }
-        
-        p { margin-bottom: 15px; }
-        ul { padding-left: 20px; margin-bottom: 15px; }
-        li { margin-bottom: 5px; }
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 5px;
+            height: 26px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .important-line {
+            background: linear-gradient(transparent 70%, var(--highlight) 70%);
+            font-weight: bold;
+            padding: 0 2px;
+        }
+
+        .point-box {
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .point-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        /* --- テーブルデザイン --- */
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .analysis-table th, .analysis-table td {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            text-align: left;
+        }
+
+        .analysis-table th {
+            background-color: #f8fafc;
+            color: var(--text-sub);
+            font-weight: bold;
+        }
+
+        .impact-high {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        /* --- 結論カード --- */
+        .conclusion-card {
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+            color: #ffffff;
+            border: none;
+        }
+
+        .conclusion-card h2 {
+            color: #ffffff;
+        }
+
+        .conclusion-card h2::before {
+            background: var(--primary-color);
+        }
+
+        .conclusion-card p {
+            color: #cbd5e1;
+        }
 
         /* --- フッター --- */
         .footer-note {
-            text-align: center; font-size: 0.8rem; color: #94a3b8;
-            margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 80px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
         }
 
         /* モバイル対応 */
         @media (max-width: 600px) {
-            .header { justify-content: center; gap: 10px; padding: 10px; }
-            nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
-            body { padding-top: 160px; }
-            h1 { font-size: 1.4rem; }
+            .header { justify-content: center; gap: 10px; padding: 12px; }
+            nav { order: 3; width: 100%; justify-content: center; gap: 16px; margin-top: 8px; }
+            body { padding-top: 180px; }
+            h1 { font-size: 1.6rem; }
+            .analysis-card { padding: 25px; }
+            .analysis-table th, .analysis-table td { padding: 10px; font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -125,106 +220,111 @@
 </header>
 
 <main>
-    <h1>【個別銘柄分析】メタプラの構造理解</h1>
+    <div class="page-header">
+        <span>STOCK ANALYSIS</span>
+        <h1>【個別銘柄分析】メタプラの構造理解</h1>
+    </div>
 
     <div class="analysis-card">
         <h2>1. 私の立場</h2>
-        <p>メタプラは、<br>
-        「ビットコインを活用する財務戦略企業」というよりも、<br>
-        市場を介してビットコインに連動する“代替ビットコインETF”<br>
-        と捉えている。</p>
-        <p>企業という形式を取っているが、<br>
-        株価変動の主因は本業ではなくビットコインである。</p>
+        <p>
+            メタプラネットは、「ビットコインを活用する財務戦略企業」というよりも、<br>
+            市場を介してビットコインに連動する<span class="important-line">“代替ビットコインETF”</span>であると捉えています。
+        </p>
+        <p>企業という形式を取っていますが、株価変動の主因は本業ではなく「ビットコイン」そのものです。</p>
     </div>
 
     <div class="analysis-card">
         <h2>2. なぜ代替ETFと見るのか</h2>
-        <p>メタプラの株価は、<br>
-        ・ビットコイン価格<br>
-        ・BTC取得IR<br>
-        ・増資発表<br>
-        に大きく反応する。</p>
-        <p>一方で、本体事業の業績変動が株価に与える影響は限定的である。<br>
-        つまり、<br>
-        株価の主因は企業収益ではなく、ビットコイン要因。<br>
-        この構造はETF的である。</p>
+        <p>メタプラの株価は、以下の要素に極めて敏感に反応します。</p>
+        <div class="point-box">
+            <ul>
+                <li><strong>ビットコイン価格の推移</strong></li>
+                <li><strong>BTC取得に関するIR（プレスリリース）</strong></li>
+                <li><strong>ビットコイン取得を目的とした増資発表</strong></li>
+            </ul>
+        </div>
+        <p>
+            一方で、本体事業の業績変動が株価に与える影響は限定的です。つまり、<span class="important-line">株価の主因は企業収益ではなく「ビットコイン要因」</span>であり、この構造こそが極めてETF的です。
+        </p>
     </div>
 
     <div class="analysis-card">
         <h2>3. 株式発行と株数膨張の構造</h2>
-        <p>メタプラはビットコイン取得のために株式発行を行う。<br>
-        結果として、<br>
-        ・発行済株式数は大きく増加<br>
-        ・1株あたりのBPSは薄まりやすい<br>
-        ・企業収益による1株あたり利益のインパクトは小さくなる</p>
-        <p>大量発行された株式構造では、<br>
-        本業収益の増減よりも、<br>
-        保有ビットコインの評価変動の方が株価に与える影響が大きくなる。<br>
-        ここが重要。</p>
+        <p>メタプラはビットコイン取得のために株式発行を積極的に行います。その結果として以下の現象が生じます。</p>
+        <ul>
+            <li>発行済株式数が大きく増加する</li>
+            <li>1株あたりの純資産（BPS）が薄まりやすい</li>
+            <li>企業収益による「1株あたり利益」のインパクトが相対的に小さくなる</li>
+        </ul>
+        <p>大量発行された株式構造下では、本業収益の増減よりも、<span class="important-line">保有ビットコインの評価変動が株価に与える影響が支配的</span>になります。ここが分析の出発点です。</p>
     </div>
 
     <div class="analysis-card">
         <h2>4. 1株あたり視点で見る必要性</h2>
-        <p>メタプラを評価する場合、<br>
-        「会社全体」ではなく<br>
-        1株あたりで何が起きているかを見る必要がある。</p>
-        <ul>
-            <li>1株あたりBTC保有量</li>
-            <li>1株あたり純資産</li>
-            <li>増資価格水準</li>
-        </ul>
-        <p>株式数が急増する構造では、<br>
-        単純な時価総額比較は意味を持ちにくい。</p>
+        <p>メタプラを評価する場合、「会社全体」ではなく<span class="important-line">「1株あたり」で何が起きているか</span>を見る必要があります。株式数が急増する構造では、単純な時価総額比較は意味を持ちにくいためです。</p>
+        <div class="point-box">
+            <strong>チェックすべき最重要項目：</strong>
+            <ul>
+                <li>1株あたりBTC保有量</li>
+                <li>1株あたり純資産</li>
+                <li>増資価格の水準（既存株主にとっての妥当性）</li>
+            </ul>
+        </div>
     </div>
 
     <div class="analysis-card">
         <h2>5. mNAVとプレミアム</h2>
-        <p>mNAVが1を超える局面では、<br>
-        市場はビットコイン価値以上のプレミアムを付けている。</p>
-        <p>この状態で増資を行えば、<br>
-        理論上は<br>
-        1株あたりBTCが増える可能性がある。</p>
-        <p>しかし、mNAVが低い局面での増資は<br>
-        既存株主に不利となる。</p>
-        <p>重要なのは、<br>
-        「増資の善悪」ではなく<br>
-        どの水準で発行しているか。</p>
+        <p>mNAV（修正純資産価値）が1を超える局面では、市場はビットコインの裏付け価値以上の「プレミアム」を付けています。</p>
+        <p>このプレミアム状態で増資を行えば、理論上は<span class="important-line">既存株主の「1株あたりBTC保有量」を増加させる</span>ことが可能です。しかし、mNAVが低い局面での増資は既存株主にとって不利に働きます。</p>
+        <p>重要なのは「増資の善悪」そのものではなく、<strong>「どの水準（プレミアム/ディスカウント）で発行しているか」</strong>にあります。</p>
     </div>
 
     <div class="analysis-card">
         <h2>6. 本体要因 vs ビットコイン要因</h2>
-        <p><span class="section-title">■ 本体要因</span>
-        ・本業収益<br>
-        ・事業拡大<br>
-        ・営業利益</p>
-        
-        <p><span class="section-title">■ ビットコイン要因</span>
-        ・BTC価格<br>
-        ・取得枚数<br>
-        ・評価益<br>
-        ・市場センチメント</p>
-        
-        <p>現状では、<br>
-        ビットコイン要因の影響が圧倒的に大きい。<br>
-        そのため私は、<br>
-        メタプラを「企業成長株」としてではなく、<br>
-        「市場を通じたビットコイン連動株」として分析している。</p>
+        <p>現状のメタプラにおける、株価変動因子の寄与度を整理します。</p>
+        <table class="analysis-table">
+            <thead>
+                <tr>
+                    <th>カテゴリ</th>
+                    <th>具体的な要因</th>
+                    <th>株価への影響</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>本体要因</strong></td>
+                    <td>本業収益、事業拡大、営業利益</td>
+                    <td>限定的</td>
+                </tr>
+                <tr>
+                    <td><strong>ビットコイン要因</strong></td>
+                    <td>BTC価格、取得枚数、評価益、市場センチメント</td>
+                    <td class="impact-high">極めて大きい</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>
+            私はメタプラを「企業成長株」としてではなく、<span class="important-line">「市場を通じたビットコイン・レバレッジ銘柄」</span>として分析しています。
+        </p>
     </div>
 
-    <div class="analysis-card">
+    <div class="analysis-card conclusion-card">
         <h2>7. 結論</h2>
-        <p>メタプラは、<br>
-        企業の形をした<br>
-        ビットコイン価格連動構造を持つ銘柄である。</p>
-        <p>評価する際は、<br>
-        ・BTC価格<br>
-        ・1株あたりBTC量<br>
-        ・mNAV<br>
-        ・発行価格水準<br>
-        を中心に見るべきである。</p>
-        <p>本体業績よりも、<br>
-        ビットコイン要因の変動が株価に与える影響が大きい。<br>
-        これが私の基本スタンスである。</p>
+        <p>
+            メタプラは、企業の形をした<strong>「ビットコイン価格連動構造」</strong>を持つ銘柄です。評価する際は、以下の指標を軸に据えるべきです。
+        </p>
+        <div style="margin: 20px 0;">
+            <ul style="color: #ffffff;">
+                <li>BTC価格のトレンド</li>
+                <li>1株あたりBTC保有量（BTC Yield）</li>
+                <li>mNAVの水準</li>
+                <li>新株の発行価格水準</li>
+            </ul>
+        </div>
+        <p>
+            本体業績以上に、ビットコイン要因の変動が株価を決定づける。これが私の基本スタンスです。
+        </p>
     </div>
 </main>
 
