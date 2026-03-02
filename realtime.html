@@ -1,212 +1,146 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-5JCN1FB7ML');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>銘柄データ自動更新ボード</title>
     <style>
-        /* --- 共通基本設定 --- */
+        /* --- 全体の見た目 --- */
         :root {
-            --primary-color: #4da3ff;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #334155;
-            --text-sub: #64748b;
+            --primary-color: #007bff;
+            --bg-color: #f4f7f9;
             --border-color: #e2e8f0;
+            --accent-yellow: #fff9e6; 
+            --highlight-orange: #ff9800;
         }
 
         body { 
-            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif; 
-            margin: 0; 
-            padding: 120px 10px 60px 10px; /* 左右の余白を詰め、ヘッダー分を空ける */
-            background-color: var(--bg-color); 
-            text-align: center;
-            max-width: 1100px; /* 表を広げるために少し拡大 */
-            margin: 0 auto;
+            font-family: "Helvetica Neue", Arial, "Hiragino Sans", sans-serif; 
+            margin: 0; padding: 140px 10px 60px 10px; 
+            background-color: var(--bg-color); text-align: center; color: #334155;
         }
 
-        /* --- ヘッダー (固定) --- */
+        /* --- 固定ヘッダー --- */
         .header {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(5px);
-            z-index: 9999;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 24px;
-            box-sizing: border-box;
-            text-align: left;
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
+            z-index: 9999; border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 24px; box-sizing: border-box;
         }
 
-        .logo {
-            font-size: 18px; font-weight: 800; color: var(--primary-color);
-            letter-spacing: -0.5px; text-decoration: none;
-        }
-
+        .logo { font-size: 18px; font-weight: 800; color: var(--primary-color); text-decoration: none; }
         nav { display: flex; gap: 20px; }
-        nav a {
-            color: var(--text-sub); text-decoration: none;
-            font-weight: 600; font-size: 16px; transition: 0.2s;
-        }
-        nav a:hover, nav a.active { color: var(--primary-color); }
+        nav a { color: #64748b; text-decoration: none; font-weight: 600; }
+        nav a.active { color: var(--primary-color); }
 
-        .twitter-button {
-            background: #000; color: white; padding: 6px 16px;
-            border-radius: 30px; font-size: 13px; font-weight: bold;
-            text-decoration: none; display: flex; align-items: center; gap: 6px;
-        }
+        /* --- テキストエリア --- */
+        h1 { font-size: 1.5rem; margin-bottom: 10px; }
+        .csv-time { font-size: 1rem; font-weight: bold; color: #d9534f; margin-bottom: 20px; }
+        .info-box { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: inline-block; border: 1px solid #e2e8f0; font-size: 0.9rem; }
 
-        /* --- コンテンツエリア --- */
-        h1 { font-size: 1.5rem; color: #333; margin-top: 0; }
-        .load-time { font-size: 0.8rem; color: #888; margin-bottom: 5px; }
-        .csv-time { font-size: 0.95rem; font-weight: bold; color: #d9534f; margin-bottom: 15px; }
-
-        /* --- テーブル：余白とサイズを調整 --- */
+        /* --- テーブル設定 --- */
         .table-container { 
-            width: 100%; 
-            background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%; max-width: 1100px; margin: 0 auto;
+            background: white; border-radius: 12px; shadow: 0 4px 15px rgba(0,0,0,0.05);
             overflow-x: auto; border: 1px solid #ddd;
-            margin: 0 auto;
-        }
-        table { 
-            width: 100%; border-collapse: collapse; white-space: nowrap; 
-            table-layout: auto; 
-        }
-        th, td { 
-            border: 1px solid #e0e0e0; 
-            padding: 6px 4px; /* セル内の余白を大幅に削減 */
-            text-align: center; 
-            font-size: 0.82rem; /* 文字サイズを微減 */
-            letter-spacing: -0.3px; /* 文字間隔を少し詰める */
-        }
-        th { background-color: #444; color: white; font-weight: 600; }
-        tr:nth-child(even) { background-color: #f8f9fa; }
-        .error-msg { color: red; font-weight: bold; margin-top: 20px; }
-
-        /* フッター */
-        .footer-note {
-            text-align: center; font-size: 0.8rem; color: #94a3b8;
-            margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color);
         }
 
-        /* モバイル対応 */
-        @media (max-width: 600px) {
-            .header { justify-content: center; gap: 10px; padding: 10px; }
-            nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
-            body { padding-top: 165px; padding-left: 5px; padding-right: 5px; }
-            th, td { font-size: 0.75rem; padding: 8px 3px; }
-        }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; font-variant-numeric: tabular-nums; }
+        th, td { padding: 12px 10px; border-bottom: 1px solid #eee; text-align: center; font-size: 0.85rem; }
+        th { background-color: #444; color: white; }
+
+        /* J列(10番目)とK列(11番目)の強調 */
+        td:nth-child(10), td:nth-child(11) { background-color: var(--accent-yellow); font-weight: bold; color: #d9534f; }
+        th:nth-child(10), th:nth-child(11) { background-color: var(--highlight-orange); }
+
+        /* 「買い」セルの特別色 */
+        .buy-cell { background-color: #d9534f !important; color: white !important; font-weight: bold; border-radius: 4px; }
+
+        tr:nth-child(even) { background-color: #fafafa; }
+        tr:hover { background-color: #f1f8ff; }
     </style>
 </head>
 <body>
 
 <header class="header">
-    <a href="index.html" class="logo">AIスコア投資研究所</a>
+    <a href="#" class="logo">AIスコア投資研究所</a>
     <nav>
-        <a href="index.html">TOP</a>
-        <a href="https://sio39.github.io/score.html">監視銘柄</a>
-        <a href="tool.html">ツール</a>
-        <a href="realtime.html" class="active">リアルタイムボード</a>
+        <a href="#">TOP</a>
+        <a href="#" class="active">リアルタイムボード</a>
     </nav>
-    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
 </header>
 
-    <h1>銘柄リアルタイムボード</h1>
-    
-    <div id="last-load" class="load-time">ブラウザ読み込み中...</div>
-    <div id="csv-update-time" class="csv-time">CSVデータ確認中...</div>
-    
-    <div id="error-display" class="error-msg"></div>
-<p>※自動更新作動中は５分毎に更新されます。<br>
-※20日平均出来高は手動入力。最新データではありません。
-<br>RVOL×補正係数が1.5以上。且つ前日比プラスなら買いサイン。<br>補正係数は「330÷経過分数」です。</p><br><p>寄り付き直後は値動きが激しい。落ち着いてからのほうがよい。</p><br>
-    <div class="table-container">
-        <table id="csv-table">
-            <thead id="table-header"></thead>
-            <tbody id="table-body"></tbody>
-        </table>
-    </div>
+<h1>銘柄リアルタイムボード</h1>
+<div id="csv-update-time" class="csv-time">CSVデータ読み込み中...</div>
 
-    <script>
-        async function loadCSV() {
-            const csvFilePath = 'data_push.csv';
+<div class="info-box">
+    5分ごとに自動更新 🌸 <strong>J列・K列</strong>が重要データです！
+</div>
+
+<div class="table-container">
+    <table id="csv-table">
+        <thead id="table-header"></thead>
+        <tbody id="table-body"></tbody>
+    </table>
+</div>
+
+<script>
+    async function loadCSV() {
+        const csvFilePath = 'data_push.csv';
+        try {
+            const response = await fetch(csvFilePath, { cache: "no-store" });
+            if (!response.ok) throw new Error('CSVがまだ準備できていないようです');
+
+            const data = await response.text();
+            const rows = data.split(/\r?\n/).filter(row => row.trim() !== '');
+            
             const tableHeader = document.getElementById('table-header');
             const tableBody = document.getElementById('table-body');
-            const lastLoadDisp = document.getElementById('last-load');
             const csvTimeDisp = document.getElementById('csv-update-time');
-            const errorDisplay = document.getElementById('error-display');
 
-            try {
-                const response = await fetch(csvFilePath, { cache: "no-store" });
-                if (!response.ok) throw new Error('CSVファイルが見つかりません');
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
 
-                const data = await response.text();
-                const rows = data.split(/\r?\n/).filter(row => row.trim() !== '');
-                
-                tableHeader.innerHTML = '';
-                tableBody.innerHTML = '';
-                errorDisplay.textContent = '';
+            let headerColCount = 0;
 
-                let headerColCount = 0;
+            rows.forEach((row, index) => {
+                // Update行の処理
+                if (row.includes("Update:")) {
+                    csvTimeDisp.textContent = 'CSV更新: ' + row.replace(/"/g, '').replace("Update:", "");
+                    return;
+                }
 
-                rows.forEach((row, index) => {
-                    if (row.includes("Update:")) {
-                        const timeVal = row.replace("Update:", "").replace(/"/g, '').split(',')[0];
-                        csvTimeDisp.textContent = 'CSV最終更新(Excel出力): ' + timeVal;
-                        return;
+                const columns = row.split(',');
+                const tr = document.createElement('tr');
+
+                if (index === 0) {
+                    headerColCount = columns.length;
+                    columns.forEach(col => {
+                        const th = document.createElement('th');
+                        th.textContent = col.replace(/"/g, '');
+                        tr.appendChild(th);
+                    });
+                    tableHeader.appendChild(tr);
+                } else {
+                    for (let i = 0; i < headerColCount; i++) {
+                        const td = document.createElement('td');
+                        let val = (columns[i] || "").replace(/"/g, '');
+                        td.textContent = val;
+                        if (val === "買い") { td.classList.add('buy-cell'); }
+                        tr.appendChild(td);
                     }
-
-                    const columns = row.split(','); 
-                    const tr = document.createElement('tr');
-
-                    if (index === 0) {
-                        headerColCount = columns.length;
-                        columns.forEach(col => {
-                            const th = document.createElement('th');
-                            th.textContent = col.replace(/"/g, '');
-                            tr.appendChild(th);
-                        });
-                        tableHeader.appendChild(tr);
-                    } else {
-                        for (let i = 0; i < headerColCount; i++) {
-                            const td = document.createElement('td');
-                            td.textContent = (columns[i] || "").replace(/"/g, '');
-                            tr.appendChild(td);
-                        }
-                        tableBody.appendChild(tr);
-                    }
-                });
-
-                lastLoadDisp.textContent = '最終読み込み(ブラウザ): ' + new Date().toLocaleString();
-
-            } catch (error) {
-                errorDisplay.textContent = '【エラー】' + error.message;
-            }
+                    tableBody.appendChild(tr);
+                }
+            });
+        } catch (e) {
+            document.getElementById('csv-update-time').textContent = e.message;
         }
+    }
 
-        loadCSV();
-        setInterval(loadCSV, 30000);
-    </script>
-
-  <br><p>※これらのリスト作成で使用しているツールはこちら↓<br>
-<a href="tool.html">▶投資ツール一覧はこちら</a></p>
-<br>
-
-<footer class="footer-note">
-    &copy; 2026 AIスコア投資研究所
-</footer>
+    loadCSV();
+    setInterval(loadCSV, 30000);
+</script>
 
 </body>
 </html>
