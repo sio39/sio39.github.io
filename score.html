@@ -14,145 +14,198 @@
 <title>監視銘柄リスト | AIスコア投資研究所</title>
 
 <style>
-    /* 基本設定（サイト共通） */
+    /* 全体の色の設定 */
     :root {
-        --primary-color: #4da3ff;
-        --bg-color: #f8fafc;
-        --card-bg: #ffffff;
-        --text-main: #334155;
-        --text-sub: #64748b;
-        --border-color: #e2e8f0;
-        --accent-pale: #e7f3ff;
+        --primary-color: #4da3ff;      /* さわやかな青 */
+        --accent-color: #ff7eb3;       /* 柔らかいピンク（アクセント） */
+        --bg-color: #f0f4f8;           /* 落ち着いた背景色 */
+        --card-bg: #ffffff;            /* 白いカード */
+        --text-main: #2d3748;          /* メインの文字色 */
+        --text-sub: #718096;           /* 補足の文字色 */
+        --border-color: #e2e8f0;       /* 境界線 */
+        --notice-bg: #edf2ff;          /* 注意事項の背景 */
     }
 
     body {
         font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-        line-height: 1.7;
+        line-height: 1.8;
         color: var(--text-main);
-        max-width: 1000px; /* スプレッドシート用に幅を広く設定 */
+        max-width: 1000px;
         margin: 0 auto;
-        padding: 120px 20px 60px 20px;
+        padding: 100px 20px 60px 20px;
         background-color: var(--bg-color);
     }
 
-    /* ヘッダー (共通固定デザイン) */
+    /* ヘッダーのデザイン */
     .header {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(5px);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
         z-index: 9999;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 2px solid var(--primary-color);
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 24px;
+        padding: 15px 40px;
         box-sizing: border-box;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
     .logo {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 800;
         color: var(--primary-color);
-        letter-spacing: -0.5px;
         text-decoration: none;
+        letter-spacing: 0.5px;
     }
 
-    nav { display: flex; gap: 20px; }
+    nav { display: flex; gap: 25px; }
     nav a {
         color: var(--text-sub);
         text-decoration: none;
         font-weight: 600;
-        font-size: 16px;
-        transition: 0.2s;
+        font-size: 15px;
+        transition: 0.3s;
+        position: relative;
     }
-    nav a:hover, nav a.active { color: var(--primary-color); }
+    nav a:hover, nav a.active { 
+        color: var(--primary-color);
+    }
+    nav a.active::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--primary-color);
+        border-radius: 2px;
+    }
 
     .twitter-button {
-        background: #000;
+        background: #1da1f2;
         color: white;
-        padding: 6px 16px;
-        border-radius: 30px;
+        padding: 8px 20px;
+        border-radius: 50px;
         font-size: 13px;
         font-weight: bold;
         text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        transition: 0.3s;
     }
+    .twitter-button:hover { opacity: 0.8; transform: translateY(-1px); }
 
-    /* メインタイトル */
-    h1 {
+    /* タイトルセクション */
+    .title-section {
         text-align: center;
-        font-size: 1.6rem;
-        margin-bottom: 30px;
-        color: #1e293b;
+        margin-bottom: 40px;
+    }
+    h1 {
+        font-size: 2rem;
+        color: #1a202c;
+        margin-bottom: 10px;
+        position: relative;
+        display: inline-block;
+    }
+    h1::after {
+        content: '';
+        display: block;
+        width: 60%;
+        height: 4px;
+        background: var(--primary-color);
+        margin: 8px auto 0;
+        border-radius: 2px;
+        opacity: 0.3;
     }
 
-    /* 注意事項カード */
+    /* 注意事項のカード */
     .notice-card {
-        background: var(--accent-pale);
-        border-radius: 12px;
-        padding: 20px 24px;
-        margin-bottom: 30px;
-        border: 1px solid #d0e7ff;
-        position: relative;
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 25px 30px;
+        margin-bottom: 40px;
+        border-left: 6px solid var(--primary-color);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
     .notice-title {
-        display: block;
+        display: flex;
+        align-items: center;
         font-weight: 800;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         color: var(--primary-color);
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     .notice-card ul {
         margin: 0;
-        padding-left: 1.2rem;
-        font-size: 0.85rem;
-        color: #475569;
+        padding-left: 1.5rem;
+        font-size: 0.95rem;
     }
 
     .notice-card li {
-        margin-bottom: 4px;
+        margin-bottom: 10px;
+        list-style-type: "✔";
+        padding-left: 10px;
     }
 
-    /* スプレッドシート埋め込みエリア */
+    /* 強調テキスト */
+    .highlight {
+        color: #e53e3e;
+        font-weight: bold;
+        background: linear-gradient(transparent 70%, #fff3f3 70%);
+    }
+
+    /* スプレッドシート容器 */
     .spreadsheet-container {
         background: var(--card-bg);
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         border: 1px solid var(--border-color);
+        margin-bottom: 40px;
     }
 
     iframe {
         width: 100%;
         height: 750px;
         border: none;
-        display: block;
+    }
+
+    /* 下部のテキストエリア */
+    .description-box {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        border: 1px solid var(--border-color);
+    }
+    .description-box a {
+        color: var(--primary-color);
+        font-weight: bold;
+        text-decoration: none;
+        border-bottom: 1px solid var(--primary-color);
     }
 
     /* フッター */
     .footer-note {
         text-align: center;
-        font-size: 0.8rem;
-        color: #94a3b8;
-        margin-top: 60px;
-        padding-top: 20px;
+        font-size: 0.85rem;
+        color: var(--text-sub);
+        margin-top: 80px;
+        padding: 40px 0;
         border-top: 1px solid var(--border-color);
     }
 
-    /* モバイル対応 */
-    @media (max-width: 600px) {
-        .header { justify-content: center; gap: 10px; padding: 10px; }
-        nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
-        body { padding-top: 160px; }
-        iframe { height: 550px; }
+    /* スマホ用の調整 */
+    @media (max-width: 768px) {
+        .header { padding: 15px; flex-direction: column; height: auto; position: absolute; }
+        nav { margin: 15px 0; gap: 12px; }
+        body { padding-top: 180px; }
+        h1 { font-size: 1.5rem; }
+        iframe { height: 500px; }
     }
 </style>
 </head>
@@ -165,34 +218,40 @@
         <a href="index.html">TOP</a>
         <a href="https://sio39.github.io/score.html" class="active">監視銘柄</a>
         <a href="tool.html">ツール</a>
-        <a href="realtime.html">リアルタイムボード</a>
+        <a href="realtime.html">リアルタイム</a>
     </nav>
-    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">𝕏 Follow Me</a>
 </header>
 
 <main>
-    <h1>監視銘柄リスト</h1>
+    <div class="title-section">
+        <h1>監視銘柄リスト</h1>
+        <p style="color: var(--text-sub); font-size: 0.9rem;">AIが厳選した、今注目すべき銘柄たちです</p>
+    </div>
 
     <div class="notice-card">
-        <span class="notice-title">💡 注意事項</span>
+        <div class="notice-title">
+            <span style="margin-right: 8px;">💡</span> 大切なポイント
+        </div>
         <ul>
-            <li>全銘柄からの自動抽出ではなく、気になった銘柄のみを手動で算出しています。</li>
-            <li>更新は手動のため、スコアにはタイムラグが生じる場合があります。</li>
-            <li>計算要素（営業利益率、ROE等）は毎日急激に変動するものではありません。</li>
-            <li>決算発表時などは、来期予想によってスコアが大きく変わることがあります。</li>
-            <li>リアルタイム性は必要ない方向けの目安としてご利用ください。</li>
+            <li><span class="highlight">A3：120以上、ギャップ比2.5以上</span>の銘柄を厳選してリストにしています。</li>
+            <li>このリストは「株価が上がりやすい銘柄」を見つけるための<span class="highlight">最初のステップ</span>です。</li>
+            <li>当日の「出来高」をしっかりチェックして、トレードのタイミングを判断します。</li>
+            <li>リアルタイムボードはExcelと連動しているので、<span class="highlight">自動で最新の状態</span>になります！</li>
+            <li style="color: var(--text-sub); font-size: 0.85rem;">※今後このページの更新はあまり行いません。私のPCでは常に最新を追いかけています。</li>
         </ul>
     </div>
 
     <div class="spreadsheet-container">
-<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTfc-cWPkuFopkiD3PD-6zhBTg40I6U5mxseKReyVEZCBCFhuZeworPmefDQwZit7zAWP-mlX2YLo3r/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:F41"></iframe>
+        <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTfc-cWPkuFopkiD3PD-6zhBTg40I6U5mxseKReyVEZCBCFhuZeworPmefDQwZit7zAWP-mlX2YLo3r/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false&amp;range=A1:F41"></iframe>
     </div>
 
-
-   <br><p>※本リストは、独自に構築した投資ツールを用いてスクリーニングした「一次抽出銘柄」です。<br>
-[<a href="tool.html">▶活用中の投資ツール一覧はこちら</a>]</p>
-<br><p>まず、データに基づき上昇期待値の高い銘柄をリストアップします。その上で、当日の市場動向をリアルタイムで監視し、テクニカル・ファンダメンタルズの両面から最終的な投資判断を下します。</p>
-　
+    <div class="description-box">
+        <p>このリストは、私が一生懸命作った投資ツールで選んだ「上昇の期待が高い銘柄」たちです。<br>
+        <a href="tool.html">▶ 私が使っている投資ツールはこちら</a></p>
+        
+        <p style="margin-top: 15px;">まずはデータでしっかり絞り込み、そのあとで実際の市場の動きをじっくり見て、最終的な投資の判断をしています。皆さんの参考になれば嬉しいです！</p>
+    </div>
 </main>
 
 <footer class="footer-note">
