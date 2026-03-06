@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -11,24 +12,26 @@ gtag('config', 'G-5JCN1FB7ML');
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>銘柄データ自動更新ボード</title>
 
 <style>
+
 :root{
---primary-color:#4da3ff;
---bg-color:#f0f4f8;
---border-color:#d1d5db;
---buy-bg:#ffebee;
+--primary:#4da3ff;
+--bg:#f3f6fb;
+--border:#d9e1ec;
+--buy-bg:#ffeaea;
 --buy-text:#c62828;
 }
 
 body{
 font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
 margin:0;
-padding:140px 10px 60px 10px;
-background-color:var(--bg-color);
-text-align:center;
+padding:140px 15px 60px;
+background:var(--bg);
 color:#334155;
+text-align:center;
 }
 
 .header{
@@ -36,10 +39,10 @@ position:fixed;
 top:0;
 left:0;
 width:100%;
-background:rgba(255,255,255,0.98);
-backdrop-filter:blur(5px);
+background:rgba(255,255,255,0.96);
+backdrop-filter:blur(6px);
+border-bottom:2px solid var(--primary);
 z-index:9999;
-border-bottom:2px solid var(--primary-color);
 display:flex;
 flex-wrap:wrap;
 align-items:center;
@@ -51,7 +54,7 @@ box-sizing:border-box;
 .logo{
 font-size:20px;
 font-weight:800;
-color:var(--primary-color);
+color:var(--primary);
 text-decoration:none;
 }
 
@@ -68,13 +71,13 @@ font-size:15px;
 }
 
 nav a.active{
-color:var(--primary-color);
-border-bottom:2px solid var(--primary-color);
+color:var(--primary);
+border-bottom:2px solid var(--primary);
 }
 
 .twitter-button{
 background:#000;
-color:white;
+color:#fff;
 padding:6px 16px;
 border-radius:30px;
 font-size:12px;
@@ -97,17 +100,18 @@ text-align:left;
 max-width:1100px;
 margin:0 auto 20px auto;
 background:#fff;
-padding:15px;
-border-radius:8px;
-border-left:5px solid var(--primary-color);
+padding:18px;
+border-radius:10px;
+border-left:6px solid var(--primary);
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
 .table-container{
 width:100%;
 max-width:1200px;
-background:white;
-border-radius:10px;
-box-shadow:0 10px 25px rgba(0,0,0,0.05);
+background:#fff;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
 overflow-x:auto;
 margin:0 auto;
 }
@@ -126,46 +130,65 @@ font-size:0.85rem;
 }
 
 th{
-background-color:#334155;
-color:white;
+background:#2c3e50;
+color:#fff;
 font-weight:600;
 position:sticky;
 top:0;
 }
 
 tr:nth-child(even){
-background-color:#f8fafc;
+background:#f8fafc;
 }
 
 tr:hover{
-background-color:#f1f5f9;
+background:#eef5ff;
+transition:0.2s;
 }
 
-td:nth-child(10),td:nth-child(11){
-background-color:#fffde7 !important;
+td:nth-child(10),
+td:nth-child(11){
+background:#fffde7 !important;
 font-weight:bold;
 }
 
 .buy-highlight{
-background-color:var(--buy-bg) !important;
-color:var(--buy-text) !important;
-font-weight:800 !important;
-font-size:0.9rem !important;
-border:2px solid var(--buy-text) !important;
+background:var(--buy-bg)!important;
+color:var(--buy-text)!important;
+font-weight:800!important;
+font-size:0.9rem!important;
+border:2px solid var(--buy-text)!important;
 }
 
-/* 出来高急増ハイライト */
 .volume-spike{
-background:#fff3cd !important;
+background:#fff3cd!important;
 font-weight:bold;
-border:2px solid #ff9800 !important;
+border:2px solid #ff9800!important;
 }
 
-@media (max-width:600px){
-body{padding-top:180px;}
-.header{justify-content:center;padding:10px;}
-nav{margin-top:10px;}
+footer{
+margin-top:40px;
+color:#94a3b8;
+font-size:0.8rem;
 }
+
+@media(max-width:600px){
+
+body{
+padding-top:180px;
+}
+
+.header{
+justify-content:center;
+padding:10px;
+}
+
+nav{
+margin-top:10px;
+}
+
+}
+
 </style>
 </head>
 
@@ -182,6 +205,7 @@ nav{margin-top:10px;}
 </nav>
 
 <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+
 </header>
 
 <h1>銘柄リアルタイムボード</h1>
@@ -193,7 +217,7 @@ CSVデータ読み込み中...
 <div id="last-load" style="font-size:0.75rem;color:#94a3b8;margin-bottom:20px;"></div>
 
 <div class="info-text">
-※自動更新作動中は５分毎に更新されます。 <br>
+※自動更新作動中は５分毎に更新されます。<br>
 ※RVOL×補正係数が1.5以上。且つ前日比プラスなら買いサイン。補正係数は「330÷経過分数」です。<br>
 ※買いサインが出ていれば後はVWAPとの位置関係とチャートを見て上がりそうならインです。<br>
 ※２０日平均出来高は手動入力のためデータは最新ではありません。そのため誤差があります。<br>
@@ -201,10 +225,12 @@ CSVデータ読み込み中...
 </div>
 
 <div class="table-container">
+
 <table id="csv-table">
 <thead id="table-header"></thead>
 <tbody id="table-body"></tbody>
 </table>
+
 </div>
 
 <script>
@@ -213,108 +239,106 @@ async function loadCSV(){
 
 try{
 
-const response=await fetch('data_push.csv',{cache:"no-store"});
-const data=await response.text();
-const rows=data.split(/\r?\n/).filter(r=>r.trim()!=="");
+const response = await fetch('data_push.csv',{cache:"no-store"});
+const data = await response.text();
 
-const tableHeader=document.getElementById('table-header');
-const tableBody=document.getElementById('table-body');
+const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="")
 
-tableHeader.innerHTML='';
-tableBody.innerHTML='';
+const tableHeader=document.getElementById('table-header')
+const tableBody=document.getElementById('table-body')
 
-let headers=[];
+tableHeader.innerHTML=''
+tableBody.innerHTML=''
+
+let headers=[]
 
 rows.forEach((row,index)=>{
 
 if(row.includes("Update:")){
 
-document.getElementById('csv-update-time').textContent='最終更新: '+row.split(',')[0].replace("Update:","").trim();
-return;
+document.getElementById('csv-update-time').textContent='最終更新: '+row.split(',')[0].replace("Update:","").trim()
+return
 
 }
 
-const columns=row.split(',');
-const tr=document.createElement('tr');
+const columns=row.split(',')
+
+const tr=document.createElement('tr')
 
 columns.forEach((colText,colIndex)=>{
 
-const cell=(index===0)?document.createElement('th'):document.createElement('td');
+const cell=(index===0)?document.createElement('th'):document.createElement('td')
 
-let val=colText.replace(/"/g,'').trim();
+let val=colText.replace(/"/g,'').trim()
 
 if(index===0){
 
-headers.push(val);
+headers[colIndex]=val.toLowerCase()
 
 }
 
-else{
+if(index!==0 && headers[colIndex] && headers[colIndex].includes("rvol")){
 
-const header=headers[colIndex]?headers[colIndex].toLowerCase():"";
-
-if(header.includes("rvol")){
-
-let num=parseFloat(val);
+let num=parseFloat(val)
 
 if(!isNaN(num)){
 
 if(num>=2){
 
-cell.classList.add("volume-spike");
+cell.classList.add("volume-spike")
 
 }
 
-val=num.toFixed(2);
+val=num.toFixed(2)
 
 }
 
 }
 
-}
-
-cell.textContent=val;
+cell.textContent=val
 
 if(val==="買い"){
 
-cell.classList.add('buy-highlight');
+cell.classList.add("buy-highlight")
 
 }
 
-tr.appendChild(cell);
+tr.appendChild(cell)
 
-});
+})
 
 if(index===0){
 
-tableHeader.appendChild(tr);
+tableHeader.appendChild(tr)
 
 }else{
 
-tableBody.appendChild(tr);
+tableBody.appendChild(tr)
 
 }
 
-});
+})
 
-document.getElementById('last-load').textContent='ブラウザ更新: '+new Date().toLocaleString();
+document.getElementById('last-load').textContent='ブラウザ更新: '+new Date().toLocaleString()
 
 }catch(e){
 
-console.error(e);
+console.error(e)
 
 }
 
 }
 
-loadCSV();
+loadCSV()
 
-setInterval(loadCSV,30000);
+setInterval(loadCSV,30000)
 
 </script>
 
-<footer style="margin-top:40px;color:#94a3b8;font-size:0.8rem;">
-&copy; 2026 AIスコア投資研究所
+<footer>
+
+© 2026 AIスコア投資研究所
+
 </footer>
 
 </body>
