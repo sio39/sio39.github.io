@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta name="description" content="ANYCOLOR(5032)をAIスコアで分析。驚異的なA3スコア636とギャップ比3.08が示す、市場の歪みと投資機会を紐解きます。">
+    <meta name="keywords" content="ANYCOLOR, 5032, にじさんじ, AIスコア, 銘柄分析, 株式投資">
+
+    <meta property="og:title" content="【銘柄分析】ANYCOLOR：驚異のスコアが示す「市場の歪み」 | AIスコア投資研究所">
+    <meta property="og:description" content="A3スコア636、ギャップ比3.08。下方修正の裏側に隠された真の成長力とは。">
+    <meta property="og:image" content="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5JCN1FB7ML');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【個別銘柄分析】ANYCOLOR：市場の歪みと成長の真実 | AIスコア投資研究所</title>
+
+    <style>
+        /* --- 共通基本設定 --- */
+        :root {
+            --primary-color: #4da3ff;
+            --primary-dark: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --highlight: #fff9eb;
+            --accent-blue: #eff6ff;
+            --score-red: #e74c3c;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 120px 20px 80px 20px;
+            background-color: var(--bg-color);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- ヘッダー (固定) --- */
+        .header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-size: 20px; font-weight: 800; color: var(--primary-color);
+            letter-spacing: -0.5px; text-decoration: none;
+        }
+
+        nav { display: flex; gap: 24px; }
+        nav a {
+            color: var(--text-sub); text-decoration: none;
+            font-weight: 600; font-size: 15px; transition: 0.3s;
+        }
+        nav a:hover { color: var(--primary-color); }
+
+        .twitter-button {
+            background: #000; color: white; padding: 8px 18px;
+            border-radius: 30px; font-size: 13px; font-weight: bold;
+            text-decoration: none; transition: 0.3s;
+        }
+
+        /* --- コンテンツレイアウト --- */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-header span {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 0.1rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            margin-top: 10px;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+        }
+
+        .analysis-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2::before {
+            content: "";
+            display: inline-block;
+            width: 5px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .important-line {
+            background: linear-gradient(transparent 70%, #dcfce7 70%);
+            font-weight: bold;
+            padding: 0 2px;
+        }
+
+        .point-box {
+            background-color: var(--accent-blue);
+            border-radius: 10px;
+            padding: 24px;
+            margin: 20px 0;
+            border: 1px solid #dbeafe;
+        }
+
+        /* --- スコア表示 --- */
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .score-pill {
+            flex: 1;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .score-pill .label { font-size: 0.8rem; color: var(--text-sub); display: block; }
+        .score-pill .value { font-size: 1.5rem; font-weight: 900; color: var(--score-red); }
+
+        /* --- 結論カード --- */
+        .conclusion-card {
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+            color: #ffffff;
+            border: none;
+        }
+
+        .conclusion-card h2 { color: #ffffff; }
+        .conclusion-card p { color: #cbd5e1; }
+
+        /* --- フッター --- */
+        .footer-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 80px;
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* モバイル対応 */
+        @media (max-width: 600px) {
+            .header { justify-content: center; gap: 10px; padding: 12px; }
+            nav { order: 3; width: 100%; justify-content: center; gap: 16px; margin-top: 8px; }
+            body { padding-top: 180px; }
+            h1 { font-size: 1.4rem; }
+            .analysis-card { padding: 25px; }
+            .score-container { flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <a href="index.html" class="logo">AIスコア投資研究所</a>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="https://sio39.github.io/score.html">監視銘柄</a>
+        <a href="tool.html">ツール</a>
+        <a href="realtime.html">リアルタイムボード</a>
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+</header>
+
+<main>
+    <div class="page-header">
+        <span>STOCK ANALYSIS</span>
+        <h1>【個別銘柄分析】ANYCOLOR（5032）<br>驚異のスコアが示す「市場の歪み」と真の成長</h1>
+    </div>
+
+    <div class="analysis-card">
+        <h2>1. ミカ式AIスコアリングの結果</h2>
+        <p>
+            最新決算を受け、ANYCOLORのスコアは驚異的な数値を叩き出しました。<span class="important-line">監視銘柄入りの基準を大幅に超越</span>しています。
+        </p>
+        <div class="score-container">
+            <div class="score-pill"><span class="label">A3 (基礎評価)</span><span class="value">636</span></div>
+            <div class="score-pill"><span class="label">A5 (成長評価)</span><span class="value">1960</span></div>
+            <div class="score-pill"><span class="label">ギャップ比</span><span class="value">3.08</span></div>
+        </div>
+        <p>基準（A3: 120 / ギャップ比: 2.5）に対してこの乖離は、現在の株価が本来の稼ぐ力から大きく取り残されている可能性を示唆しています。</p>
+    </div>
+
+    <div class="analysis-card">
+        <h2>2. 下方修正の「質」を見極める</h2>
+        <p>
+            市場は通期業績の下方修正に過剰反応していますが、その中身を精査する必要があります。
+        </p>
+        <div class="point-box">
+            <strong>分析のポイント：</strong>
+            <ul>
+                <li><strong>在庫評価損の計上：</strong>一過性の会計処理であり、本業の収益構造は毀損していない。</li>
+                <li><strong>投資の加速：</strong>将来の成長に向けた採用・設備投資の増加が主因。</li>
+                <li><strong>高ARPUの維持：</strong>ファン一人の支出額は依然として高く、コマース部門が成長を牽引。</li>
+            </ul>
+        </div>
+        <p>実態は<span class="important-line">「健全な膿出し」と「攻めの投資」</span>であり、衰退とは無縁の数字です。</p>
+    </div>
+
+    <div class="analysis-card">
+        <h2>3. 市場の歪みと投資機会</h2>
+        <p>
+            ギャップ比3.08という数字は、市場の「期待値」が「実力」を下回っている状態を明確に示しています。
+        </p>
+        <p>
+            にじさんじという強固なIPブランド、そして高効率な収益モデル。一時的な数字の揺れに惑わされる市場が、絶好の<span class="important-line">「押し目」を提供している</span>のが現在のフェーズです。
+        </p>
+    </div>
+
+    <div class="analysis-card conclusion-card">
+        <h2>4. 結論</h2>
+        <p>
+            ANYCOLORは今、第2の成長ステージに向けた調整局面に入っています。
+        </p>
+        <div style="margin: 20px 0;">
+            <ul style="color: #ffffff;">
+                <li>圧倒的なA3スコア（636）が示す事業のモメンタム</li>
+                <li>ギャップ比3.08が裏付ける割安性の拡大</li>
+                <li>株主還元（増配・自社株買い）への積極的な姿勢</li>
+            </ul>
+        </div>
+        <p>
+            目先の修正に囚われず、この強烈なスコアが指し示す「未来の価値」に注目するのが、AIスコア投資の真髄です。
+        </p>
+    </div>
+</main>
+
+<footer class="footer-note">
+    &copy; 2026 AIスコア投資研究所
+    <p>↓応援クリックお願いします</p>
+    <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
+        <img src="https://b.blogmura.com/stock/88_31.gif">
+    </a>
+</footer>
+
+</body>
+</html>
