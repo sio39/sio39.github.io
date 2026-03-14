@@ -1,8 +1,21 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本株リアルタイムボード・監視銘柄分析 | AIスコア投資研究所</title>
+<meta name="description" content="AIスコア投資研究所は、日本株の監視銘柄・リアルタイムボード・AIスコアによる割安株分析を提供する個人投資家向け投資ツールサイトです。">
+<link rel="canonical" href="https://sio39.github.io/">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JCN1FB7ML');
+</script>
+
 <style>
-/* --- 既存のスタイル --- */
 :root {
 --primary-color: #4da3ff;
 --primary-dark: #3b82f6;
@@ -15,71 +28,218 @@
 --accent-gold-bg: #fff9eb;
 }
 
-/* --- 追加：3ステップガイド用のスタイル --- */
+body {
+font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+line-height: 1.6;
+color: var(--text-main);
+max-width: 850px;
+margin: 0 auto;
+padding: 100px 16px 60px 16px;
+background-color: var(--bg-color);
+-webkit-font-smoothing: antialiased;
+}
+
+/* ヘッダーの最適化 */
+.header {
+position: fixed;
+top: 0; left: 0; width: 100%;
+background: rgba(255, 255, 255, 0.95);
+backdrop-filter: blur(12px);
+z-index: 9999;
+border-bottom: 1px solid var(--border-color);
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 10px 24px;
+box-sizing: border-box;
+}
+
+.logo {
+font-size: 20px;
+font-weight: 800;
+color: var(--primary-color);
+text-decoration: none;
+white-space: nowrap;
+}
+
+nav { 
+display: flex; 
+gap: 20px; 
+}
+
+nav a {
+color: var(--text-sub);
+text-decoration: none;
+font-weight: 600;
+font-size: 15px;
+transition: 0.3s;
+}
+
+nav a.active { color: var(--primary-color); }
+
+.twitter-button {
+background: #000;
+color: white;
+padding: 8px 16px;
+border-radius: 30px;
+font-size: 13px;
+font-weight: bold;
+text-decoration: none;
+}
+
+/* ヒーローエリア */
+.hero {
+text-align: center;
+margin-bottom: 40px;
+}
+
+.hero h1 {
+font-size: 2.2rem;
+font-weight: 900;
+margin-bottom: 12px;
+line-height: 1.3;
+}
+
+.hero p {
+color: var(--text-sub);
+font-size: 1.1rem;
+margin-bottom: 30px;
+}
+
+.hero img {
+width: 100%;
+max-width: 640px;
+height: auto;
+border-radius: 20px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+border: 1px solid var(--border-color);
+}
+
+/* 3ステップガイド */
 .guide-container {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 40px;
+display: flex;
+gap: 16px;
+margin-bottom: 40px;
 }
+
 .guide-step {
-    flex: 1;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    text-align: center;
-    position: relative;
+flex: 1;
+background: white;
+padding: 20px;
+border-radius: 12px;
+border: 1px solid var(--border-color);
+text-align: center;
+box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
+
 .step-label {
-    display: inline-block;
-    background: var(--primary-color);
-    color: white;
-    font-size: 0.75rem;
-    font-weight: bold;
-    padding: 2px 10px;
-    border-radius: 20px;
-    margin-bottom: 10px;
-}
-.guide-step h3 {
-    font-size: 1rem;
-    margin: 5px 0 10px;
-    color: var(--text-main);
-}
-.guide-step p {
-    font-size: 0.85rem;
-    color: var(--text-sub);
-    line-height: 1.5;
-    margin: 0;
+display: inline-block;
+background: var(--primary-color);
+color: white;
+font-size: 0.75rem;
+font-weight: bold;
+padding: 2px 10px;
+border-radius: 20px;
+margin-bottom: 10px;
 }
 
-/* スマホ対応：ステップを縦並びに */
+.guide-step h3 { font-size: 1rem; margin: 5px 0 10px; }
+.guide-step p { font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; margin: 0; }
+
+/* コンテンツカード */
+.content-card {
+background: var(--card-bg);
+border-radius: 16px;
+padding: 32px;
+margin-bottom: 24px;
+border: 1px solid var(--border-color);
+transition: transform 0.3s ease;
+}
+
+.content-card:hover {
+transform: translateY(-4px);
+border-color: var(--primary-color);
+}
+
+.card-title {
+font-size: 1.35rem;
+font-weight: 800;
+margin-bottom: 14px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.card-title::before {
+content: "";
+display: inline-block;
+width: 4px;
+height: 24px;
+background: var(--primary-color);
+border-radius: 2px;
+}
+
+.card-text {
+font-size: 1rem;
+color: #475569;
+margin-bottom: 24px;
+}
+
+.btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 12px 28px;
+border-radius: 8px;
+font-size: 1rem;
+font-weight: 700;
+text-decoration: none;
+transition: 0.3s;
+background: var(--primary-color);
+color: white;
+}
+
+.badge {
+display: inline-block;
+padding: 2px 10px;
+border-radius: 4px;
+font-size: 0.75rem;
+font-weight: bold;
+margin-left: 8px;
+background: var(--accent-gold-bg);
+color: var(--accent-gold);
+border: 1px solid #fde68a;
+}
+
+.footer-note {
+text-align: center;
+font-size: 0.85rem;
+color: #94a3b8;
+margin-top: 60px;
+padding: 40px 0;
+border-top: 1px solid var(--border-color);
+}
+
+/* モバイル対応：ここからスマホ表示の設定 */
 @media (max-width: 600px) {
+    body { padding-top: 120px; }
+    .header { flex-direction: column; padding: 12px; }
+    .logo { margin-bottom: 10px; }
+    nav { 
+        width: 100%; 
+        justify-content: center; 
+        gap: 12px; 
+        overflow-x: auto; 
+        padding-bottom: 4px;
+    }
+    nav a { font-size: 13px; }
+    .twitter-button { display: none; } /* スマホではヘッダーをスッキリさせるため非表示（任意） */
+    
+    .hero h1 { font-size: 1.6rem; }
     .guide-container { flex-direction: column; }
-    body { padding-top: 180px; }
+    .content-card { padding: 24px; }
+    .btn { width: 100%; box-sizing: border-box; } /* スマホではボタンを横いっぱいに */
 }
-
-/* （以下、既存のbody, header, hero, content-card等のスタイル） */
-body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; line-height: 1.8; color: var(--text-main); max-width: 850px; margin: 0 auto; padding: 120px 20px 80px 20px; background-color: var(--bg-color); -webkit-font-smoothing: antialiased; }
-.header { position: fixed; top: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); z-index: 9999; border-bottom: 1px solid var(--border-color); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 14px 24px; box-sizing: border-box; }
-.logo { font-size: 20px; font-weight: 800; color: var(--primary-color); letter-spacing: -0.5px; text-decoration: none; }
-nav { display: flex; gap: 24px; }
-nav a { color: var(--text-sub); text-decoration: none; font-weight: 600; font-size: 15px; transition: 0.3s; }
-nav a:hover, nav a.active { color: var(--primary-color); }
-.twitter-button { background: #000; color: white; padding: 8px 18px; border-radius: 30px; font-size: 13px; font-weight: bold; text-decoration: none; transition: 0.3s; }
-.hero { text-align: center; margin-bottom: 60px; animation: fadeIn 1s ease-out; }
-.hero h1 { font-size: 2.4rem; font-weight: 900; margin-bottom: 12px; color: var(--text-main); letter-spacing: -1px; }
-.hero p { color: var(--text-sub); font-size: 1.1rem; margin-bottom: 35px; font-weight: 500; }
-.hero img { width: 100%; max-width: 640px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid var(--border-color); }
-.content-card { background: var(--card-bg); border-radius: 16px; padding: 32px; margin-bottom: 28px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid var(--border-color); transition: all 0.3s ease; position: relative; }
-.content-card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1); border-color: var(--primary-color); }
-.card-title { font-size: 1.35rem; font-weight: 800; margin-bottom: 14px; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
-.card-title::before { content: ""; display: inline-block; width: 4px; height: 24px; background: var(--primary-color); border-radius: 2px; }
-.card-text { font-size: 1rem; color: #475569; margin-bottom: 24px; }
-.badge { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; vertical-align: middle; margin-left: 8px; }
-.badge-beta { background: var(--accent-gold-bg); color: var(--accent-gold); border: 1px solid #fde68a; }
-.btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 28px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; text-decoration: none; transition: 0.3s; background: var(--primary-color); color: white; box-shadow: 0 4px 10px rgba(77, 163, 255, 0.3); }
-.btn:hover { background: var(--primary-dark); box-shadow: 0 6px 15px rgba(77, 163, 255, 0.4); transform: translateX(4px); }
-.footer-note { text-align: center; font-size: 0.85rem; color: #94a3b8; margin-top: 80px; padding: 40px 0; border-top: 1px solid var(--border-color); }
 </style>
 </head>
 
@@ -97,10 +257,9 @@ nav a:hover, nav a.active { color: var(--primary-color); }
 </header>
 
 <main>
-
 <section class="hero">
 <h1>日本株リアルタイムボード<br>監視銘柄分析</h1>
-<p>AIスコア投資研究所|ロジックで選び、リアルを見て買う</p>
+<p>AIスコア投資研究所 | ロジックで選び、リアルを見て買う</p>
 <img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" alt="AIスコア投資研究所 日本株分析ツール">
 </section>
 
@@ -108,17 +267,17 @@ nav a:hover, nav a.active { color: var(--primary-color); }
     <div class="guide-step">
         <span class="step-label">STEP 1</span>
         <h3>ロジックを知る</h3>
-        <p>AIスコアの計算基準を理解し、判断の軸を作ります。</p>
+        <p>AIスコアの基準を理解し判断の軸を作ります。</p>
     </div>
     <div class="guide-step">
         <span class="step-label">STEP 2</span>
         <h3>銘柄を選ぶ</h3>
-        <p>高スコアの「監視銘柄リスト」から候補を絞り込みます。</p>
+        <p>高スコアの「監視銘柄リスト」から候補を絞ります。</p>
     </div>
     <div class="guide-step">
         <span class="step-label">STEP 3</span>
         <h3>リアルで買う</h3>
-        <p>ボードで資金流入を確認し、最適な時を捉えます。</p>
+        <p>ボードで資金流入を確認し、好機を捉えます。</p>
     </div>
 </div>
 
@@ -132,26 +291,22 @@ nav a:hover, nav a.active { color: var(--primary-color); }
 
 <div class="content-card">
 <div class="card-title">AIスコア計算機</div>
-<p class="card-text">
-AIスコアを自分でも計算してみましょう。
-</p>
+<p class="card-text">AIスコアを自分でも計算してみましょう。</p>
 <a href="scoresiki.html" class="btn">AIスコア計算機</a>
 </div>
 
 <div class="content-card">
 <div class="card-title">監視銘柄リスト</div>
 <p class="card-text">
-AIスコアの厳格な条件をクリアした日本株の監視銘柄リスト。
-デイトレードや中期投資の候補銘柄を効率的に探せます。
+AIスコアの厳格な条件をクリアした日本株の監視銘柄リスト。デイトレードや中期投資の候補銘柄を効率的に探せます。
 </p>
 <a href="score.html" class="btn">銘柄リストを見る</a>
 </div>
 
 <div class="content-card">
-<div class="card-title">リアルタイムボード<span class="badge badge-beta">メイン</span></div>
+<div class="card-title">リアルタイムボード<span class="badge">メイン</span></div>
 <p class="card-text">
-監視銘柄の価格・出来高・資金流入を5分更新で表示する日本株リアルタイムボード。
-短期資金の動きを視覚的に把握できます。
+監視銘柄の価格・出来高・資金流入を5分更新で表示。短期資金の動きを視覚的に把握できます。
 </p>
 <a href="realtime.html" class="btn">リアルタイムボードを見る</a>
 </div>
@@ -159,19 +314,17 @@ AIスコアの厳格な条件をクリアした日本株の監視銘柄リスト
 <div class="content-card">
 <div class="card-title">個別銘柄分析</div>
 <p class="card-text">
-ビットコイントレジャリー企業や注目銘柄について、
-資本政策や財務構造まで踏み込んだ深掘り分析を掲載。
+注目銘柄について、資本政策や財務構造まで踏み込んだ深掘り分析を掲載。
 </p>
 <a href="kobetu.html" class="btn">銘柄分析を読む</a>
 </div>
-
 </main>
 
 <footer class="footer-note">
 © 2026 AIスコア投資研究所
 <p>↓応援クリックお願いします</p>
 <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
-<img src="https://b.blogmura.com/stock/88_31.gif">
+<img src="https://b.blogmura.com/stock/88_31.gif" alt="ブログ村">
 </a>
 </footer>
 
