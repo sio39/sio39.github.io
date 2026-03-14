@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIスコア計算機 | AIスコア投資研究所</title>
+    
+    <style>
+        :root {
+            --primary-color: #4da3ff;
+            --primary-dark: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            --accent-gold: #b45309;
+            --accent-gold-bg: #fff9eb;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            margin: 0;
+            padding: 120px 20px 80px 20px;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ヘッダー：index.htmlと完全統一 */
+        .header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        nav { display: flex; gap: 24px; }
+        nav a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+        nav a:hover, nav a.active { color: var(--primary-color); }
+
+        .twitter-button {
+            background: #000;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .twitter-button:hover { transform: scale(1.05); }
+
+        /* 計算機カード */
+        .card { 
+            background: var(--card-bg); 
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            width: 100%; 
+            max-width: 450px; 
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+
+        h2 { 
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--text-main); 
+            margin-bottom: 30px; 
+            font-weight: 900;
+        }
+
+        .input-group { margin-bottom: 18px; }
+        label { font-size: 14px; color: var(--text-main); font-weight: 700; display: block; margin-bottom: 6px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        input { 
+            width: 100%; padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 10px; 
+            box-sizing: border-box; font-size: 16px; outline: none; background-color: #fcfdfe;
+        }
+        input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(77, 163, 255, 0.1); }
+        .unit { position: absolute; right: 15px; font-size: 12px; color: var(--text-sub); }
+
+        button { 
+            background: var(--primary-color); color: white; border: none; padding: 16px; 
+            width: 100%; border-radius: 12px; cursor: pointer; font-size: 18px; font-weight: 800; 
+            margin-top: 10px; transition: 0.3s; box-shadow: 0 4px 12px rgba(77, 163, 255, 0.3);
+        }
+        button:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        .result-box { margin-top: 30px; padding: 20px; border-radius: 16px; background: #f1f5f9; }
+        .result-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .result-row:last-child { margin-top: 12px; padding-top: 12px; border-top: 2px dashed #cbd5e1; }
+        .result-label { font-size: 14px; font-weight: 700; color: var(--text-sub); }
+        .score-val { font-size: 24px; font-weight: 900; color: var(--text-main); }
+        .gap-val { font-size: 24px; font-weight: 900; color: #e67e22; }
+
+        .clear-msg { 
+            display: none; margin-top: 25px; padding: 15px; 
+            background: var(--accent-gold-bg); border: 2px solid #fde68a; border-radius: 12px;
+            color: var(--accent-gold); text-align: center; font-weight: 800; animation: bounce 0.5s ease;
+        }
+        @keyframes bounce { 0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .highlight { border-color: var(--primary-color) !important; box-shadow: 0 20px 40px rgba(77, 163, 255, 0.15) !important; }
+
+        @media (max-width: 600px) {
+            .header { justify-content: center; gap: 10px; padding: 12px; }
+            nav { order: 3; width: 100%; justify-content: center; gap: 16px; margin-top: 8px; }
+            body { padding-top: 180px; }
+        }
+
+        .footer-note {
+            text-align: center; font-size: 0.85rem; color: #94a3b8; margin-top: 60px; padding: 40px 0; border-top: 1px solid var(--border-color); width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <a href="index.html" class="logo">AIスコア投資研究所</a>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="score.html">監視銘柄</a>
+        <a href="tool.html" class="active">ツール</a>
+        <a href="realtime.html">リアルタイムボード</a>
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+</header>
+
+<div class="card" id="mainCard">
+    <h2>📊 AIスコア計算機</h2>
+    <div class="input-group">
+        <label>PER</label>
+        <div class="input-wrapper"><input type="number" id="h_val" step="0.01" placeholder="10.7"><span class="unit">倍</span></div>
+    </div>
+    <div class="input-group">
+        <label>ROE</label>
+        <div class="input-wrapper"><input type="number" id="l_val" step="0.01" placeholder="46.39"><span class="unit">%</span></div>
+    </div>
+    <div class="input-group">
+        <label>営業利益率</label>
+        <div class="input-wrapper"><input type="number" id="r_val" step="0.1" placeholder="45.8"><span class="unit">%</span></div>
+    </div>
+    <div class="input-group">
+        <label>利益成長率</label>
+        <div class="input-wrapper"><input type="number" id="s_val" step="0.1" placeholder="0"><span class="unit">%</span></div>
+    </div>
+    <div class="input-group">
+        <label>ネットキャッシュ比率</label>
+        <div class="input-wrapper"><input type="number" id="w_val" step="0.1" placeholder="0"><span class="unit">%</span></div>
+    </div>
+    <button onclick="calculateAll()">一括スコア計算！</button>
+    <div class="result-box">
+        <div class="result-row"><span class="result-label">A3スコア（基本）</span><span id="resA3" class="score-val">---</span></div>
+        <div class="result-row"><span class="result-label">A5スコア（総合）</span><span id="resA5" class="score-val">---</span></div>
+        <div class="result-row"><span class="result-label">ギャップ比</span><span id="resGap" class="gap-val">---</span></div>
+    </div>
+    <div id="recommendMsg" class="clear-msg">🌟 条件クリアしました！<br>監視銘柄入り推奨！</div>
+</div>
+
+<footer class="footer-note">
+    © 2026 AIスコア投資研究所
+    <p>↓応援クリックお願いします</p>
+    <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
+        <img src="https://b.blogmura.com/stock/88_31.gif" alt="ブログ村">
+    </a>
+</footer>
+
+<script>
+function calculateAll() {
+    const hIn = document.getElementById('h_val').value;
+    const lIn = document.getElementById('l_val').value;
+    const rIn = document.getElementById('r_val').value;
+    const sIn = document.getElementById('s_val').value;
+    const wIn = document.getElementById('w_val').value;
+
+    const r = (rIn === "" || parseFloat(rIn) <= 0) ? 20 : parseFloat(rIn);
+    const l = parseFloat(lIn) || 0;
+    const h = (hIn !== "" && parseFloat(hIn) > 0) ? parseFloat(hIn) : 15;
+    const s = parseFloat(sIn) || 0;
+    const w = parseFloat(wIn) || 0;
+
+    const a3 = ((r / 20) * (l / 15)) / (h / 15) * 100;
+    const finalA3 = Math.round(a3);
+    const sPart = (Math.min(Math.max(s, 0), 50) / 15) + 1;
+    const wPart = 1 + (Math.min(Math.max(w, -30), 50) / 200);
+    const a5 = ((r / 20) * (l / 15) * sPart * wPart) / (h / 15) * 100;
+    const finalA5 = Math.round(a5);
+    const gap = finalA3 === 0 ? 0 : (finalA5 / finalA3);
+
+    document.getElementById('resA3').innerText = isNaN(finalA3) ? 0 : finalA3;
+    document.getElementById('resA5').innerText = isNaN(finalA5) ? 0 : finalA5;
+    document.getElementById('resGap').innerText = isNaN(gap) ? "0.00" : gap.toFixed(2);
+
+    const msg = document.getElementById('recommendMsg');
+    const card = document.getElementById('mainCard');
+    if (finalA3 >= 120 && gap >= 2.5) {
+        msg.style.display = "block";
+        card.classList.add('highlight');
+    } else {
+        msg.style.display = "none";
+        card.classList.remove('highlight');
+    }
+}
+</script>
+</body>
+</html>
