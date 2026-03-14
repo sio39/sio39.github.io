@@ -36,7 +36,7 @@ background-color: var(--bg-color);
 -webkit-font-smoothing: antialiased;
 }
 
-/* --- ヘッダー（全ページ統一） --- */
+/* --- ヘッダー：PCでロゴの横にナビを並べる設定 --- */
 .header {
 position: fixed;
 top: 0; left: 0; width: 100%;
@@ -45,8 +45,7 @@ backdrop-filter: blur(12px);
 z-index: 9999;
 border-bottom: 1px solid var(--border-color);
 display: flex;
-align-items: center;
-justify-content: center;
+justify-content: center; /* 全体を中央寄せ */
 padding: 14px 0;
 box-sizing: border-box;
 }
@@ -57,13 +56,14 @@ max-width: 850px;
 padding: 0 20px;
 display: flex;
 align-items: center;
-justify-content: space-between;
+justify-content: space-between; /* 左グループと右ボタンを離す */
 }
 
+/* ここが重要：ロゴとナビを左側にまとめる */
 .header-left {
 display: flex;
 align-items: center;
-gap: 30px;
+gap: 30px; /* ロゴとメニューの間の距離 */
 }
 
 .logo {
@@ -155,13 +155,12 @@ background: var(--primary-color);
 color: white;
 transition: 0.3s;
 }
-.btn:hover { background: var(--primary-dark); }
 
-/* --- スマホ最適化 --- */
+/* --- スマホ最適化（画面幅768px以下） --- */
 @media (max-width: 768px) {
     body { padding-top: 150px; font-size: 17px; }
     .header-container { flex-direction: column; gap: 12px; }
-    .header-left { flex-direction: column; gap: 12px; }
+    .header-left { flex-direction: column; gap: 12px; } /* スマホでは縦に並べる */
     nav { gap: 15px; width: 100%; justify-content: center; overflow-x: auto; padding-bottom: 5px; }
     .twitter-button { display: none; }
     .hero h1 { font-size: 1.8rem; }
@@ -191,7 +190,7 @@ transition: 0.3s;
 <main>
 <section class="hero">
 <h1>日本株リアルタイムボード<br>監視銘柄分析</h1>
-<p>ロジックで選び、リアルを見て買う</p>
+<p>AIスコア投資研究所 | ロジックで選び、リアルを見て買う</p>
 <img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" alt="AIスコア投資研究所">
 </section>
 
