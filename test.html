@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>日本株リアルタイムボード・監視銘柄分析 | AIスコア投資研究所</title>
-<meta name="description" content="AIスコア投資研究所は、日本株の監視銘柄・リアルタイムボード・AIスコアによる割安株分析を提供する個人投資家向け投資ツールサイトです。">
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
 <script>
@@ -14,242 +10,343 @@ gtag('js', new Date());
 gtag('config', 'G-5JCN1FB7ML');
 </script>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>銘柄データ自動更新ボード</title>
+
 <style>
-:root {
---primary-color: #4da3ff;
---primary-dark: #3b82f6;
---bg-color: #f8fafc;
---card-bg: #ffffff;
---text-main: #1e293b;
---text-sub: #64748b;
---border-color: #e2e8f0;
+
+:root{
+--primary:#4da3ff;
+--bg:#f3f6fb;
+--border:#d9e1ec;
+--buy-bg:#ffeaea;
+--buy-text:#c62828;
+/* ★強調色をさらに薄いオレンジ（フローラルホワイト）に変更しました */
+--highlight-bg: #fffaf0; 
 }
 
-body {
-font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-line-height: 1.7;
-color: var(--text-main);
-max-width: 850px;
-margin: 0 auto;
-padding: 120px 20px 60px 20px;
-background-color: var(--bg-color);
--webkit-font-smoothing: antialiased;
+body{
+font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
+margin:0;
+padding:140px 15px 60px;
+background:var(--bg);
+color:#334155;
+text-align:center;
 }
 
-/* --- ヘッダー：PCでロゴの横にナビを並べる設定 --- */
-.header {
-position: fixed;
-top: 0; left: 0; width: 100%;
-background: rgba(255, 255, 255, 0.98);
-backdrop-filter: blur(12px);
-z-index: 9999;
-border-bottom: 1px solid var(--border-color);
-display: flex;
-justify-content: center; /* 全体を中央寄せ */
-padding: 14px 0;
-box-sizing: border-box;
+.header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+background:rgba(255,255,255,0.96);
+backdrop-filter:blur(6px);
+border-bottom:2px solid var(--primary);
+z-index:9999;
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+justify-content:space-between;
+padding:12px 24px;
+box-sizing:border-box;
 }
 
-.header-container {
-width: 100%;
-max-width: 850px;
-padding: 0 20px;
-display: flex;
-align-items: center;
-justify-content: space-between; /* 左グループと右ボタンを離す */
+.logo{
+font-size:20px;
+font-weight:800;
+color:var(--primary);
+text-decoration:none;
 }
 
-/* ここが重要：ロゴとナビを左側にまとめる */
-.header-left {
-display: flex;
-align-items: center;
-gap: 30px; /* ロゴとメニューの間の距離 */
+nav{
+display:flex;
+gap:15px;
 }
 
-.logo {
-font-size: 20px;
-font-weight: 800;
-color: var(--primary-color);
-text-decoration: none;
-white-space: nowrap;
+nav a{
+color:#64748b;
+text-decoration:none;
+font-weight:600;
+font-size:15px;
 }
 
-nav { 
-display: flex; 
-gap: 20px; 
+nav a.active{
+color:var(--primary);
+border-bottom:2px solid var(--primary);
 }
 
-nav a {
-color: var(--text-sub);
-text-decoration: none;
-font-weight: 600;
-font-size: 15px;
-transition: 0.3s;
-white-space: nowrap;
+.twitter-button{
+background:#000;
+color:#fff;
+padding:6px 16px;
+border-radius:30px;
+font-size:12px;
+font-weight:bold;
+text-decoration:none;
 }
 
-nav a:hover, nav a.active { color: var(--primary-color); }
-
-.twitter-button {
-background: #000;
-color: white;
-padding: 8px 18px;
-border-radius: 30px;
-font-size: 13px;
-font-weight: bold;
-text-decoration: none;
+h1{
+font-size:1.6rem;
+margin-bottom:10px;
+color:#1e293b;
 }
 
-/* --- メインコンテンツ --- */
-.hero { text-align: center; margin-bottom: 40px; }
-.hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 15px; line-height: 1.3; }
-.hero p { color: var(--text-sub); font-size: 1.1rem; margin-bottom: 30px; }
-.hero img { width: 100%; max-width: 640px; height: auto; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-
-.guide-container { display: flex; gap: 15px; margin-bottom: 40px; }
-.guide-step {
-flex: 1;
-background: white;
-padding: 24px 15px;
-border-radius: 12px;
-border: 1px solid var(--border-color);
-text-align: center;
-}
-.step-label {
-display: inline-block;
-background: var(--primary-color);
-color: white;
-font-size: 0.8rem;
-font-weight: bold;
-padding: 3px 12px;
-border-radius: 20px;
-margin-bottom: 12px;
+.info-text{
+font-size:0.85rem;
+color:#475569;
+line-height:1.6;
+margin-bottom:20px;
+text-align:left;
+max-width:1100px;
+margin:0 auto 20px auto;
+background:#fff;
+padding:18px;
+border-radius:10px;
+border-left:6px solid var(--primary);
+box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
-.content-card {
-background: var(--card-bg);
-border-radius: 20px;
-padding: 32px;
-margin-bottom: 25px;
-border: 1px solid var(--border-color);
-transition: 0.3s;
-}
-.content-card:hover { border-color: var(--primary-color); }
-
-.card-title {
-font-size: 1.4rem; font-weight: 800; margin-bottom: 15px;
-display: flex; align-items: center; gap: 12px;
-}
-.card-title::before { content: ""; width: 5px; height: 26px; background: var(--primary-color); border-radius: 3px; }
-
-.btn {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-padding: 14px 30px;
-border-radius: 10px;
-font-size: 1rem;
-font-weight: 700;
-text-decoration: none;
-background: var(--primary-color);
-color: white;
-transition: 0.3s;
+.table-container{
+width:100%;
+max-width:1200px;
+background:#fff;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+overflow-x:auto;
+margin:0 auto;
 }
 
-/* --- スマホ最適化（画面幅768px以下） --- */
-@media (max-width: 768px) {
-    body { padding-top: 150px; font-size: 17px; }
-    .header-container { flex-direction: column; gap: 12px; }
-    .header-left { flex-direction: column; gap: 12px; } /* スマホでは縦に並べる */
-    nav { gap: 15px; width: 100%; justify-content: center; overflow-x: auto; padding-bottom: 5px; }
-    .twitter-button { display: none; }
-    .hero h1 { font-size: 1.8rem; }
-    .guide-container { flex-direction: column; }
-    .btn { width: 100%; box-sizing: border-box; }
+table{
+width:100%;
+border-collapse:collapse;
+min-width:900px;
 }
+
+th,td{
+border:1px solid #e2e8f0;
+padding:12px 8px;
+text-align:center;
+font-size:0.85rem;
+}
+
+th{
+background:#2c3e50;
+color:#fff;
+font-weight:600;
+position:sticky;
+top:0;
+}
+
+/* ★奇数行のデフォルト背景（白） */
+tr {
+background-color: #ffffff;
+}
+
+/* 偶数行の背景 */
+tr:nth-child(even){
+background:#f8fafc;
+}
+
+/* ★区分が1の時の行強調スタイル（優先度高く設定） */
+tr.row-highlight {
+background-color: var(--highlight-bg) !important;
+}
+
+tr:hover{
+background:#eef5ff;
+transition:0.2s;
+}
+
+/* RVOL列の黄色い背景 */
+td:nth-child(10),
+td:nth-child(11){
+background:#fffde7 !important;
+font-weight:bold;
+}
+
+.buy-highlight{
+background:var(--buy-bg)!important;
+color:var(--buy-text)!important;
+font-weight:800!important;
+font-size:0.9rem!important;
+border:2px solid var(--buy-text)!important;
+}
+
+.volume-spike{
+background:#fff3cd!important;
+font-weight:bold;
+border:2px solid #ff9800!important;
+}
+
+footer{
+margin-top:40px;
+color:#94a3b8;
+font-size:0.8rem;
+}
+
+@media(max-width:600px){
+
+body{
+padding-top:180px;
+}
+
+.header{
+justify-content:center;
+padding:10px;
+}
+
+nav{
+margin-top:10px;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
 <header class="header">
-    <div class="header-container">
-        <div class="header-left">
-            <a href="index.html" class="logo">AIスコア投資研究所</a>
-            <nav>
-                <a href="index.html" class="active">TOP</a>
-                <a href="scoresiki.html">スコア計算機</a>
-                <a href="tool.html">ツール</a>
-                <a href="realtime.html">リアルボード</a>
-            </nav>
-        </div>
-        <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
-    </div>
+<a href="index.html" class="logo">AIスコア投資研究所</a>
+
+<nav>
+<a href="index.html">TOP</a>
+<a href="scoresiki.html">AIスコア計算機</a>
+<a href="tool.html">ツール</a>
+<a href="realtime.html" class="active">リアルボード</a>
+</nav>
+
+<a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+
 </header>
 
-<main>
-<section class="hero">
-<h1>日本株リアルタイムボード<br>監視銘柄分析</h1>
-<p>AIスコア投資研究所 | ロジックで選び、リアルを見て買う</p>
-<img src="https://raw.githubusercontent.com/sio39/sio39.github.io/main/001.png" alt="AIスコア投資研究所">
-</section>
+<h1>銘柄リアルタイムボード</h1>
 
-<div class="guide-container">
-    <div class="guide-step">
-        <span class="step-label">STEP 1</span>
-        <h3>ロジックを知る</h3>
-        <p>AIスコアの基準を理解し判断の軸を作ります。</p>
-    </div>
-    <div class="guide-step">
-        <span class="step-label">STEP 2</span>
-        <h3>銘柄を選ぶ</h3>
-        <p>高スコア銘柄リストから候補を絞ります。</p>
-    </div>
-    <div class="guide-step">
-        <span class="step-label">STEP 3</span>
-        <h3>リアルで買う</h3>
-        <p>ボードで資金流入を確認し、好機を捉えます。</p>
-    </div>
+<div id="csv-update-time" style="font-weight:bold;color:#d9534f;margin-bottom:10px;">
+CSVデータ読み込み中...
 </div>
 
-<div class="content-card">
-<div class="card-title">AIスコア解説</div>
-<p>独自アルゴリズムにより銘柄の割安度・収益性・成長性を数値化。感情を排除し、定量的なデータに基づいて抽出します。</p>
-<a href="ai-score.html" class="btn">詳細ロジックを学ぶ</a>
+<div id="last-load" style="font-size:0.75rem;color:#94a3b8;margin-bottom:20px;"></div>
+
+<div class="info-text">
+※自動更新作動中は５分毎に更新されます。<br>
+<strong>【背景色の見方】</strong><br>
+・薄いオレンジ色の行：AIスコア基準をクリアした期待銘柄です。<br>
+・白色の行：基準外ですが、動きが良いため特別に監視リストに入れています。<br>
+※RVOL×補正係数が1.5以上。且つ前日比プラスなら買いサイン。補正係数は「330÷経過分数」です。<br>
+※買いサインが出ていれば後はVWAPとの位置関係とチャートを見て上がりそうならインです。<br>
+※２０日平均出来高は手動入力のためデータは最新ではありません。そのため誤差があります。<br>
+※出来高が落ち着く9：30以降のほうが精度が高い
 </div>
 
-<div class="content-card">
-<div class="card-title">AIスコア計算機</div>
-<p>AIスコアを自分でも計算してみましょう。銘柄のポテンシャルを可視化します。</p>
-<a href="scoresiki.html" class="btn">計算機を使ってみる</a>
+<div class="table-container">
+
+<table id="csv-table">
+<thead id="table-header"></thead>
+<tbody id="table-body"></tbody>
+</table>
+
 </div>
 
-<div class="content-card">
-<div class="card-title">監視銘柄リスト</div>
-<p>AIスコアの条件をクリアした日本株リスト。デイトレードや中期投資の候補銘柄を効率的に探せます。</p>
-<a href="score.html" class="btn">銘柄リストを見る</a>
-</div>
+<script>
 
-<div class="content-card">
-<div class="card-title">リアルタイムボード</div>
-<p>価格・出来高・資金流入を5分更新で表示。短期資金の動きを視覚的に把握するための最強ツールです。</p>
-<a href="realtime.html" class="btn">ボードをチェックする</a>
-</div>
+async function loadCSV(){
 
-<div class="content-card">
-<div class="card-title">個別銘柄分析</div>
-<p>注目銘柄について、資本政策や財務構造まで踏み込んだ深掘り分析を掲載しています。</p>
-<a href="kobetu.html" class="btn">分析記事を読む</a>
-</div>
-</main>
+try{
 
-<footer style="text-align:center; padding:40px 0; color:#94a3b8; font-size:0.9rem; border-top:1px solid #e2e8f0; margin-top:60px;">
+const response = await fetch('data_push.csv',{cache:"no-store"});
+const data = await response.text();
+
+const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="")
+
+const tableHeader=document.getElementById('table-header')
+const tableBody=document.getElementById('table-body')
+
+tableHeader.innerHTML=''
+tableBody.innerHTML=''
+
+let headers=[]
+
+rows.forEach((row,index)=>{
+
+if(row.includes("Update:")){
+document.getElementById('csv-update-time').textContent='最終更新: '+row.split(',')[0].replace("Update:","").trim()
+return
+}
+
+const columns=row.split(',')
+const tr=document.createElement('tr')
+
+// ★ 区分による行の色分け判定（データ行のみ）
+if(index !== 0) {
+    // CSVの12列目(インデックス11)が "1" なら強調用クラスを追加
+    if(columns[11] && columns[11].replace(/"/g,'').trim() === "1") {
+        tr.classList.add('row-highlight');
+    }
+}
+
+// ★ 11列目（判定）までを表示し、12列目（区分）は表示しない設定
+for(let colIndex = 0; colIndex < 11; colIndex++) {
+    const colText = columns[colIndex] || "";
+    const cell=(index===0)?document.createElement('th'):document.createElement('td')
+
+    let val=colText.replace(/"/g,'').trim()
+
+    if(index===0){
+        headers[colIndex]=val.toLowerCase()
+    }
+
+    if(index!==0 && headers[colIndex] && headers[colIndex].includes("rvol")){
+        let num=parseFloat(val)
+        if(!isNaN(num)){
+            if(num>=2){
+                cell.classList.add("volume-spike")
+            }
+            val=num.toFixed(2)
+        }
+    }
+
+    cell.textContent=val
+
+    if(val==="買い"){
+        cell.classList.add("buy-highlight")
+    }
+
+    tr.appendChild(cell)
+}
+
+if(index===0){
+    tableHeader.appendChild(tr)
+}else{
+    tableBody.appendChild(tr)
+}
+
+})
+
+document.getElementById('last-load').textContent='ブラウザ更新: '+new Date().toLocaleString()
+
+}catch(e){
+console.error(e)
+}
+
+}
+
+loadCSV()
+setInterval(loadCSV,30000)
+
+</script>
+
+<footer>
+
 © 2026 AIスコア投資研究所
-<div style="margin-top:20px;">
+<p>↓応援クリックお願いします</p>
+
 <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
-<img src="https://b.blogmura.com/stock/88_31.gif" alt="ブログ村">
+<img src="https://b.blogmura.com/stock/88_31.gif">
 </a>
-</div>
+
 </footer>
 
 </body>
