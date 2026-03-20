@@ -23,7 +23,6 @@ gtag('config', 'G-5JCN1FB7ML');
 --border:#d9e1ec;
 --buy-bg:#ffeaea;
 --buy-text:#c62828;
-/* ★強調色をさらに薄いオレンジ（フローラルホワイト）に変更しました */
 --highlight-bg: #fffaf0; 
 }
 
@@ -139,17 +138,14 @@ position:sticky;
 top:0;
 }
 
-/* ★奇数行のデフォルト背景（白） */
 tr {
 background-color: #ffffff;
 }
 
-/* 偶数行の背景 */
 tr:nth-child(even){
 background:#f8fafc;
 }
 
-/* ★区分が1の時の行強調スタイル（優先度高く設定） */
 tr.row-highlight {
 background-color: var(--highlight-bg) !important;
 }
@@ -159,7 +155,6 @@ background:#eef5ff;
 transition:0.2s;
 }
 
-/* RVOL列の黄色い背景 */
 td:nth-child(10),
 td:nth-child(11){
 background:#fffde7 !important;
@@ -187,20 +182,9 @@ font-size:0.8rem;
 }
 
 @media(max-width:600px){
-
-body{
-padding-top:180px;
-}
-
-.header{
-justify-content:center;
-padding:10px;
-}
-
-nav{
-margin-top:10px;
-}
-
+body{ padding-top:180px; }
+.header{ justify-content:center; padding:10px; }
+nav{ margin-top:10px; }
 }
 
 </style>
@@ -235,10 +219,10 @@ CSVデータ読み込み中...
 <strong>【背景色の見方】</strong><br>
 ・薄いオレンジ色の行：AIスコア基準をクリアした期待銘柄です。<br>
 ・白色の行：基準外ですが、動きが良いため特別に監視リストに入れています。<br>
-※RVOL×補正係数が1.5以上。且つ前日比プラスなら買いサイン。補正係数は「330÷経過分数」です。<br>
+※RVOL×補正係数が1.5以上、且つ前日比プラスなら買いサイン。補正係数は「330÷経過分数」です。<br>
 ※買いサインが出ていれば後はVWAPとの位置関係とチャートを見て上がりそうならインです。<br>
-※２０日平均出来高は手動入力のためデータは最新ではありません。そのため誤差があります。<br>
-※出来高が落ち着く9：30以降のほうが精度が高い
+※２０日平均出来高は楽天RSSより自動取得しており、常に最新の状態で計算されています。<br>
+※出来高が落ち着く9：30以降のほうが精度が高いです。
 </div>
 
 <div class="table-container">
@@ -255,10 +239,11 @@ CSVデータ読み込み中...
 async function loadCSV(){
 
 try{
-
+// キャッシュを無効にしてCSVを読み込む
 const response = await fetch('data_push.csv',{cache:"no-store"});
 const data = await response.text();
 
+// 改行で分割し、空行を除去。これで銘柄数の増減に自動対応。
 const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="")
 
 const tableHeader=document.getElementById('table-header')
@@ -271,83 +256,21 @@ let headers=[]
 
 rows.forEach((row,index)=>{
 
+// 更新時刻の行を処理
 if(row.includes("Update:")){
-document.getElementById('csv-update-time').textContent='最終更新: '+row.split(',')[0].replace("Update:","").trim()
-return
+    document.getElementById('csv-update-time').textContent='最終更新: '+row.split(',')[0].replace("Update:","").trim()
+    return
 }
 
 const columns=row.split(',')
 const tr=document.createElement('tr')
 
-// ★ 区分による行の色分け判定（データ行のみ）
+// ★ 区分による行の色分け（データ行のみ、12列目を参照）
 if(index !== 0) {
-    // CSVの12列目(インデックス11)が "1" なら強調用クラスを追加
     if(columns[11] && columns[11].replace(/"/g,'').trim() === "1") {
         tr.classList.add('row-highlight');
     }
 }
 
-// ★ 11列目（判定）までを表示し、12列目（区分）は表示しない設定
-for(let colIndex = 0; colIndex < 11; colIndex++) {
-    const colText = columns[colIndex] || "";
-    const cell=(index===0)?document.createElement('th'):document.createElement('td')
-
-    let val=colText.replace(/"/g,'').trim()
-
-    if(index===0){
-        headers[colIndex]=val.toLowerCase()
-    }
-
-    if(index!==0 && headers[colIndex] && headers[colIndex].includes("rvol")){
-        let num=parseFloat(val)
-        if(!isNaN(num)){
-            if(num>=2){
-                cell.classList.add("volume-spike")
-            }
-            val=num.toFixed(2)
-        }
-    }
-
-    cell.textContent=val
-
-    if(val==="買い"){
-        cell.classList.add("buy-highlight")
-    }
-
-    tr.appendChild(cell)
-}
-
-if(index===0){
-    tableHeader.appendChild(tr)
-}else{
-    tableBody.appendChild(tr)
-}
-
-})
-
-document.getElementById('last-load').textContent='ブラウザ更新: '+new Date().toLocaleString()
-
-}catch(e){
-console.error(e)
-}
-
-}
-
-loadCSV()
-setInterval(loadCSV,30000)
-
-</script>
-
-<footer>
-
-© 2026 AIスコア投資研究所
-<p>↓応援クリックお願いします</p>
-
-<a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
-<img src="https://b.blogmura.com/stock/88_31.gif">
-</a>
-
-</footer>
-
-</body>
-</html>
+// 判定列(11列目)までを表示ループ
+for(let col
