@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -9,268 +8,97 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-5JCN1FB7ML');
 </script>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>銘柄データ自動更新ボード</title>
-
 <style>
-
-:root{
---primary:#4da3ff;
---bg:#f3f6fb;
---border:#d9e1ec;
---buy-bg:#ffeaea;
---buy-text:#c62828;
---highlight-bg: #fffaf0; 
-}
-
-body{
-font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
-margin:0;
-padding:140px 15px 60px;
-background:var(--bg);
-color:#334155;
-text-align:center;
-}
-
-.header{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-background:rgba(255,255,255,0.96);
-backdrop-filter:blur(6px);
-border-bottom:2px solid var(--primary);
-z-index:9999;
-display:flex;
-flex-wrap:wrap;
-align-items:center;
-justify-content:space-between;
-padding:12px 24px;
-box-sizing:border-box;
-}
-
-.logo{
-font-size:20px;
-font-weight:800;
-color:var(--primary);
-text-decoration:none;
-}
-
-nav{
-display:flex;
-gap:15px;
-}
-
-nav a{
-color:#64748b;
-text-decoration:none;
-font-weight:600;
-font-size:15px;
-}
-
-nav a.active{
-color:var(--primary);
-border-bottom:2px solid var(--primary);
-}
-
-.twitter-button{
-background:#000;
-color:#fff;
-padding:6px 16px;
-border-radius:30px;
-font-size:12px;
-font-weight:bold;
-text-decoration:none;
-}
-
-h1{
-font-size:1.6rem;
-margin-bottom:10px;
-color:#1e293b;
-}
-
-.info-text{
-font-size:0.85rem;
-color:#475569;
-line-height:1.6;
-margin-bottom:20px;
-text-align:left;
-max-width:1100px;
-margin:0 auto 20px auto;
-background:#fff;
-padding:18px;
-border-radius:10px;
-border-left:6px solid var(--primary);
-box-shadow:0 4px 10px rgba(0,0,0,0.05);
-}
-
-.table-container{
-width:100%;
-max-width:1200px;
-background:#fff;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
-overflow-x:auto;
-margin:0 auto;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-min-width:900px;
-}
-
-th,td{
-border:1px solid #e2e8f0;
-padding:12px 8px;
-text-align:center;
-font-size:0.85rem;
-}
-
-th{
-background:#2c3e50;
-color:#fff;
-font-weight:600;
-position:sticky;
-top:0;
-}
-
-tr {
-background-color: #ffffff;
-}
-
-tr:nth-child(even){
-background:#f8fafc;
-}
-
-tr.row-highlight {
-background-color: var(--highlight-bg) !important;
-}
-
-tr:hover{
-background:#eef5ff;
-transition:0.2s;
-}
-
-td:nth-child(10),
-td:nth-child(11){
-background:#fffde7 !important;
-font-weight:bold;
-}
-
-.buy-highlight{
-background:var(--buy-bg)!important;
-color:var(--buy-text)!important;
-font-weight:800!important;
-font-size:0.9rem!important;
-border:2px solid var(--buy-text)!important;
-}
-
-.volume-spike{
-background:#fff3cd!important;
-font-weight:bold;
-border:2px solid #ff9800!important;
-}
-
-footer{
-margin-top:40px;
-color:#94a3b8;
-font-size:0.8rem;
-}
-
-@media(max-width:600px){
-body{ padding-top:180px; }
-.header{ justify-content:center; padding:10px; }
-nav{ margin-top:10px; }
-}
-
+:root{ --primary:#4da3ff; --bg:#f3f6fb; --border:#d9e1ec; --buy-bg:#ffeaea; --buy-text:#c62828; --highlight-bg: #fffaf0; }
+body{ font-family:sans-serif; margin:0; padding:140px 15px 60px; background:var(--bg); color:#334155; text-align:center; }
+.header{ position:fixed; top:0; left:0; width:100%; background:rgba(255,255,255,0.96); backdrop-filter:blur(6px); border-bottom:2px solid var(--primary); z-index:9999; display:flex; justify-content:space-between; padding:12px 24px; box-sizing:border-box; }
+.logo{ font-size:20px; font-weight:800; color:var(--primary); text-decoration:none; }
+nav{ display:flex; gap:15px; }
+nav a{ color:#64748b; text-decoration:none; font-weight:600; }
+nav a.active{ color:var(--primary); border-bottom:2px solid var(--primary); }
+.twitter-button{ background:#000; color:#fff; padding:6px 16px; border-radius:30px; font-size:12px; text-decoration:none; }
+.info-text{ font-size:0.85rem; color:#475569; text-align:left; max-width:1100px; margin:0 auto 20px auto; background:#fff; padding:18px; border-radius:10px; border-left:6px solid var(--primary); box-shadow:0 4px 10px rgba(0,0,0,0.05); }
+.table-container{ width:100%; max-width:1200px; background:#fff; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.08); overflow-x:auto; margin:0 auto; }
+table{ width:100%; border-collapse:collapse; min-width:900px; }
+th,td{ border:1px solid #e2e8f0; padding:12px 8px; text-align:center; font-size:0.85rem; }
+th{ background:#2c3e50; color:#fff; position:sticky; top:0; }
+tr:nth-child(even){ background:#f8fafc; }
+tr.row-highlight { background-color: var(--highlight-bg) !important; }
+td:nth-child(10), td:nth-child(11){ background:#fffde7 !important; font-weight:bold; }
+.buy-highlight{ background:var(--buy-bg)!important; color:var(--buy-text)!important; font-weight:800!important; border:2px solid var(--buy-text)!important; }
+.volume-spike{ background:#fff3cd!important; font-weight:bold; border:2px solid #ff9800!important; }
+footer{ margin-top:40px; color:#94a3b8; font-size:0.8rem; }
 </style>
 </head>
-
 <body>
-
 <header class="header">
 <a href="index.html" class="logo">AIスコア投資研究所</a>
-
 <nav>
 <a href="index.html">TOP</a>
 <a href="scoresiki.html">AIスコア計算機</a>
 <a href="tool.html">ツール</a>
 <a href="realtime.html" class="active">リアルボード</a>
 </nav>
-
 <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
-
 </header>
-
 <h1>銘柄リアルタイムボード</h1>
-
-<div id="csv-update-time" style="font-weight:bold;color:#d9534f;margin-bottom:10px;">
-CSVデータ読み込み中...
-</div>
-
+<div id="csv-update-time" style="font-weight:bold;color:#d9534f;margin-bottom:10px;">CSV読み込み待機中...</div>
 <div id="last-load" style="font-size:0.75rem;color:#94a3b8;margin-bottom:20px;"></div>
-
 <div class="info-text">
 ※自動更新作動中は５分毎に更新されます。<br>
 <strong>【背景色の見方】</strong><br>
 ・薄いオレンジ色の行：AIスコア基準をクリアした期待銘柄です。<br>
-・白色の行：基準外ですが、動きが良いため特別に監視リストに入れています。<br>
-※RVOL×補正係数が1.5以上、且つ前日比プラスなら買いサイン。補正係数は「330÷経過分数」です。<br>
-※買いサインが出ていれば後はVWAPとの位置関係とチャートを見て上がりそうならインです。<br>
-※２０日平均出来高は楽天RSSより自動取得しており、常に最新の状態で計算されています。<br>
-※出来高が落ち着く9：30以降のほうが精度が高いです。
+・白色の行：基準外ですが、監視リストに入れています。<br>
+※２０日平均出来高は楽天RSSより自動取得しています。
 </div>
-
 <div class="table-container">
-
-<table id="csv-table">
-<thead id="table-header"></thead>
-<tbody id="table-body"></tbody>
-</table>
-
+<table id="csv-table"><thead id="table-header"></thead><tbody id="table-body"></tbody></table>
 </div>
-
 <script>
-
 async function loadCSV(){
-
-try{
-// キャッシュを無効にしてCSVを読み込む
-const response = await fetch('data_push.csv',{cache:"no-store"});
-const data = await response.text();
-
-// 改行で分割し、空行を除去。これで銘柄数の増減に自動対応。
-const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="")
-
-const tableHeader=document.getElementById('table-header')
-const tableBody=document.getElementById('table-body')
-
-tableHeader.innerHTML=''
-tableBody.innerHTML=''
-
-let headers=[]
-
-rows.forEach((row,index)=>{
-
-// 更新時刻の行を処理
-if(row.includes("Update:")){
-    document.getElementById('csv-update-time').textContent='最終更新: '+row.split(',')[0].replace("Update:","").trim()
-    return
+    try{
+        const response = await fetch('data_push.csv?t=' + new Date().getTime());
+        if(!response.ok) throw new Error("HTTP error");
+        const data = await response.text();
+        const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="");
+        const tableHeader=document.getElementById('table-header');
+        const tableBody=document.getElementById('table-body');
+        tableHeader.innerHTML=''; tableBody.innerHTML='';
+        let headers=[];
+        rows.forEach((row,index)=>{
+            if(row.indexOf("Update:") !== -1){
+                document.getElementById('csv-update-time').textContent='最終更新: '+row.split(',')[0].replace("Update:","").trim();
+                return;
+            }
+            const columns=row.split(',');
+            if(!columns[0] || columns[0].trim()==="") return;
+            const tr=document.createElement('tr');
+            if(index !== 0 && columns[11] && columns[11].replace(/"/g,'').trim()==="1") tr.classList.add('row-highlight');
+            for(let colIndex = 0; colIndex < 11; colIndex++){
+                const cell=(index===0)?document.createElement('th'):document.createElement('td');
+                let val=(columns[colIndex] || "").replace(/"/g,'').trim();
+                if(index===0) headers[colIndex]=val.toLowerCase();
+                if(index!==0 && headers[colIndex] && headers[colIndex].includes("rvol")){
+                    let num=parseFloat(val);
+                    if(!isNaN(num)){
+                        if(num>=2) cell.classList.add("volume-spike");
+                        val=num.toFixed(2);
+                    }
+                }
+                cell.textContent=val;
+                if(val==="買い") cell.classList.add("buy-highlight");
+                tr.appendChild(cell);
+            }
+            if(index===0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
+        });
+        document.getElementById('last-load').textContent='ブラウザ更新: '+new Date().toLocaleString();
+    }catch(e){ document.getElementById('csv-update-time').textContent='データ更新待ち...'; }
 }
-
-const columns=row.split(',')
-const tr=document.createElement('tr')
-
-// ★ 区分による行の色分け（データ行のみ、12列目を参照）
-if(index !== 0) {
-    if(columns[11] && columns[11].replace(/"/g,'').trim() === "1") {
-        tr.classList.add('row-highlight');
-    }
-}
-
-// 判定列(11列目)までを表示ループ
-for(let col
+loadCSV(); setInterval(loadCSV,30000);
+</script>
+<footer>© 2026 AIスコア投資研究所</footer>
+</body>
+</html>
