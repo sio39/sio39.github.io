@@ -13,7 +13,7 @@ gtag('config', 'G-5JCN1FB7ML');
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>銘銘柄リアルタイムボード | AIスコア投資研究所</title>
+<title>銘柄リアルタイムボード | AIスコア投資研究所</title>
 
 <style>
 :root {
@@ -44,7 +44,6 @@ body {
     align-items: center;
 }
 
-/* ヘッダーデザイン */
 .header {
     position: fixed;
     top: 0;
@@ -72,8 +71,7 @@ body {
 }
 
 nav {
-    display: flex;
-    gap: 25px;
+    display: flex; gap: 25px;
 }
 
 nav a {
@@ -98,7 +96,6 @@ nav a:hover, nav a.active {
     text-decoration: none;
 }
 
-/* タイトル・更新情報エリア */
 .title-area {
     text-align: center;
     margin-bottom: 25px;
@@ -123,7 +120,6 @@ h1 {
     color: var(--text-sub);
 }
 
-/* 説明文 */
 .info-text {
     font-size: 0.85rem;
     color: var(--text-main);
@@ -139,7 +135,6 @@ h1 {
     box-sizing: border-box;
 }
 
-/* テーブルデザイン */
 .table-container {
     width: 100%;
     max-width: 1200px;
@@ -157,7 +152,7 @@ h1 {
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1000px;
+    min-width: 800px;
     table-layout: fixed;
 }
 
@@ -180,7 +175,7 @@ tr:nth-child(even) { background: #fcfcfd; }
 tr.row-highlight { background-color: var(--highlight-bg) !important; }
 tr:hover { background: #f1f5f9; }
 
-td:nth-child(10), td:nth-child(11) {
+.col-rvol-style {
     background: #fffef3 !important;
     color: #854d0e;
     font-weight: 700;
@@ -237,9 +232,9 @@ footer {
 </div>
 
 <div class="info-text">
-    <strong>【データ更新】</strong> 自動更新作動中は５分毎に更新されます。<br>
+    <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
     <strong>【背景色の意味】</strong> <span style="background:var(--highlight-bg); padding:2px 6px; border-radius:4px; border:1px solid #fee2e2;">薄いオレンジ</span>：AIスコア基準クリア銘柄 / <span>白色</span>：特別監視銘柄<br>
-    <small style="color:var(--text-sub); display:block; margin-top:8px;">※RVOL×補正係数1.5以上 ＋ 前日比プラス ＋ VWAPより上で買いサインを表示します。</small>
+    <small style="color:var(--text-sub); display:block; margin-top:8px;">※RVOL×補正1.5以上 ＋ 前日比プラス ＋ VWAPより上で買いサインを表示。</small>
 </div>
 
 <div class="table-container">
@@ -264,14 +259,18 @@ async function loadCSV(){
         const response = await fetch('data_push.csv',{cache:"no-store"});
         const data = await response.text();
         const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="")
-        const tableHeader=document.getElementById('table-header')
-        const tableBody=document.getElementById('table-body')
+        const tableHeader = document.getElementById('table-header')
+        const tableBody = document.getElementById('table-body')
 
-        tableHeader.innerHTML=''
-        tableBody.innerHTML=''
-        let headers=[]
+        tableHeader.innerHTML = ''
+        tableBody.innerHTML = ''
+        
+        // 画像に基づいた非表示インデックス
+        // 3: 前日差額 (画像では隠れていますが飛ばします)
+        // 7: 20日平均出来高 (画像で「出来高」の次にある列)
+        const hideIndices = [3, 7];
 
-        rows.forEach((row,index)=>{
+        rows.forEach((row, index) => {
             if(row.includes("Update:")){
                 document.getElementById('csv-update-time').innerHTML = 
                     '<span style="font-size:0.85rem; color:#64748b; font-weight:normal;">最終更新:</span> ' + row.split(',')[0].replace("Update:","").trim();
@@ -281,68 +280,58 @@ async function loadCSV(){
             const columns = row.split(',')
             const tr = document.createElement('tr')
 
-            // 背景色フラグ判定（11番目のデータ＝インデックス11）
+            // 背景色ハイライト（CSVの最後の方にあるフラグ）
             if(index !== 0 && columns[11]) {
                 if(columns[11].replace(/"/g,'').trim() === "1") {
                     tr.classList.add('row-highlight');
                 }
             }
 
-            // --- 買い判定データの抽出 ---
-            let isPricePositive = false; 
-            let isAboveVWAP = false;    
-            let isHighRVOL = false;     
+            // --- 買い判定ロジック用 ---
+            const clean = (str) => str ? str.replace(/"/g,'').replace(/,/g,'').trim() : "";
+            const currentPrice = parseFloat(clean(columns[2])); // 2: 現在値
+            const changePercent = parseFloat(clean(columns[3])); // 画像では3列目が「比率」
+            const vwap = parseFloat(clean(columns[4]));         // 画像では4列目が「VWAP」
+            const rvolAdjusted = parseFloat(clean(columns[9])); // 画像では9列目が「補正RVOL」
 
-            if (index !== 0) {
-                // 文字列の掃除（引用符削除、カンマ削除）
-                const clean = (str) => str ? str.replace(/"/g,'').replace(/,/g,'').trim() : "";
-                
-                const currentPrice = parseFloat(clean(columns[2])); // 3列目: 現在値
-                const change = parseFloat(clean(columns[3]));       // 4列目: 前日比
-                const vwap = parseFloat(clean(columns[5]));         // 6列目: VWAP
-                const rvolAdjusted = parseFloat(clean(columns[10])); // 11列目: RVOL×補正
-
-                if (!isNaN(change) && change > 0) isPricePositive = true;
-                if (!isNaN(currentPrice) && !isNaN(vwap) && currentPrice >= vwap) isAboveVWAP = true;
-                if (!isNaN(rvolAdjusted) && rvolAdjusted >= 1.5) isHighRVOL = true;
-            }
+            let isPricePositive = (!isNaN(changePercent) && changePercent > 0);
+            let isAboveVWAP = (!isNaN(currentPrice) && !isNaN(vwap) && currentPrice >= vwap);
+            let isHighRVOL = (!isNaN(rvolAdjusted) && rvolAdjusted >= 1.5);
 
             for(let i = 0; i < 11; i++) {
+                if(hideIndices.includes(i)) continue;
+
                 const colText = columns[i] || "";
                 const cell = (index === 0) ? document.createElement('th') : document.createElement('td')
                 let val = colText.replace(/"/g,'').trim()
 
                 if(index === 0){
-                    headers[i] = val.toLowerCase();
-                    if(val === "当日出来高") val = "出来高";
-                    if(val === "20日平均出来高") val = "20日平均";
-                }
-
-                if(index !== 0){
-                    // RVOL列の整形
-                    if(headers[i] && headers[i].includes("rvol")){
-                        let num = parseFloat(val.replace(/,/g,''))
+                    cell.textContent = val;
+                } else {
+                    if(i === 0) {
+                        // コード列はカンマなし
+                        cell.textContent = val.replace(/,/g, '');
+                    } else if(i === 8 || i === 9) {
+                        // RVOL系（インデックスは表示上の位置に合わせJSで調整）
+                        cell.classList.add("col-rvol-style");
+                        let num = parseFloat(val.replace(/,/g,''));
                         if(!isNaN(num)){
                             if(num >= 2) cell.classList.add("volume-spike");
-                            val = num.toFixed(2);
+                            cell.textContent = num.toFixed(2);
+                        } else {
+                            cell.textContent = val;
                         }
-                    } else if (!isNaN(parseFloat(val.replace(/,/g,''))) && val.length > 3 && !val.includes('.')) {
-                        val = formatNum(val);
+                    } else {
+                        // 数値整形
+                        cell.textContent = (!isNaN(parseFloat(val.replace(/,/g,''))) && val.length > 3 && !val.includes('.')) 
+                                           ? formatNum(val) : val;
                     }
-                }
 
-                cell.textContent = val;
-
-                // --- 買い判定の適用（3条件すべて合致、またはCSVに直接「買い」とある場合） ---
-                if(index !== 0) {
-                    const isManualBuy = (val === "買い");
-                    const isLogicBuy = (i === 10 && isPricePositive && isAboveVWAP && isHighRVOL);
-                    
-                    if(isManualBuy || isLogicBuy) {
+                    // 買い判定（補正RVOL列 = iが9のとき）
+                    if(val === "買い" || (i === 9 && isPricePositive && isAboveVWAP && isHighRVOL)) {
                         cell.classList.add("buy-highlight");
                     }
                 }
-                
                 tr.appendChild(cell)
             }
 
