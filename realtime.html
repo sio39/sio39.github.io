@@ -13,13 +13,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>銘柄リアルタイムボード | AIスコア投資研究所</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <style>
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #1d4ed8;
+            --primary: #4da3ff; /* TOPページと統一 */
+            --primary-dark: #3b82f6;
             --bg: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #334155;
+            --text-main: #1e293b;
             --text-sub: #64748b;
             --border: #e2e8f0;
             --header-bg: #1e293b;
@@ -33,7 +35,7 @@
         body {
             font-family: "Inter", "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
             margin: 0;
-            padding: 100px 15px 60px;
+            padding: 120px 15px 60px; /* ナビが2段になるスマホ考慮で少し広めに */
             background: var(--bg);
             color: var(--text-main);
             line-height: 1.5;
@@ -42,22 +44,33 @@
             align-items: center;
         }
 
+        /* --- 統一ヘッダーデザイン --- */
         .header {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
             z-index: 9999;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            padding: 14px 0;
+            box-sizing: border-box;
+        }
+
+        .header-container {
+            width: 100%;
+            max-width: 850px;
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
-            height: 70px;
-            box-sizing: border-box;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
         }
 
         .logo {
@@ -65,35 +78,51 @@
             font-weight: 800;
             color: var(--primary);
             text-decoration: none;
-            letter-spacing: -0.5px;
+            white-space: nowrap;
         }
 
-        nav {
-            display: flex; gap: 25px;
+        nav { 
+            display: flex; 
+            gap: 20px; 
         }
 
         nav a {
             color: var(--text-sub);
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
-            transition: 0.2s;
+            font-size: 15px;
+            transition: 0.3s;
+            white-space: nowrap;
         }
 
-        nav a:hover, nav a.active {
-            color: var(--primary);
+        nav a:hover, nav a.active { color: var(--primary); }
+
+        .header-sns {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .twitter-button {
-            background: #000;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
+        .sns-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: white !important;
             text-decoration: none;
+            font-size: 16px;
+            transition: 0.3s;
         }
 
+        .sns-icon.x { background: #000; }
+        .sns-icon.youtube { background: #ff0000; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 14px; }
+
+        .sns-icon:hover { transform: translateY(-2px); opacity: 0.8; }
+
+        /* --- ボード用スタイル --- */
         .title-area {
             text-align: center;
             margin-bottom: 25px;
@@ -202,10 +231,10 @@
         }
 
         @media (max-width: 768px) {
-            body { padding-top: 140px; }
-            .header { padding: 15px; flex-direction: column; height: auto; }
-            nav { margin: 12px 0; gap: 15px; }
-            h1 { font-size: 1.4rem; }
+            body { padding-top: 160px; }
+            .header-container { flex-direction: column; gap: 12px; }
+            .header-left { flex-direction: column; gap: 8px; }
+            nav { gap: 15px; width: 100%; justify-content: center; overflow-x: auto; padding-bottom: 5px; }
         }
     </style>
 </head>
@@ -213,14 +242,23 @@
 <body>
 
 <header class="header">
-    <a href="index.html" class="logo">AIスコア投資研究所</a>
-    <nav>
-        <a href="index.html">TOP</a>
-        <a href="scoresiki.html">AIスコア計算機</a>
-        <a href="tool.html">ツール</a>
-        <a href="realtime.html" class="active">リアルボード</a>
-    </nav>
-    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+    <div class="header-container">
+        <div class="header-left">
+            <a href="index.html" class="logo">AIスコア投資研究所</a>
+            <nav>
+                <a href="index.html">TOP</a>
+                <a href="scoresiki.html">AIスコア計算機</a>
+                <a href="tool.html">ツール</a>
+                <a href="realtime.html" class="active">リアルボード</a>
+            </nav>
+        </div>
+        
+        <div class="header-sns">
+            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x" title="𝕏 (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note" title="note">n</a>
+        </div>
+    </div>
 </header>
 
 <div class="title-area">
@@ -232,7 +270,7 @@
 <div class="info-text">
     <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
     <strong>【背景色の意味】</strong> <span style="background:var(--highlight-bg); padding:2px 6px; border-radius:4px; border:1px solid #fee2e2;">薄いオレンジ</span>：AIスコア基準クリア銘柄 / <span>白色</span>：特別監視銘柄<br>
-    <small ...>※判定条件：(A3 × 補正RVOL) ≧ 180 ＋ **補正RVOL 1.5以上** ＋ VWAPより上で「🔥買い」を表示。</small>
+    <small>※判定条件：(A3 × 補正RVOL) ≧ 180 ＋ **補正RVOL 1.5以上** ＋ VWAPより上で「🔥買い」を表示。</small>
 </div>
 
 <div class="table-container">
@@ -263,7 +301,6 @@ async function loadCSV(){
         tableHeader.innerHTML = ''
         tableBody.innerHTML = ''
         
-        // 非表示にする列（3:前日差、7:20日平均、11:区分フラグなどは表示しない）
         const hideIndices = [3, 7, 11];
 
         rows.forEach((row, index) => {
@@ -276,14 +313,12 @@ async function loadCSV(){
             const columns = row.split(',')
             const tr = document.createElement('tr')
 
-            // 背景色ハイライト（CSVの11列目フラグを見て行全体の色を変える）
             if(index !== 0 && columns[11]) {
                 if(columns[11].replace(/"/g,'').trim() === "1") {
                     tr.classList.add('row-highlight');
                 }
             }
 
-            // 表示する範囲（0〜10列目まで）
             for(let i = 0; i <= 10; i++) {
                 if(hideIndices.includes(i)) continue;
 
@@ -294,11 +329,9 @@ async function loadCSV(){
                 if(index === 0){
                     cell.textContent = val;
                 } else {
-                    // --- セルごとの整形 ---
                     if(i === 0) {
-                        cell.textContent = val.replace(/,/g, ''); // コード列
+                        cell.textContent = val.replace(/,/g, '');
                     } else if(i === 8 || i === 9) {
-                        // RVOL系
                         cell.classList.add("col-rvol-style");
                         let num = parseFloat(val);
                         if(!isNaN(num)){
@@ -306,16 +339,14 @@ async function loadCSV(){
                             cell.textContent = num.toFixed(2);
                         } else { cell.textContent = val; }
                     } else if(i === 10) {
-                        // 判定列（Excelで出した「🔥買い」などをそのまま表示）
                         cell.textContent = val;
                         if(val.includes("買い")) {
                             cell.classList.add("buy-highlight");
                         }
                     } else {
-                        // 通常の数値整形
                         let numVal = parseFloat(val.replace(/,/g,''));
                         cell.textContent = (!isNaN(numVal) && val.length > 3 && !val.includes('.')) 
-                                           ? formatNum(val) : val;
+                                            ? formatNum(val) : val;
                     }
                 }
                 tr.appendChild(cell)
@@ -329,7 +360,7 @@ async function loadCSV(){
 }
 
 loadCSV();
-setInterval(loadCSV, 30000); // 30秒ごとにブラウザ側でCSVを再読込
+setInterval(loadCSV, 30000);
 </script>
 
 <footer>

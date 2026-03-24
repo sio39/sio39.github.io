@@ -1,184 +1,229 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投資ツール集 | AIスコア投資研究所</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投資ツール集 | AIスコア投資研究所</title>
 
-<style>
-    /* 基本設定（サイト共通） */
-    :root {
-        --primary-color: #4da3ff;
-        --bg-color: #f8fafc;
-        --card-bg: #ffffff;
-        --text-main: #334155;
-        --text-sub: #64748b;
-        --border-color: #e2e8f0;
-        /* 各ツールのアクセントカラー */
-        --chatgpt-color: #10a37f;
-        --rakuten-color: #bf0000;
-        --mt4-color: #1e293b;
-        --book-color: #4da3ff;
-    }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    body {
-        font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-        line-height: 1.7;
-        color: var(--text-main);
-        max-width: 700px;
-        margin: 0 auto;
-        padding: 120px 20px 60px 20px;
-        background-color: var(--bg-color);
-    }
+    <style>
+        /* 基本設定（サイト共通） */
+        :root {
+            --primary-color: #4da3ff;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-sub: #64748b;
+            --border-color: #e2e8f0;
+            /* 各ツールのアクセントカラー */
+            --chatgpt-color: #10a37f;
+            --rakuten-color: #bf0000;
+            --mt4-color: #1e293b;
+            --book-color: #4da3ff;
+        }
 
-    /* ヘッダー (固定 - AIリストと共通) */
-    .header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(5px);
-        z-index: 9999;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 24px;
-        box-sizing: border-box;
-    }
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.7;
+            color: var(--text-main);
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 120px 20px 60px 20px;
+            background-color: var(--bg-color);
+        }
 
-    .logo {
-        font-size: 18px;
-        font-weight: 800;
-        color: var(--primary-color);
-        letter-spacing: -0.5px;
-    }
+        /* --- ヘッダー：統一デザイン --- */
+        .header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            padding: 14px 0;
+            box-sizing: border-box;
+        }
 
-    nav { display: flex; gap: 20px; }
-    nav a {
-        color: var(--text-sub);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 16px;
-        transition: 0.2s;
-    }
-    nav a:hover, nav a.active { color: var(--primary-color); }
+        .header-container {
+            width: 100%;
+            max-width: 850px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    .twitter-button {
-        background: #000;
-        color: white;
-        padding: 6px 16px;
-        border-radius: 30px;
-        font-size: 13px;
-        font-weight: bold;
-        text-decoration: none;
-    }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
 
-    /* メインコンテンツ装飾 */
-    h1 {
-        text-align: center;
-        font-size: 1.6rem;
-        margin-bottom: 10px;
-        color: #1e293b;
-    }
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            white-space: nowrap;
+        }
 
-    .subtitle {
-        text-align: center;
-        color: var(--text-sub);
-        font-size: 0.9rem;
-        margin-bottom: 40px;
-    }
+        nav { 
+            display: flex; 
+            gap: 20px; 
+        }
 
-    /* ツールカード */
-    .tool-card {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--border-color);
-        position: relative;
-        overflow: hidden;
-    }
+        nav a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
 
-    .tool-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 6px;
-        height: 100%;
-    }
+        nav a:hover, nav a.active { color: var(--primary-color); }
 
-    /* 個別カラー */
-    .chatgpt-card::before { background: var(--chatgpt-color); }
-    .rakuten-card::before { background: var(--rakuten-color); }
-    .mt4-card::before { background: var(--mt4-color); }
-    .book-card::before { background: var(--book-color); }
+        .header-sns {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-    .tool-title {
-        font-size: 1.25rem;
-        font-weight: 800;
-        margin-bottom: 15px;
-        color: #1e293b;
-        display: flex;
-        align-items: center;
-    }
+        .sns-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: white !important;
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.3s;
+        }
 
-    .tool-text {
-        font-size: 0.95rem;
-        color: #475569;
-        margin-bottom: 20px;
-    }
+        .sns-icon.x { background: #000; }
+        .sns-icon.youtube { background: #ff0000; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 14px; }
 
-    /* アクションボタン */
-    .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-size: 0.9rem;
-        font-weight: bold;
-        text-decoration: none;
-        transition: 0.2s;
-        margin-right: 10px;
-        margin-bottom: 10px;
-    }
+        .sns-icon:hover { transform: translateY(-2px); opacity: 0.8; }
 
-    .btn-primary { background: var(--primary-color); color: white; }
-    .btn-primary:hover { opacity: 0.8; }
-    .btn-outline { border: 1px solid var(--primary-color); color: var(--primary-color); }
-    .btn-outline:hover { background: var(--primary-color); color: white; }
+        /* メインコンテンツ装飾 */
+        h1 {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
 
-    .footer-note {
-        text-align: center;
-        font-size: 0.8rem;
-        color: #cbd5e1;
-        margin-top: 60px;
-        padding-top: 20px;
-        border-top: 1px solid var(--border-color);
-    }
+        .subtitle {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+        }
 
-    @media (max-width: 600px) {
-        .header { justify-content: center; gap: 10px; padding: 10px; }
-        nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
-        body { padding-top: 160px; }
-    }
-</style>
+        /* ツールカード */
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+        }
+
+        /* 個別カラー */
+        .chatgpt-card::before { background: var(--chatgpt-color); }
+        .rakuten-card::before { background: var(--rakuten-color); }
+        .mt4-card::before { background: var(--mt4-color); }
+        .book-card::before { background: var(--book-color); }
+
+        .tool-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+        }
+
+        .tool-text {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 20px;
+        }
+
+        /* アクションボタン */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-primary:hover { opacity: 0.8; }
+        .btn-outline { border: 1px solid var(--primary-color); color: var(--primary-color); }
+        .btn-outline:hover { background: var(--primary-color); color: white; }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin-top: 60px;
+            padding: 40px 0 20px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            body { padding-top: 160px; }
+            .header-container { flex-direction: column; gap: 12px; }
+            .header-left { flex-direction: column; gap: 8px; }
+            nav { gap: 15px; width: 100%; justify-content: center; overflow-x: auto; padding-bottom: 5px; }
+        }
+    </style>
 </head>
 
 <body>
 
 <header class="header">
-    <div class="logo">AIスコア投資研究所</div>
-    <nav>
-        <a href="index.html">TOP</a>
-        <a href="scoresiki.html">AIスコア計算機</a>
-        <a href="tool.html" class="active">ツール</a>
-        <a href="realtime.html">リアルボード</a>
-    </nav>
-    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+    <div class="header-container">
+        <div class="header-left">
+            <a href="index.html" class="logo">AIスコア投資研究所</a>
+            <nav>
+                <a href="index.html">TOP</a>
+                <a href="scoresiki.html">AIスコア計算機</a>
+                <a href="tool.html" class="active">ツール</a>
+                <a href="realtime.html">リアルボード</a>
+            </nav>
+        </div>
+        
+        <div class="header-sns">
+            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x" title="𝕏 (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note" title="note">n</a>
+        </div>
+    </div>
 </header>
 
 <main>
@@ -227,9 +272,9 @@
     &copy; 2026 AIスコア投資研究所
     <p>↓応援クリックお願いします</p>
 
-<a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
-<img src="https://b.blogmura.com/stock/88_31.gif">
-</a>
+    <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
+        <img src="https://b.blogmura.com/stock/88_31.gif" alt="ブログ村">
+    </a>
 </footer>
 
 </body>

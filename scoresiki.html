@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIスコア計算機 | AIスコア投資研究所</title>
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <style>
         :root {
             --primary-color: #4da3ff;
@@ -33,54 +35,85 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ヘッダー：index.htmlと完全統一 */
+        /* --- ヘッダー：統一デザイン --- */
         .header {
             position: fixed;
             top: 0; left: 0; width: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(12px);
             z-index: 9999;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            flex-wrap: wrap;
+            justify-content: center;
+            padding: 14px 0;
+            box-sizing: border-box;
+        }
+
+        .header-container {
+            width: 100%;
+            max-width: 850px;
+            padding: 0 20px;
+            display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 24px;
-            box-sizing: border-box;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
         }
 
         .logo {
             font-size: 20px;
             font-weight: 800;
             color: var(--primary-color);
-            letter-spacing: -0.5px;
             text-decoration: none;
+            white-space: nowrap;
         }
 
-        nav { display: flex; gap: 24px; }
+        nav { 
+            display: flex; 
+            gap: 20px; 
+        }
+
         nav a {
             color: var(--text-sub);
             text-decoration: none;
             font-weight: 600;
             font-size: 15px;
             transition: 0.3s;
+            white-space: nowrap;
         }
+
         nav a:hover, nav a.active { color: var(--primary-color); }
 
-        .twitter-button {
-            background: #000;
-            color: white;
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: bold;
+        .header-sns {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sns-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: white !important;
             text-decoration: none;
+            font-size: 16px;
             transition: 0.3s;
         }
 
-        .twitter-button:hover { transform: scale(1.05); }
+        .sns-icon.x { background: #000; }
+        .sns-icon.youtube { background: #ff0000; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 14px; }
 
-        /* 計算機カード */
+        .sns-icon:hover { transform: translateY(-2px); opacity: 0.8; }
+
+        /* --- 計算機カード --- */
         .card { 
             background: var(--card-bg); 
             padding: 40px 30px; 
@@ -132,10 +165,11 @@
         @keyframes bounce { 0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .highlight { border-color: var(--primary-color) !important; box-shadow: 0 20px 40px rgba(77, 163, 255, 0.15) !important; }
 
-        @media (max-width: 600px) {
-            .header { justify-content: center; gap: 10px; padding: 12px; }
-            nav { order: 3; width: 100%; justify-content: center; gap: 16px; margin-top: 8px; }
-            body { padding-top: 180px; }
+        @media (max-width: 768px) {
+            body { padding-top: 160px; }
+            .header-container { flex-direction: column; gap: 12px; }
+            .header-left { flex-direction: column; gap: 8px; }
+            nav { gap: 15px; width: 100%; justify-content: center; overflow-x: auto; padding-bottom: 5px; }
         }
 
         .footer-note {
@@ -146,14 +180,23 @@
 <body>
 
 <header class="header">
-    <a href="index.html" class="logo">AIスコア投資研究所</a>
-    <nav>
-        <a href="index.html">TOP</a>
-        <a href="scoresiki.html">AIスコア計算機</a>
-        <a href="tool.html" class="active">ツール</a>
-        <a href="realtime.html">リアルボード</a>
-    </nav>
-    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
+    <div class="header-container">
+        <div class="header-left">
+            <a href="index.html" class="logo">AIスコア投資研究所</a>
+            <nav>
+                <a href="index.html">TOP</a>
+                <a href="scoresiki.html" class="active">AIスコア計算機</a>
+                <a href="tool.html">ツール</a>
+                <a href="realtime.html">リアルボード</a>
+            </nav>
+        </div>
+        
+        <div class="header-sns">
+            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x" title="𝕏 (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note" title="note">n</a>
+        </div>
+    </div>
 </header>
 
 <div class="card" id="mainCard">
