@@ -17,7 +17,7 @@
 
     <style>
         :root {
-            --primary: #4da3ff; /* TOPページと統一 */
+            --primary: #4da3ff; 
             --primary-dark: #3b82f6;
             --bg: #f8fafc;
             --card-bg: #ffffff;
@@ -35,7 +35,7 @@
         body {
             font-family: "Inter", "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
             margin: 0;
-            padding: 120px 15px 60px; /* ナビが2段になるスマホ考慮で少し広めに */
+            padding: 120px 15px 60px; 
             background: var(--bg);
             color: var(--text-main);
             line-height: 1.5;
@@ -44,7 +44,7 @@
             align-items: center;
         }
 
-        /* --- 統一ヘッダーデザイン --- */
+        /* --- ヘッダーデザイン --- */
         .header {
             position: fixed;
             top: 0; left: 0; width: 100%;
@@ -81,11 +81,7 @@
             white-space: nowrap;
         }
 
-        nav { 
-            display: flex; 
-            gap: 20px; 
-        }
-
+        nav { display: flex; gap: 20px; }
         nav a {
             color: var(--text-sub);
             text-decoration: none;
@@ -94,58 +90,40 @@
             transition: 0.3s;
             white-space: nowrap;
         }
-
         nav a:hover, nav a.active { color: var(--primary); }
 
-        .header-sns {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
+        .header-sns { display: flex; align-items: center; gap: 12px; }
         .sns-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 34px;
-            height: 34px;
+            width: 34px; height: 34px;
             border-radius: 50%;
             color: white !important;
             text-decoration: none;
             font-size: 16px;
             transition: 0.3s;
         }
-
         .sns-icon.x { background: #000; }
         .sns-icon.youtube { background: #ff0000; }
         .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 14px; }
-
         .sns-icon:hover { transform: translateY(-2px); opacity: 0.8; }
 
         /* --- ボード用スタイル --- */
-        .title-area {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
+        .title-area { text-align: center; margin-bottom: 25px; }
         h1 {
             font-size: 1.8rem;
             font-weight: 800;
             margin: 0 0 10px 0;
             color: #0f172a;
         }
-
         #csv-update-time {
             font-size: 1.05rem;
             font-weight: 700;
             color: #ef4444; 
             margin-bottom: 4px;
         }
-
-        #last-load {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-        }
+        #last-load { font-size: 0.8rem; color: var(--text-sub); }
 
         .info-text {
             font-size: 0.85rem;
@@ -162,25 +140,41 @@
             box-sizing: border-box;
         }
 
+        /* テーブルの見出し固定用の設定 */
         .table-container {
             width: 100%;
             max-width: 1200px;
             background: var(--card-bg);
             border-radius: 16px;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
-            overflow: hidden;
             margin: 0 auto;
+            /* 高さを指定して、中身をスクロールさせる */
+            max-height: 80vh; 
+            overflow: auto; 
         }
 
         .scroll-wrapper {
-            overflow-x: auto;
+            width: 100%;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 800px;
+            border-collapse: separate; /* stickyのためにcollapseから変更 */
+            border-spacing: 0;
+            min-width: 850px;
             table-layout: fixed;
+        }
+
+        /* 見出し（th）の固定設定 */
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--header-bg);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
         }
 
         th, td {
@@ -190,17 +184,10 @@
             font-variant-numeric: tabular-nums;
         }
 
-        th {
-            background: var(--header-bg);
-            color: #fff;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        td { font-size: 0.88rem; font-weight: 500; }
-        tr:nth-child(even) { background: #fcfcfd; }
-        tr.row-highlight { background-color: var(--highlight-bg) !important; }
-        tr:hover { background: #f1f5f9; }
+        td { font-size: 0.88rem; font-weight: 500; background: #fff; }
+        tr:nth-child(even) td { background: #fcfcfd; }
+        tr.row-highlight td { background-color: var(--highlight-bg) !important; }
+        tr:hover td { background: #f1f5f9 !important; }
 
         .col-rvol-style {
             background: #fffef3 !important;
@@ -212,7 +199,7 @@
             background: var(--buy-bg) !important;
             color: var(--buy-text) !important;
             font-weight: 800 !important;
-            border: 1px solid var(--buy-text) !important;
+            box-shadow: inset 0 0 0 1px var(--buy-text);
         }
 
         .volume-spike {
@@ -252,7 +239,6 @@
                 <a href="realtime.html" class="active">リアルボード</a>
             </nav>
         </div>
-        
         <div class="header-sns">
             <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x" title="𝕏 (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
             <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
@@ -302,6 +288,7 @@ async function loadCSV(){
         tableBody.innerHTML = ''
         
         const hideIndices = [3, 7, 11];
+        let stockCount = 0;
 
         rows.forEach((row, index) => {
             if(row.includes("Update:")){
@@ -318,6 +305,19 @@ async function loadCSV(){
                     tr.classList.add('row-highlight');
                 }
             }
+
+            // No.列の追加
+            const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
+            if(index === 0) {
+                noCell.textContent = 'No.';
+                noCell.style.width = '45px';
+            } else {
+                stockCount++;
+                noCell.textContent = stockCount;
+                noCell.style.color = '#94a3b8';
+                noCell.style.fontSize = '0.75rem';
+            }
+            tr.appendChild(noCell);
 
             for(let i = 0; i <= 10; i++) {
                 if(hideIndices.includes(i)) continue;
