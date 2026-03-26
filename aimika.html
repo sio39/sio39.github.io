@@ -11,436 +11,149 @@
     --bg2: #0f1628;
     --bg3: #151e35;
     --card: #111827;
-    --card2: #1a2540;
     --border: #1e2d4a;
-    --border2: #253354;
     --accent: #f0a500;
-    --accent2: #ff6b35;
     --green: #00d4a0;
-    --red: #ff4d6a;
     --blue: #4da6ff;
-    --purple: #a78bfa;
     --text: #e8edf5;
     --text2: #8a9bb8;
     --text3: #5a6b8a;
-    --fire: #ff6b35;
     --gold: #f0a500;
-    --glow: 0 0 20px rgba(240,165,0,0.15);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow: hidden; }
 
-  body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Background grid */
+  /* 背景のグリッド装飾 */
   body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-      linear-gradient(rgba(77,166,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(77,166,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(77,166,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(77,166,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
   }
 
-  .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 24px;
-    position: relative;
-    z-index: 1;
-  }
+  .container { max-width: 1200px; margin: 0 auto; height: 100vh; padding: 30px; position: relative; z-index: 1; display: flex; flex-direction: column; }
+  
+  header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
+  .logo-area h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); }
+  .logo-area p { font-size: 0.8rem; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.1em; }
 
-  /* Header */
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 32px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
+  /* メインレイアウト：Mikaの判定を中央に大きく */
+  .app-layout { display: flex; flex-direction: column; gap: 30px; flex-grow: 1; align-items: center; }
 
-  .logo-area h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    color: var(--gold);
-    letter-spacing: 0.02em;
-    line-height: 1;
-  }
+  /* 統計バー：精査状況をさりげなく表示 */
+  .stats-bar { display: flex; gap: 20px; width: 100%; justify-content: center; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px 25px; min-width: 180px; text-align: center; border-top: 3px solid var(--border); }
+  .stat-card.gold { border-top-color: var(--gold); }
+  .stat-card.green { border-top-color: var(--green); }
+  .stat-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; margin-bottom: 5px; }
+  .stat-value { font-size: 1.8rem; font-weight: 700; font-family: 'DM Mono', monospace; }
 
-  .logo-area p {
-    font-size: 0.75rem;
-    color: var(--text3);
-    margin-top: 4px;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.08em;
-  }
+  /* Mikaのメッセージパネル */
+  .mika-intro-panel { background: var(--card); border-radius: 20px; padding: 25px; width: 100%; max-width: 900px; border-left: 5px solid var(--gold); }
+  .mika-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+  .mika-avatar { font-size: 2rem; }
+  .mika-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+  .mika-speech { font-size: 0.9rem; line-height: 1.8; color: var(--text2); }
 
-  .header-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--card2);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 0.78rem;
-    color: var(--text2);
-  }
+  /* 判定結果カードエリア */
+  .picks-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; width: 100%; max-width: 1100px; }
+  .pick-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .pick-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 0 20px rgba(240,165,0,0.1); }
+  
+  .pick-card-header { background: rgba(240,165,0,0.07); padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .pick-rank { color: var(--gold); font-weight: 800; font-size: 1.1rem; font-family: 'Playfair Display', serif; }
+  .pick-code { color: var(--blue); font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 500; }
+  
+  .pick-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+  .pick-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; text-align: center; }
+  
+  .pick-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+  .metric { background: var(--bg3); border-radius: 10px; padding: 10px; text-align: center; }
+  .metric-label { font-size: 0.65rem; color: var(--text3); margin-bottom: 4px; }
+  .metric-value { font-size: 1.1rem; font-weight: 700; font-family: 'DM Mono', monospace; }
 
-  .status-dot {
-    width: 8px; height: 8px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-  }
+  .pick-comment { font-size: 0.8rem; line-height: 1.7; color: var(--text2); background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border-left: 2px solid var(--gold); }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,212,160,0.4); }
-    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(0,212,160,0); }
-  }
-
-  /* Upload zone */
-  .upload-zone {
-    background: var(--card);
-    border: 2px dashed var(--border2);
-    border-radius: 16px;
-    padding: 40px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 32px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .upload-zone:hover, .upload-zone.drag-over {
-    border-color: var(--gold);
-    background: var(--card2);
-  }
-
-  .upload-zone h3 {
-    font-size: 1rem;
-    color: var(--text);
-    margin-bottom: 6px;
-    font-weight: 500;
-  }
-
-  .upload-zone p {
-    font-size: 0.82rem;
-    color: var(--text3);
-  }
-
-  .upload-zone input { display: none; }
-
-  .btn-upload {
-    display: inline-block;
-    margin-top: 16px;
-    padding: 10px 24px;
-    background: linear-gradient(135deg, var(--gold), var(--accent2));
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  /* Stats bar */
-  .stats-bar {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-
-  .stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .stat-card.gold::after { background: linear-gradient(90deg, var(--gold), transparent); content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-  .stat-card.fire::after { background: linear-gradient(90deg, var(--fire), transparent); content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-  .stat-card.green::after { background: linear-gradient(90deg, var(--green), transparent); content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-  .stat-card.blue::after { background: linear-gradient(90deg, var(--blue), transparent); content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-
-  .stat-label {
-    font-size: 0.72rem;
-    color: var(--text3);
-    font-family: 'DM Mono', monospace;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .stat-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    font-family: 'DM Mono', monospace;
-    color: var(--text);
-  }
-
-  .stat-sub {
-    font-size: 0.72rem;
-    color: var(--text3);
-    margin-top: 4px;
-  }
-
-  /* Main layout */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 24px;
-    align-items: start;
-  }
-
-  /* Table */
-  .table-panel {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-
-  .panel-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .panel-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .filter-chips {
-    display: flex;
-    gap: 8px;
-  }
-
-  .chip {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.72rem;
-    border: 1px solid var(--border2);
-    color: var(--text3);
-    background: var(--bg3);
-    cursor: pointer;
-  }
-
-  .chip.active {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  .table-scroll {
-    overflow-x: auto;
-    max-height: 520px;
-    overflow-y: auto;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-  }
-
-  thead th {
-    background: var(--bg3);
-    padding: 10px 12px;
-    text-align: right;
-    font-size: 0.68rem;
-    color: var(--text3);
-    position: sticky; top: 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  thead th:first-child, thead th:nth-child(2) { text-align: left; }
-
-  tbody tr { border-bottom: 1px solid rgba(30,45,74,0.5); }
-  tbody tr:hover { background: var(--card2); }
-  tbody tr.selected-row { background: rgba(240,165,0,0.06); }
-
-  tbody td { padding: 9px 12px; text-align: right; color: var(--text2); font-family: 'DM Mono', monospace; }
-  tbody td:first-child { text-align: left; color: var(--blue); }
-  tbody td:nth-child(2) { text-align: left; color: var(--text); font-family: 'Noto Sans JP', sans-serif; }
-
-  .score-cell { color: var(--gold) !important; }
-  .price-above { color: var(--green) !important; }
-  .price-below { color: var(--red) !important; }
-
-  .rank-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px; height: 20px;
-    background: linear-gradient(135deg, var(--gold), var(--accent2));
-    border-radius: 50%;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #000;
-    margin-right: 6px;
-  }
-
-  /* Mika panel */
-  .mika-panel { display: flex; flex-direction: column; gap: 16px; }
-  .mika-intro { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
-  .mika-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, #f0a500, #ff6b35); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 10px;}
-  .mika-name { font-size: 0.9rem; font-weight: 700; color: var(--text); }
-  .mika-speech { font-size: 0.82rem; line-height: 1.75; color: var(--text2); background: var(--bg3); border-radius: 10px; padding: 14px 16px; border-left: 3px solid var(--gold); }
-
-  /* Pick cards */
-  .pick-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; opacity: 0; transform: translateY(16px); transition: all 0.3s; }
-  .pick-card.visible { opacity: 1; transform: translateY(0); }
-  .pick-card-header { background: var(--card2); padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
-  .pick-rank { color: var(--gold); font-weight: 700; }
-  .pick-body { padding: 14px 16px; }
-  .pick-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-  .metric { background: var(--bg3); border-radius: 8px; padding: 8px 10px; }
-  .metric-label { font-size: 0.65rem; color: var(--text3); }
-  .metric-value { font-size: 0.92rem; font-weight: 700; color: var(--text); }
-  .pick-comment { font-size: 0.79rem; line-height: 1.7; color: var(--text2); background: var(--bg3); padding: 10px 12px; border-left: 2px solid var(--gold); border-radius: 8px; }
-
-  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(10,14,26,0.85); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+  /* ローディング画面 */
+  .loading-overlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
   .loading-overlay.active { display: flex; }
-  .loading-spinner { width: 48px; height: 48px; border: 3px solid var(--border2); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 </style>
 </head>
 <body>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-spinner"></div>
-  <div class="loading-text" id="loadingText">Mika が解析中...</div>
+  <div id="loadingText" style="font-family:'DM Mono', monospace; font-size:0.9rem;">MIKA IS ANALYZING...</div>
 </div>
 
 <div class="container">
   <header>
     <div class="logo-area">
       <h1>AIスコア投資研究所</h1>
-      <p>MIKA'S AUTO-FETCH ENGINE v2.5</p>
-    </div>
-    <div class="header-badge">
-      <div class="status-dot"></div>
-      GitHub Data Linked
+      <p>MIKA'S PRECISION SELECTION v5.0</p>
     </div>
   </header>
 
-  <div class="upload-zone" id="uploadZone" style="display:none">
-    <h3>GitHubデータの取得に失敗しました 🥲</h3>
-    <p>手動でファイルをアップロードするか、リロードしてください。</p>
-    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
-    <button class="btn-upload" onclick="document.getElementById('fileInput').click()">ファイルを選択</button>
-  </div>
-
-  <div class="stats-bar" id="statsBar" style="display:none">
-    <div class="stat-card gold"><div class="stat-label">総銘柄数</div><div class="stat-value" id="statTotal">—</div></div>
-    <div class="stat-card fire"><div class="stat-label">🔥 判定通過</div><div class="stat-value" id="statFire">—</div></div>
-    <div class="stat-card green"><div class="stat-label">全条件通過</div><div class="stat-value" id="statPass">—</div></div>
-    <div class="stat-card blue"><div class="stat-label">厳選ピック</div><div class="stat-value" id="statPick">—</div></div>
-  </div>
-
-  <div class="main-grid" id="mainGrid" style="display:none">
-    <div class="table-panel">
-      <div class="panel-header">
-        <div class="panel-title">📋 スキャン結果</div>
-        <div class="filter-chips">
-          <span class="chip active" onclick="filterTable('all', this)">全銘柄</span>
-          <span class="chip" onclick="filterTable('pass', this)">条件通過</span>
-        </div>
-      </div>
-      <div class="table-scroll">
-        <table>
-          <thead>
-            <tr><th>コード</th><th>銘柄名</th><th>現在値</th><th>VWAP</th><th>補正RVOL</th><th>判定</th><th>A3スコア</th><th>補正A3スコア</th><th>信用倍率</th><th>配当率</th></tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
+  <div class="app-layout" id="appLayout" style="display:none">
+    
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-label">スキャン銘柄数</div><div class="stat-value" id="statTotal">—</div></div>
+      <div class="stat-card green"><div class="stat-label">厳選通過数</div><div class="stat-value" id="statPass">—</div></div>
     </div>
 
-    <div class="mika-panel">
-      <div class="mika-intro">
+    <div class="mika-intro-panel">
+      <div class="mika-header">
         <div class="mika-avatar">👩‍💼</div>
         <div class="mika-name">Mika — 主任アナリスト</div>
-        <div class="mika-speech" id="mikaIntroText">データを取得中だよ...✨</div>
       </div>
-      <div id="pickCards"></div>
+      <div class="mika-speech" id="mikaIntroText">
+        データを解析中です…✨
+      </div>
     </div>
+
+    <div class="picks-container" id="pickCards"></div>
+
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 let allData = [];
-let currentFilter = 'all';
-let selectedPicks = [];
-
 const CSV_URL = 'https://raw.githubusercontent.com/sio39/sio39.github.io/main/data_push.csv';
 
-// 列マップ (11列:判定, 13列:A3スコア, 14列:補正A3, 17列:信用倍率, 19列:配当)
-const COL = {
-  code: 0, name: 1, price: 2, vwap: 5, rvol: 13, // 14列目(index13)を補正RVOLとして扱う
-  judgment: 10, a3score: 12, a3corr: 13, credit: 16, dividend: 18
-};
-
-// 起動時に自動実行
 window.onload = fetchGitHubData;
 
 async function fetchGitHubData() {
-  showLoading('GitHubからデータを取得中...');
+  showLoading('最新データを取得中...');
   try {
     const response = await fetch(CSV_URL);
-    if (!response.ok) throw new Error('Network response was not ok');
+    if (!response.ok) throw new Error('Fetch failed');
     const csvText = await response.text();
-    
-    // CSVをパース
     const wb = XLSX.read(csvText, { type: 'string' });
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
-    
     processRows(rows);
   } catch (err) {
-    console.error(err);
+    alert('データが読み込めませんでした');
     hideLoading();
-    document.getElementById('uploadZone').style.display = 'block';
-    alert('自動取得に失敗しました。手動でアップロードしてください。');
   }
 }
 
 function processRows(rows) {
   const dataRows = rows.filter((r, i) => i > 0 && r[0]);
-
   allData = dataRows.map(r => ({
     code: String(r[0] ?? '').trim(),
     name: String(r[1] ?? '').trim(),
     price: parseNum(r[2]),
     vwap: parseNum(r[5]),
-    rvol: parseNum(r[13]), // 補正RVOL
+    volume: parseNum(r[4]), 
+    changeRatio: parseNum(r[7]), 
     judgment: String(r[10] ?? '').trim(),
-    a3score: parseNum(r[12]),
+    rvol: parseNum(r[9]),
     a3corr: parseNum(r[13]),
-    credit: parseNum(r[16]),
-    dividend: parseNum(r[18]),
+    credit: parseNum(r[16])
   }));
-
   analyzeAndRender();
   hideLoading();
 }
@@ -453,96 +166,47 @@ function parseNum(v) {
 
 function analyzeAndRender() {
   const firePassed = allData.filter(d => d.judgment.includes('🔥') || d.judgment.includes('買い'));
-  const fullPass = allData.filter(d => 
-    (d.judgment.includes('🔥') || d.judgment.includes('買い')) && 
-    d.a3corr >= 180 && d.price > d.vwap && (isNaN(d.credit) || d.credit <= 10)
-  );
-
-  selectedPicks = [...fullPass].sort((a,b) => (b.a3corr || 0) - (a.a3corr || 0)).slice(0, 3);
+  const fullPass = firePassed.filter(d => d.a3corr >= 180 && d.price > d.vwap && (isNaN(d.credit) || d.credit <= 10));
+  const selectedPicks = [...fullPass].sort((a,b) => b.a3corr - a.a3corr).slice(0, 3);
 
   document.getElementById('statTotal').textContent = allData.length;
-  document.getElementById('statFire').textContent = firePassed.length;
   document.getElementById('statPass').textContent = fullPass.length;
-  document.getElementById('statPick').textContent = selectedPicks.length;
-
-  document.getElementById('statsBar').style.display = 'grid';
-  document.getElementById('mainGrid').style.display = 'grid';
-  renderTable();
-  renderMika();
+  document.getElementById('appLayout').style.display = 'flex';
+  
+  renderMika(selectedPicks);
 }
 
-function renderTable() {
-  let rows = (currentFilter === 'all') ? allData : allData.filter(d => d.a3corr >= 180);
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = rows.map(d => {
-    const isPick = selectedPicks.some(p => p.code === d.code);
-    return `<tr class="${isPick ? 'selected-row' : ''}">
-      <td>${d.code}</td><td>${d.name}</td>
-      <td class="${d.price > d.vwap ? 'price-above' : 'price-below'}">${fmt(d.price)}</td>
-      <td>${fmt(d.vwap)}</td><td>${fmtN(d.rvol)}</td>
-      <td>${d.judgment}</td><td>${fmtN(d.a3score)}</td>
-      <td class="score-cell">${fmtN(d.a3corr)}</td>
-      <td>${fmtN(d.credit)}倍</td><td>${fmtN(d.dividend)}%</td>
-    </tr>`;
-  }).join('');
-}
-
-function filterTable(type, el) {
-  currentFilter = type;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  renderTable();
-}
-
-function renderMika() {
+function renderMika(picks) {
   const introEl = document.getElementById('mikaIntroText');
   const pickEl = document.getElementById('pickCards');
 
-  if (selectedPicks.length === 0) {
-    introEl.textContent = '今日は基準をクリアする銘柄がなかったみたい...。また明日チェックしようね！';
+  if (picks.length === 0) {
+    introEl.textContent = '今日は私の基準を100%クリアする銘柄が見つかりませんでした。無理せず、チャンスを待ちましょうね。';
+    pickEl.innerHTML = "";
     return;
   }
 
-  introEl.innerHTML = `最新のデータを取ってきたよ ✨ <br>Mikaのフィルターを通過したのは <strong>${selectedPicks.length}銘柄</strong>だよ。`;
+  introEl.innerHTML = `今日のマーケットを精査したよ！<br>補正A3スコアが良くて、需給も安定している「今、注目すべき3銘柄」を選んだから参考にしてね✨`;
 
-  pickEl.innerHTML = selectedPicks.map((d, i) => `
-    <div class="pick-card" id="pick-${i}">
-      <div class="pick-card-header">
-        <span class="pick-rank">RANK ${i+1}</span>
-        <span style="color:var(--blue)">${d.code}</span>
-      </div>
+  pickEl.innerHTML = picks.map((d, i) => `
+    <div class="pick-card">
+      <div class="pick-card-header"><span class="pick-rank">TOP ${i+1}</span><span class="pick-code">${d.code}</span></div>
       <div class="pick-body">
-        <div style="margin-bottom:10px; font-weight:700">${d.name}</div>
+        <div class="pick-name">${d.name}</div>
         <div class="pick-metrics">
-          <div class="metric"><div class="metric-label">補正A3</div><div class="metric-value" style="color:var(--gold)">${fmtN(d.a3corr)}</div></div>
-          <div class="metric"><div class="metric-label">信用倍率</div><div class="metric-value">${fmtN(d.credit)}倍</div></div>
+          <div class="metric"><div class="metric-label">補正A3</div><div class="metric-value" style="color:var(--gold)">${d.a3corr.toFixed(1)}</div></div>
+          <div class="metric"><div class="metric-label">RVOL</div><div class="metric-value" style="color:var(--green)">${d.rvol.toFixed(2)}</div></div>
         </div>
-        <div class="pick-comment">補正A3スコアが <strong>${fmtN(d.a3corr)}</strong> と高くて、需給も良さそうよ！✨</div>
+        <div class="pick-comment">
+          補正A3が <strong>${d.a3corr.toFixed(1)}</strong> と高く、トレンドの勢いが強いわ。需給も安心できる水準よ！✨
+        </div>
       </div>
     </div>
   `).join('');
-
-  setTimeout(() => {
-    selectedPicks.forEach((_, i) => document.getElementById(`pick-${i}`).classList.add('visible'));
-  }, 100);
 }
 
-function fmt(v) { return isNaN(v) ? '—' : Number(v).toLocaleString(); }
-function fmtN(v) { return isNaN(v) ? '—' : Number(v).toFixed(2); }
-function showLoading(txt) { document.getElementById('loadingText').textContent = txt; document.getElementById('loadingOverlay').classList.add('active'); }
+function showLoading(txt) { document.getElementById('loadingOverlay').classList.add('active'); }
 function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
-
-// 手動ファイルアップロード対応
-document.getElementById('fileInput').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const wb = XLSX.read(ev.target.result, { type: 'array' });
-    processRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 }));
-  };
-  reader.readAsArrayBuffer(file);
-});
 </script>
 </body>
 </html>
