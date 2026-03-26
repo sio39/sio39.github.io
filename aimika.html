@@ -9,204 +9,187 @@
   :root {
     --bg: #0a0e1a;
     --bg2: #0f1628;
-    --bg3: #151e35;
     --card: #111827;
     --border: #1e2d4a;
-    --accent: #f0a500;
-    --green: #00d4a0;
+    --gold: #f0a500;
     --blue: #4da6ff;
+    --green: #00d4a0;
     --text: #e8edf5;
     --text2: #8a9bb8;
-    --text3: #5a6b8a;
-    --gold: #f0a500;
+    --bolt: #ffeb3b;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow: hidden; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 
-  /* 背景のグリッド装飾 */
+  /* Background Grid */
   body::before {
     content: ''; position: fixed; inset: 0;
     background-image: linear-gradient(rgba(77,166,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(77,166,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px; pointer-events: none; z-index: 0;
+    background-size: 40px 40px; pointer-events: none;
   }
 
-  .container { max-width: 1200px; margin: 0 auto; height: 100vh; padding: 30px; position: relative; z-index: 1; display: flex; flex-direction: column; }
+  .main-container { width: 95%; max-width: 1100px; display: grid; grid-template-columns: 350px 1fr; gap: 30px; position: relative; z-index: 1; }
+
+  /* Left: Mika & Stats */
+  .mika-panel { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 30px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .mika-head { display: flex; align-items: center; gap: 15px; }
+  .mika-avatar { font-size: 2.5rem; }
+  .mika-name { font-weight: 700; font-size: 1.1rem; color: var(--gold); }
+  .mika-speech { font-size: 0.9rem; line-height: 1.8; color: var(--text2); background: #151e35; border-radius: 15px; padding: 20px; border-left: 4px solid var(--gold); position: relative; }
+
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+  .stat-item { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; text-align: center; border: 1px solid var(--border); }
+  .stat-label { font-size: 0.7rem; color: var(--text2); margin-bottom: 5px; }
+  .stat-val { font-family: 'DM Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--text); }
+
+  /* Right: Highlight Picks */
+  .picks-container { display: flex; flex-direction: column; gap: 20px; }
+  .picks-title { font-size: 1.1rem; font-weight: 700; color: var(--text); display: flex; justify-content: space-between; align-items: center; }
+  .picks-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+
+  .pick-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; display: grid; grid-template-columns: 100px 1fr 200px; align-items: center; gap: 20px; transition: all 0.3s; position: relative; }
+  .pick-card.has-bolt { border-color: var(--bolt); box-shadow: 0 0 20px rgba(255, 235, 59, 0.1); }
+  .rank-badge { font-family: 'DM Mono', monospace; font-size: 1.2rem; font-weight: 700; color: var(--gold); }
   
-  header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
-  .logo-area h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold); }
-  .logo-area p { font-size: 0.8rem; color: var(--text3); font-family: 'DM Mono', monospace; letter-spacing: 0.1em; }
+  .stock-info .code { font-family: 'DM Mono', monospace; color: var(--blue); font-size: 1.1rem; }
+  .stock-info .name { font-weight: 700; font-size: 1.2rem; margin-top: 5px; }
 
-  /* メインレイアウト：Mikaの判定を中央に大きく */
-  .app-layout { display: flex; flex-direction: column; gap: 30px; flex-grow: 1; align-items: center; }
+  .metric-group { display: flex; gap: 20px; justify-content: flex-end; }
+  .m-item { text-align: right; }
+  .m-label { font-size: 0.65rem; color: var(--text2); }
+  .m-val { font-family: 'DM Mono', monospace; font-weight: 700; font-size: 1.1rem; color: var(--text); }
 
-  /* 統計バー：精査状況をさりげなく表示 */
-  .stats-bar { display: flex; gap: 20px; width: 100%; justify-content: center; }
-  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px 25px; min-width: 180px; text-align: center; border-top: 3px solid var(--border); }
-  .stat-card.gold { border-top-color: var(--gold); }
-  .stat-card.green { border-top-color: var(--green); }
-  .stat-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; margin-bottom: 5px; }
-  .stat-value { font-size: 1.8rem; font-weight: 700; font-family: 'DM Mono', monospace; }
+  .bolt-label { position: absolute; top: -10px; right: 20px; background: var(--bolt); color: #000; font-size: 0.7rem; font-weight: 800; padding: 2px 10px; border-radius: 10px; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-  /* Mikaのメッセージパネル */
-  .mika-intro-panel { background: var(--card); border-radius: 20px; padding: 25px; width: 100%; max-width: 900px; border-left: 5px solid var(--gold); }
-  .mika-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-  .mika-avatar { font-size: 2rem; }
-  .mika-name { font-size: 1rem; font-weight: 700; color: var(--text); }
-  .mika-speech { font-size: 0.9rem; line-height: 1.8; color: var(--text2); }
-
-  /* 判定結果カードエリア */
-  .picks-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; width: 100%; max-width: 1100px; }
-  .pick-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-  .pick-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 0 20px rgba(240,165,0,0.1); }
-  
-  .pick-card-header { background: rgba(240,165,0,0.07); padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .pick-rank { color: var(--gold); font-weight: 800; font-size: 1.1rem; font-family: 'Playfair Display', serif; }
-  .pick-code { color: var(--blue); font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 500; }
-  
-  .pick-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-  .pick-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 15px; text-align: center; }
-  
-  .pick-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-  .metric { background: var(--bg3); border-radius: 10px; padding: 10px; text-align: center; }
-  .metric-label { font-size: 0.65rem; color: var(--text3); margin-bottom: 4px; }
-  .metric-value { font-size: 1.1rem; font-weight: 700; font-family: 'DM Mono', monospace; }
-
-  .pick-comment { font-size: 0.8rem; line-height: 1.7; color: var(--text2); background: rgba(255,255,255,0.02); padding: 12px; border-radius: 10px; border-left: 2px solid var(--gold); }
-
-  /* ローディング画面 */
-  .loading-overlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
-  .loading-overlay.active { display: flex; }
-  .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; }
 </style>
 </head>
 <body>
 
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-spinner"></div>
-  <div id="loadingText" style="font-family:'DM Mono', monospace; font-size:0.9rem;">MIKA IS ANALYZING...</div>
-</div>
+<div id="loading" class="loading">解析中...</div>
 
-<div class="container">
-  <header>
-    <div class="logo-area">
-      <h1>AIスコア投資研究所</h1>
-      <p>MIKA'S PRECISION SELECTION v5.0</p>
-    </div>
-  </header>
-
-  <div class="app-layout" id="appLayout" style="display:none">
-    
-    <div class="stats-bar">
-      <div class="stat-card"><div class="stat-label">スキャン銘柄数</div><div class="stat-value" id="statTotal">—</div></div>
-      <div class="stat-card green"><div class="stat-label">厳選通過数</div><div class="stat-value" id="statPass">—</div></div>
-    </div>
-
-    <div class="mika-intro-panel">
-      <div class="mika-header">
+<div class="main-container">
+  <div class="mika-side">
+    <div class="mika-panel">
+      <div class="mika-head">
         <div class="mika-avatar">👩‍💼</div>
-        <div class="mika-name">Mika — 主任アナリスト</div>
+        <div class="mika-name">AI Mika Analyser</div>
       </div>
-      <div class="mika-speech" id="mikaIntroText">
-        データを解析中です…✨
+      <div class="mika-speech" id="mikaIntro">
+        今日の市場をスキャンしたわ。<br>私の厳しい基準をクリアした精鋭銘柄を発表するね✨
+      </div>
+      <div class="stat-row">
+        <div class="stat-item"><div class="stat-label">分析対象</div><div class="stat-val" id="statTotal">0</div></div>
+        <div class="stat-item"><div class="stat-label">厳選</div><div class="stat-val" id="statPick">0</div></div>
       </div>
     </div>
+  </div>
 
-    <div class="picks-container" id="pickCards"></div>
-
+  <div class="picks-container">
+    <div class="picks-title">
+      <span>Today's Top Picks</span>
+      <span style="font-size: 0.7rem; color: var(--text2);">※ 9:15以降に更新</span>
+    </div>
+    <div class="picks-grid" id="pickCards">
+      </div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-let allData = [];
+let prevVolumeMap = new Map();
 const CSV_URL = 'https://raw.githubusercontent.com/sio39/sio39.github.io/main/data_push.csv';
 
-window.onload = fetchGitHubData;
+window.onload = () => {
+  fetchData();
+  setInterval(fetchData, 300000);
+};
 
-async function fetchGitHubData() {
-  showLoading('最新データを取得中...');
+async function fetchData() {
   try {
     const response = await fetch(CSV_URL);
-    if (!response.ok) throw new Error('Fetch failed');
     const csvText = await response.text();
     const wb = XLSX.read(csvText, { type: 'string' });
     const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
-    processRows(rows);
-  } catch (err) {
-    alert('データが読み込めませんでした');
-    hideLoading();
-  }
+    processData(rows);
+    document.getElementById('loading').style.display = 'none';
+  } catch (err) { console.error(err); }
 }
 
-function processRows(rows) {
+function processData(rows) {
   const dataRows = rows.filter((r, i) => i > 0 && r[0]);
-  allData = dataRows.map(r => ({
-    code: String(r[0] ?? '').trim(),
-    name: String(r[1] ?? '').trim(),
-    price: parseNum(r[2]),
-    vwap: parseNum(r[5]),
-    volume: parseNum(r[4]), 
-    changeRatio: parseNum(r[7]), 
-    judgment: String(r[10] ?? '').trim(),
-    rvol: parseNum(r[9]),
-    a3corr: parseNum(r[13]),
-    credit: parseNum(r[16])
-  }));
-  analyzeAndRender();
-  hideLoading();
+  const now = new Date();
+  const elapsed = getElapsed();
+
+  const all = dataRows.map(r => {
+    const code = String(r[0]);
+    const vol = parseFloat(String(r[4]||0).replace(/,/g,''));
+    const est = vol * (330 / elapsed);
+    
+    let hasBolt = false;
+    if (prevVolumeMap.has(code)) {
+      const diff = vol - prevVolumeMap.get(code);
+      if (diff > (est/66)*2 && diff > 1000) hasBolt = true;
+    }
+    prevVolumeMap.set(code, vol);
+
+    return {
+      code, name: r[1], price: r[2], vwap: r[5],
+      vol, est, change: r[7], judge: String(r[10]),
+      rvol: r[9], a3: r[13], credit: r[16], hasBolt
+    };
+  });
+
+  const picks = all.filter(d => 
+    (d.judge.includes('🔥') || d.judge.includes('買い')) &&
+    d.est > 30000 && d.a3 >= 180 && d.price > d.vwap
+  ).sort((a,b) => b.a3 - a.a3).slice(0, 3);
+
+  render(all.length, picks);
 }
 
-function parseNum(v) {
-  if (v === undefined || v === null || v === '') return NaN;
-  const s = String(v).replace(/[,，%％倍]/g, '').trim();
-  return parseFloat(s);
+function getElapsed() {
+  const n = new Date();
+  const s = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 9, 0, 0);
+  const n1 = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 11, 30, 0);
+  const n2 = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 12, 30, 0);
+  if (n < s) return 1;
+  if (n >= n1 && n < n2) return 150;
+  if (n >= n2) return 150 + Math.min(180, (n - n2) / 60000);
+  return Math.max(1, (n - s) / 60000);
 }
 
-function analyzeAndRender() {
-  const firePassed = allData.filter(d => d.judgment.includes('🔥') || d.judgment.includes('買い'));
-  const fullPass = firePassed.filter(d => d.a3corr >= 180 && d.price > d.vwap && (isNaN(d.credit) || d.credit <= 10));
-  const selectedPicks = [...fullPass].sort((a,b) => b.a3corr - a.a3corr).slice(0, 3);
+function render(total, picks) {
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPick').textContent = picks.length;
 
-  document.getElementById('statTotal').textContent = allData.length;
-  document.getElementById('statPass').textContent = fullPass.length;
-  document.getElementById('appLayout').style.display = 'flex';
-  
-  renderMika(selectedPicks);
-}
-
-function renderMika(picks) {
-  const introEl = document.getElementById('mikaIntroText');
-  const pickEl = document.getElementById('pickCards');
-
+  const cardContainer = document.getElementById('pickCards');
   if (picks.length === 0) {
-    introEl.textContent = '今日は私の基準を100%クリアする銘柄が見つかりませんでした。無理せず、チャンスを待ちましょうね。';
-    pickEl.innerHTML = "";
+    cardContainer.innerHTML = '<div style="color:var(--text2); text-align:center; padding:40px;">現在、条件に合う銘柄はありません 😴</div>';
     return;
   }
 
-  introEl.innerHTML = `今日のマーケットを精査したよ！<br>補正A3スコアが良くて、需給も安定している「今、注目すべき3銘柄」を選んだから参考にしてね✨`;
+  document.getElementById('mikaIntro').innerHTML = picks.some(p => p.hasBolt)
+    ? "⚡️マークが出ている銘柄に注目して！今まさに資金が流れ込んでるわ✨"
+    : "私の厳選したエリート銘柄よ。じっくりチャートを見てみてね。";
 
-  pickEl.innerHTML = picks.map((d, i) => `
-    <div class="pick-card">
-      <div class="pick-card-header"><span class="pick-rank">TOP ${i+1}</span><span class="pick-code">${d.code}</span></div>
-      <div class="pick-body">
-        <div class="pick-name">${d.name}</div>
-        <div class="pick-metrics">
-          <div class="metric"><div class="metric-label">補正A3</div><div class="metric-value" style="color:var(--gold)">${d.a3corr.toFixed(1)}</div></div>
-          <div class="metric"><div class="metric-label">RVOL</div><div class="metric-value" style="color:var(--green)">${d.rvol.toFixed(2)}</div></div>
-        </div>
-        <div class="pick-comment">
-          補正A3が <strong>${d.a3corr.toFixed(1)}</strong> と高く、トレンドの勢いが強いわ。需給も安心できる水準よ！✨
-        </div>
+  cardContainer.innerHTML = picks.map((p, i) => `
+    <div class="pick-card ${p.hasBolt ? 'has-bolt' : ''}">
+      ${p.hasBolt ? '<div class="bolt-label">⚡️ BOLT DETECTED</div>' : ''}
+      <div class="rank-badge">#0${i+1}</div>
+      <div class="stock-info">
+        <div class="code">${p.code}</div>
+        <div class="name">${p.name}</div>
+      </div>
+      <div class="metric-group">
+        <div class="m-item"><div class="m-label">補正A3</div><div class="m-val" style="color:var(--gold)">${parseFloat(p.a3).toFixed(1)}</div></div>
+        <div class="m-item"><div class="m-label">RVOL</div><div class="m-val" style="color:var(--green)">${parseFloat(p.rvol).toFixed(2)}</div></div>
       </div>
     </div>
   `).join('');
 }
-
-function showLoading(txt) { document.getElementById('loadingOverlay').classList.add('active'); }
-function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
 </script>
 </body>
 </html>
