@@ -16,31 +16,31 @@
 
     <style>
         :root {
-            --primary-color: #3b82f6;
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --header-bg: rgba(15, 23, 42, 0.9);
-            --border-color: #334155;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
+            --primary-color: #2563eb;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
             
-            /* 区分1：洗練された透明感のある青 */
-            --level1-bg: rgba(59, 130, 246, 0.15); 
-            --level1-border: #3b82f6;
+            /* 【修正】区分1：ごく薄く、主張を抑えた上品なブルーグレー */
+            --level1-bg: #f0f9ff; 
+            --level1-border: #bae6fd;
 
-            /* 判定：赤色のネオン風 */
-            --buy-bg: rgba(239, 68, 68, 0.1);
-            --buy-text: #fca5a5;
+            --buy-bg: rgba(239, 68, 68, 0.06);
+            --buy-text: #dc2626;
             --buy-border: #ef4444;
             
-            --gold: #fbbf24;
+            --gold: #b45309;
         }
 
         body {
             font-family: "Hiragino Sans", "Meiryo", "Helvetica Neue", Arial, sans-serif;
             margin: 0; padding-top: 100px;
-            background-color: var(--bg-dark); color: var(--text-main);
+            background-color: var(--bg-main); color: var(--text-main);
             display: flex; flex-direction: column; align-items: center;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* ヘッダー */
@@ -49,60 +49,62 @@
             background: var(--header-bg); backdrop-filter: blur(12px);
             z-index: 9999; border-bottom: 1px solid var(--border-color);
             display: flex; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .header-container {
             width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 24px;
             display: flex; align-items: center; justify-content: space-between;
         }
         .header-left { display: flex; align-items: center; gap: 40px; }
-        .logo { font-size: 22px; font-weight: 800; text-decoration: none; color: var(--text-main); }
+        .logo { font-size: 22px; font-weight: 800; text-decoration: none; color: var(--text-main); letter-spacing: -0.5px; }
         .logo span { color: var(--primary-color); }
         
         nav { display: flex; gap: 5px; }
-        nav a { color: var(--text-sub); font-weight: 600; font-size: 15px; padding: 8px 16px; border-radius: 8px; text-decoration: none; }
-        nav a.active { background-color: var(--primary-color); color: white; }
+        nav a { color: var(--text-sub); font-weight: 600; font-size: 15px; padding: 8px 16px; border-radius: 8px; text-decoration: none; transition: 0.2s; }
+        nav a:hover { background-color: #eff6ff; color: var(--primary-color); }
+        nav a.active { background-color: var(--primary-color); color: white; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3); }
 
         .header-sns { display: flex; align-items: center; gap: 10px; }
-        .sns-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; color: white !important; background: #000; border: 1px solid var(--border-color); text-decoration: none; }
+        .sns-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; color: white !important; font-size: 18px; text-decoration: none; transition: 0.2s; }
+        .sns-icon.x { background: #000; border: 1px solid #333; }
+        .sns-icon.youtube { background: #ff0000; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
 
         /* タイトルエリア */
-        .title-area { text-align: center; margin-bottom: 25px; width: 100%; }
-        h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 10px 0; }
-        #csv-update-time { font-size: 1.05rem; font-weight: 700; color: #ef4444; }
+        .title-area { text-align: center; margin-bottom: 30px; width: 100%; }
+        h1 { font-size: 2rem; font-weight: 800; margin: 0 0 10px 0; color: var(--text-main); letter-spacing: -0.5px; }
+        #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
 
         /* 厳選銘柄エリア */
-        .mika-selection-area { width: 100%; max-width: 1100px; margin-bottom: 30px; display: none; }
-        .mika-header { display: flex; align-items: center; background: #1e293b; color: white; padding: 12px 20px; border-radius: 12px 12px 0 0; font-size: 0.95rem; border: 1px solid var(--border-color); }
-        .mika-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 0 0 12px 12px; border: 1px solid var(--border-color); border-top: none; }
-        .mika-card { background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .mika-selection-area { width: 95%; max-width: 1100px; margin-bottom: 35px; display: none; }
+        .mika-header { display: flex; align-items: center; background: #fff; color: var(--text-main); padding: 15px 20px; border-radius: 16px 16px 0 0; font-size: 1rem; border: 1px solid var(--border-color); border-bottom: none; font-weight: 700; }
+        .mika-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; background: rgba(241, 245, 249, 0.6); padding: 20px; border-radius: 0 0 16px 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
+        .mika-card { background: #fff; border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         
         /* 説明文 */
-        .info-text { font-size: 0.85rem; width: 100%; max-width: 1100px; margin-bottom: 30px; background: var(--card-bg); padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary-color); box-sizing: border-box; }
+        .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin-bottom: 30px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
 
-        /* 背景色の意味を追加 */
-        .color-legend { 
-            width: 100%; max-width: 1100px; margin-bottom: 10px; text-align: left; font-size: 0.85rem; 
-            display: flex; align-items: center; gap: 10px;
-        }
-        .color-box { display: inline-block; width: 16px; height: 16px; border-radius: 3px; vertical-align: middle; border: 1px solid var(--level1-border); background: var(--level1-bg); }
+        /* 凡例 */
+        .color-legend { width: 95%; max-width: 1100px; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; color: var(--text-sub); font-size: 0.85rem; }
+        .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
 
         /* テーブル */
-        .table-container { width: 100%; max-width: 1200px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: auto; max-height: 70vh; border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 850px; }
-        thead th { position: sticky; top: 0; z-index: 10; background: #0f172a; color: var(--text-sub); font-size: 0.8rem; padding: 14px 10px; border-bottom: 2px solid var(--border-color); }
-        td { padding: 14px 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.88rem; }
+        .table-container { width: 95%; max-width: 1200px; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08); }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 900px; }
+        thead th { position: sticky; top: 0; z-index: 10; background: #f1f5f9; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
+        td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
         
-        /* 【区分1】AIスコアクリア：背景色を透明感のある青に */
-        tr.row-highlight td { background-color: var(--level1-bg) !important; color: #fff; }
-        tr.row-highlight td:first-child { border-left: 4px solid var(--level1-border); }
+        /* 【修正】区分1ハイライト：背景をごく薄くし、左端のラインも主張を抑える */
+        tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
+        tr.row-highlight td:first-child::before {
+            content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: var(--level1-border);
+        }
 
-        /* 判定：買いハイライト */
-        .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; border: 1px solid var(--buy-border); border-radius: 4px; padding: 2px 8px; }
-
+        .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; border: 1px solid var(--buy-border); border-radius: 6px; padding: 3px 10px; font-size: 0.8rem; }
         .col-rvol-style { color: var(--gold); font-weight: 700; }
-        .volume-spike { text-shadow: 0 0 8px var(--gold); color: #fff !important; }
+        .volume-spike { color: var(--gold) !important; text-shadow: 0 1px 3px rgba(180, 83, 9, 0.2); }
 
-        footer { margin-top: 60px; padding: 40px; text-align: center; color: var(--text-sub); border-top: 1px solid var(--border-color); width: 100%; }
+        footer { margin-top: 60px; padding: 50px; text-align: center; color: var(--text-sub); border-top: 1px solid var(--border-color); background: #fff; width: 100%; }
 
         @media (max-width: 768px) {
             body { padding-top: 140px; }
@@ -125,8 +127,9 @@
             </nav>
         </div>
         <div class="header-sns">
-            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon" style="background:#f00;"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note">n</a>
         </div>
     </div>
 </header>
@@ -134,30 +137,29 @@
 <div class="title-area">
     <h1>銘柄リアルタイムボード</h1>
     <div id="csv-update-time">読み込み中...</div>
-    <div id="last-load" style="font-size:0.7rem; color:var(--text-sub); margin-top:5px;"></div>
+    <div id="last-load" style="font-size:0.75rem; color:var(--text-sub); margin-top:5px;"></div>
 </div>
 
 <div class="mika-selection-area" id="mikaSelection">
     <div class="mika-header">
-        <span>👩‍💼 <strong>AI MIKA 厳選銘柄</strong></span>
+        <span>👩‍💼 <i class="fa-solid fa-crown" style="margin-right:8px; color:var(--gold);"></i><strong>AI MIKA 厳選銘柄</strong></span>
     </div>
     <div class="mika-cards" id="mikaCards"></div>
 </div>
 
 <div class="info-text">
-    <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
-    <small>※判定：<strong>(A3 × RVOL) ≧ 180 ＋ RVOL 1.5以上 ＋ 価格 > VWAP</strong> で「🔥買い」を表示。</small>
-    <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
-    <div style="font-weight: 800; color: var(--primary-color); margin-bottom:5px;">👩‍💼 AI MIKA's Strategy</div>
-    <ul style="margin: 0; padding-left: 20px; line-height: 1.7; color: var(--text-sub);">
+    <div style="font-weight: 800; color: var(--primary-color); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size: 1.1rem;">
+        <i class="fa-solid fa-robot"></i> AI MIKA's Strategy (勝ちかた)
+    </div>
+    <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: var(--text-sub);">
         <li><strong style="color: var(--text-main);">VWAPで拾う：</strong> 勢いのある株がVWAPまで押してきた反発タイミングを狙う。</li>
         <li><strong style="color: var(--text-main);">出来高をチェック：</strong> 押し目で出来高が減っていれば、売り圧力が弱い優良な押し目！</li>
-        <li><strong style="color: var(--text-main);">リスク管理：</strong> VWAPを明確に割ったら、潔く撤退して次のチャンスを待つ。</li>
+        <li><strong style="color: var(--text-main);">リスク管理：</strong> VWAPを明確に割ったら、撤退して次のチャンスを待つ。</li>
     </ul>
 </div>
 
 <div class="color-legend">
-    <span class="color-box"></span> <span>青色の背景は<strong>AIスコアクリア銘柄</strong>です。</span>
+    <span class="color-box"></span> <span>この色の背景は<strong>AIスコアクリア銘柄（区分1）</strong>です。</span>
 </div>
 
 <div class="table-container">
@@ -248,10 +250,10 @@ function updateMikaSelection(rows) {
         container.innerHTML = picks.map((p, i) => `
             <div class="mika-card">
                 <div style="display:flex; align-items:center;">
-                    <span style="font-weight:800; color:var(--gold); margin-right:10px;">#${i+1}</span>
-                    <div><div style="color:var(--primary-color); font-weight:700;">${p.code}</div><div style="font-weight:700; font-size:0.9rem;">${p.name}</div></div>
+                    <span style="font-weight:800; color:var(--gold); margin-right:12px; font-size:1.3rem;">${i+1}</span>
+                    <div><div style="color:var(--primary-color); font-weight:700; font-size:0.75rem;">${p.code}</div><div style="font-weight:700; font-size:1rem;">${p.name}</div></div>
                 </div>
-                <div style="text-align:right;"><div style="font-size:0.6rem; color:var(--text-sub);">SCORE</div><div style="font-weight:800; color:var(--gold); font-size:1.1rem;">${p.a3.toFixed(1)}</div></div>
+                <div style="text-align:right;"><div style="font-size:0.65rem; color:var(--text-sub);">AI SCORE</div><div style="font-weight:800; color:var(--gold); font-size:1.3rem;">${p.a3.toFixed(1)}</div></div>
             </div>
         `).join('');
     } else { area.style.display = 'none'; }
@@ -261,7 +263,7 @@ setInterval(loadCSV, 30000);
 </script>
 
 <footer>
-    © 2026 AIスコア投資研究所
+    © 2026 AIスコア投資研究所 / 負けないための武器をすべての人に。
 </footer>
 </body>
 </html>
