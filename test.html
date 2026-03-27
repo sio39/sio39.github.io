@@ -214,4 +214,29 @@ function updateMikaSelection(rows) {
         const judge = c[10] || "";
         const marginRatio = parseFloat(c[16]?.replace(/,/g, '') || 0);
         return { code, name, a3, vwap, price, judge, marginRatio };
-    }).filter(d => d && d.a3 >= 180 && d.marginRatio < 20 && d.price >
+    }).filter(d => d && d.a3 >= 180 && d.marginRatio < 20 && d.price > d.vwap && (d.judge.includes("🔥") || d.judge.includes("買い")));
+    const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
+    const container = document.getElementById('mikaCards');
+    const area = document.getElementById('mikaSelection');
+    if (picks.length > 0) {
+        area.style.display = 'block';
+        container.innerHTML = picks.map((p, i) => `
+            <div class="mika-card">
+                <div style="display:flex; align-items:center;">
+                    <span style="font-weight:800; color:var(--gold); margin-right:10px;">#${i+1}</span>
+                    <div><div style="color:var(--primary-dark); font-weight:700;">${p.code}</div><div style="font-weight:700; font-size:0.9rem;">${p.name}</div></div>
+                </div>
+                <div style="text-align:right;"><div style="font-size:0.6rem; color:var(--text-sub);">SCORE</div><div style="font-weight:800; color:var(--gold); font-size:1.1rem;">${p.a3.toFixed(1)}</div></div>
+            </div>
+        `).join('');
+    } else { area.style.display = 'none'; }
+}
+loadCSV();
+setInterval(loadCSV, 30000);
+</script>
+
+<footer style="margin-top:60px; padding:40px; text-align:center; color:var(--text-sub); border-top:1px solid var(--border-color); background:white;">
+    © 2026 AIスコア投資研究所
+</footer>
+</body>
+</html>
