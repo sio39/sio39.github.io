@@ -204,7 +204,10 @@
 <div class="info-text">
     <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
     <strong>【背景色の意味】</strong> <span style="background:var(--highlight-bg); padding:2px 6px; border-radius:4px; border:1px solid #fee2e2;">薄オレンジ</span>：AIスコア基準クリア / ⚡️：出来高急増（初動）<br>
-    <small>※厳選条件：A3 180以上 ＋ 価格 > VWAP ＋ <strong>信用倍率20倍未満</strong> を抽出。</small>
+    <small>
+        ※判定：<strong>(A3 × RVOL) ≧ 180 ＋ RVOL 1.5以上 ＋ 価格 > VWAP</strong> で「🔥買い」を表示。<br>
+        ※厳選：上記条件を満たす銘柄から <strong>信用倍率20倍未満</strong> の上位3件をピックアップ。
+    </small>
 </div>
 
 <div class="table-container">
