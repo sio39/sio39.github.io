@@ -90,7 +90,7 @@
             width: 100%;
             max-width: 1100px;
             margin: 0 auto 30px auto;
-            display: none; /* 初期は非表示 */
+            display: none; 
         }
         .mika-header {
             display: flex;
@@ -204,7 +204,7 @@
 <div class="info-text">
     <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
     <strong>【背景色の意味】</strong> <span style="background:var(--highlight-bg); padding:2px 6px; border-radius:4px; border:1px solid #fee2e2;">薄オレンジ</span>：AIスコア基準クリア / ⚡️：出来高急増（初動）<br>
-    <small>※判定：(A3×RVOL)≧180 ＋ RVOL 1.5以上 ＋ 価格 > VWAP で「🔥買い」を表示。</small>
+    <small>※厳選条件：A3 180以上 ＋ 価格 > VWAP ＋ <strong>信用倍率20倍未満</strong> を抽出。</small>
 </div>
 
 <div class="table-container">
@@ -305,24 +305,35 @@ function updateMikaSelection(rows) {
 
     const allPicks = rows.slice(1).map(row => {
         const c = row.split(',');
-        if (c.length < 15) return null;
+        if (c.length < 17) return null;
+
         const code = c[0].replace(/"/g,'').trim();
-        const vol = parseFloat(c[4]?.replace(/,/g,'') || 0);
-        const a3 = parseFloat(c[13] || 0);
-        const vwap = parseFloat(c[5]?.replace(/,/g,'') || 0);
+        const name = c[1].replace(/"/g,'').trim();
         const price = parseFloat(c[2]?.replace(/,/g,'') || 0);
-        const judge = c[10] || "";
+        const vol = parseFloat(c[4]?.replace(/,/g,'') || 0);
+        const vwap = parseFloat(c[5]?.replace(/,/g,'') || 0);
+        const a3 = parseFloat(c[13] || 0);
+        const judge = c[10] || ""; // 元の判定（🔥など）も考慮
+        
+        const marginRatio = parseFloat(c[16]?.replace(/,/g, '') || 0);
 
         let hasBolt = false;
         if (prevVolumeMap.has(code)) {
-            const diff = vol - prevVolumeMap.get(code);
+            const lastVol = prevVolumeMap.get(code);
+            const diff = vol - lastVol;
             const avg5min = (vol * (330 / elapsed)) / 66;
             if (diff > avg5min * 2 && diff > 1000) hasBolt = true;
         }
         prevVolumeMap.set(code, vol);
 
-        return { code, name: c[1], a3, vwap, price, judge, hasBolt };
-    }).filter(d => d && (d.judge.includes("🔥") || d.judge.includes("買い")) && d.a3 >= 180 && d.price > d.vwap);
+        return { code, name, a3, vwap, price, judge, marginRatio, hasBolt };
+    }).filter(d => 
+        d && 
+        d.a3 >= 180 && 
+        d.marginRatio < 20 && 
+        d.price > d.vwap &&
+        (d.judge.includes("🔥") || d.judge.includes("買い")) // 念のため元の判定も含める
+    );
 
     const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
     const container = document.getElementById('mikaCards');
@@ -346,6 +357,8 @@ function updateMikaSelection(rows) {
                 </div>
             </div>
         `).join('');
+    } else {
+        area.style.display = 'none';
     }
 }
 
