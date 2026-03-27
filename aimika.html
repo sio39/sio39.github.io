@@ -95,7 +95,7 @@
                 <div class="stat-item"><div class="stat-label">厳選</div><div class="stat-val" id="statPick">0</div></div>
             </div>
             <div style="font-size:0.65rem; color:var(--text2); margin-top:10px; text-align:center;">
-                ※A3 180以上 / 買いサイン / 価格 > VWAP<br>
+                ※AIスコア 180以上 / 買いサイン / 価格 > VWAP<br>
                 かつ <strong>信用倍率20倍未満</strong> のみを抽出
             </div>
         </div>
@@ -158,15 +158,17 @@ function processData(rows) {
         const price = parseFloat(r[2]?.replace(/,/g, '') || 0);
         const vol = parseFloat(r[4]?.replace(/,/g, '') || 0);
         const vwap = parseFloat(r[5]?.replace(/,/g, '') || 0);
-        const judge = r[10] || "";
         const rvol = parseFloat(r[9] || 0);
-        const a3 = parseFloat(r[13] || 0);
+
+        // ---【確定したデータ参照先：Indexは列数-1】---
+        const judge = r[10] || "";        // 11列目：判定1（買い/🔥）
+        const a3 = parseFloat(r[13] || 0); // 14列目：補正AIスコア
         
-        // 【修正】17列目（Index 16）から信用倍率を取得
         let marginRatio = 0;
         if (r.length >= 17) {
-            marginRatio = parseFloat(r[16]?.replace(/,/g, '') || 0);
+            marginRatio = parseFloat(r[16]?.replace(/,/g, '') || 0); // 17列目：信用倍率
         }
+        // -------------------------
 
         let hasBolt = false;
         if (prevVolumeMap.has(code)) {
@@ -180,12 +182,11 @@ function processData(rows) {
         return { code, name, price, vwap, vol, judge, rvol, a3, hasBolt, marginRatio };
     });
 
-    // 厳選：条件に加えて、信用倍率20倍未満でフィルタリング
     const picks = all.filter(d => 
         (d.judge.includes('🔥') || d.judge.includes('買い')) &&
         d.a3 >= 180 && 
         d.price > d.vwap &&
-        d.marginRatio < 20 // ここでSBI(47.33倍)が消えるはず！
+        d.marginRatio < 20
     ).sort((a, b) => b.a3 - a.a3).slice(0, 3);
 
     render(all.length, picks);
@@ -218,7 +219,7 @@ function render(total, picks) {
             </div>
             <div class="metric-group">
                 <div class="m-item">
-                    <div class="m-label">AI SCORE (A3)</div>
+                    <div class="m-label">AI SCORE</div>
                     <div class="m-val" style="color:var(--gold)">${p.a3.toFixed(1)}</div>
                 </div>
                 <div class="m-item">
