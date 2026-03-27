@@ -1,177 +1,335 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5JCN1FB7ML');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI MIKA 厳選銘柄分析 | AIスコア投資研究所</title>
+    <title>銘柄リアルタイムボード | AIスコア投資研究所</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <style>
         :root {
-            --primary: #4da3ff;
-            --bg: #f1f5f9;
+            --primary: #4da3ff; 
+            --primary-dark: #3b82f6;
+            --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --header-bg: #1e293b;
+            --highlight-bg: #fffcf0; 
+            --buy-bg: #fef2f2;
+            --buy-text: #dc2626;
+            --spike-bg: #fef9c3;
+            --spike-border: #facc15;
             --gold: #f0a500;
-            --accent: #ef4444;
         }
 
         body {
-            font-family: "Hiragino Sans", "Meiryo", sans-serif;
-            margin: 0; padding: 100px 15px 60px;
-            background: var(--bg); color: var(--text-main);
-            line-height: 1.6;
-            display: flex; flex-direction: column; align-items: center;
+            font-family: "Inter", "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
+            margin: 0;
+            padding: 100px 15px 60px; /* ナビの高さに合わせて調整 */
+            background: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* ヘッダー共通スタイル */
+        /* --- 以前のシンプルなヘッダー構造に復元 --- */
         .header {
-            position: fixed; top: 0; left: 0; width: 100%;
-            background: white; border-bottom: 1px solid #e2e8f0;
-            padding: 15px 0; z-index: 1000; display: flex; justify-content: center;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
         }
-        .header-container { width: 100%; max-width: 900px; display: flex; justify-content: space-between; padding: 0 20px; }
-        .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 1.2rem; }
 
-        .container { width: 100%; max-width: 800px; }
+        .header-container {
+            width: 100%;
+            max-width: 850px;
+            padding: 0 15px;
+            display: flex;
+            flex-direction: column; /* スマホでは縦並び */
+            align-items: center;
+            gap: 10px;
+        }
 
-        h1 { font-size: 1.5rem; text-align: center; margin-bottom: 30px; color: #0f172a; }
+        @media (min-width: 600px) {
+            .header-container {
+                flex-direction: row; /* PCでは横並び */
+                justify-content: space-between;
+                padding: 5px 20px;
+            }
+        }
 
-        /* 分析カード */
-        .analysis-card {
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .logo { font-size: 18px; font-weight: 800; color: var(--primary); text-decoration: none; }
+
+        nav { display: flex; gap: 15px; }
+        nav a { color: var(--text-sub); text-decoration: none; font-weight: 600; font-size: 14px; }
+        nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+        .header-sns { display: flex; align-items: center; gap: 10px; }
+        .sns-icon {
+            display: flex; align-items: center; justify-content: center;
+            width: 30px; height: 30px; border-radius: 50%; color: white !important;
+            text-decoration: none; font-size: 14px;
+        }
+        .sns-icon.x { background: #000; }
+        .sns-icon.youtube { background: #ff0000; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 12px; }
+
+        /* --- Mika厳選ピックセクション --- */
+        .mika-selection-area {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto 30px auto;
+            display: none; 
+        }
+        .mika-header {
+            display: flex;
+            align-items: center;
+            background: var(--header-bg);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 12px 12px 0 0;
+            font-size: 0.9rem;
+        }
+        .mika-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 0 0 12px 12px;
+            border: 1px solid var(--border);
+        }
+        .mika-card {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .rank-badge {
-            position: absolute; top: -15px; left: 20px;
-            background: var(--gold); color: white;
-            padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 0.9rem;
-        }
-        .stock-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px; }
-        .stock-info .code { font-family: monospace; font-size: 1.2rem; color: var(--primary); font-weight: 700; }
-        .stock-info .name { font-size: 1.4rem; font-weight: 800; display: block; }
-        .score-box { text-align: right; }
-        .score-val { font-size: 2rem; font-weight: 900; color: var(--gold); line-height: 1; }
-        .score-label { font-size: 0.7rem; color: #64748b; font-weight: 700; }
+        .rank-num { font-weight: 800; color: var(--gold); font-size: 1.1rem; margin-right: 10px; }
+        .stock-code { color: var(--primary-dark); font-family: monospace; font-weight: 700; font-size: 1rem; }
+        .stock-name { font-weight: 700; font-size: 0.95rem; }
 
-        /* 分析コンテンツ */
-        .section-title { font-weight: 800; font-size: 1rem; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; color: #334155; }
-        .section-title i { color: var(--primary); }
+        /* --- ボード用 --- */
+        .title-area { text-align: center; margin-bottom: 20px; }
+        h1 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin: 0 0 5px 0; }
+        #csv-update-time { font-size: 1rem; font-weight: 700; color: #ef4444; }
+
+        .info-text {
+            font-size: 0.8rem; width: 100%; max-width: 1100px;
+            margin: 0 auto 20px auto; background: var(--card-bg);
+            padding: 15px; border-radius: 12px; border-left: 5px solid var(--primary);
+            box-sizing: border-box;
+        }
+
+        .table-container {
+            width: 100%; max-width: 1200px; background: var(--card-bg);
+            border-radius: 16px; box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+            margin: 0 auto; max-height: 65vh; overflow: auto; 
+        }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 850px; table-layout: fixed; }
+        thead th { position: sticky; top: 0; z-index: 10; background: var(--header-bg); color: #fff; font-size: 0.75rem; padding: 12px 8px; }
+        td { padding: 12px 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
         
-        .ir-box { background: #f8fafc; padding: 15px; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid var(--primary); }
-        .mika-comment { background: #fffcf0; padding: 15px; border-radius: 12px; font-size: 0.95rem; border: 1px solid #fef3c7; position: relative; }
-        .mika-comment::before { content: "👩‍💼"; position: absolute; top: -12px; left: 10px; font-size: 1.2rem; }
+        tr.row-highlight td { background-color: var(--highlight-bg) !important; }
+        .col-rvol-style { background: #fffef3 !important; font-weight: 700; color: #854d0e; }
+        .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; }
+        .volume-spike { background: var(--spike-bg) !important; box-shadow: inset 0 0 0 2px var(--spike-border); }
 
-        .loading { text-align: center; padding: 50px; font-weight: 700; color: var(--text-sub); }
+        footer { margin-top: 40px; padding-bottom: 40px; text-align: center; color: var(--text-sub); font-size: 0.75rem; }
     </style>
 </head>
+
 <body>
 
 <header class="header">
     <div class="header-container">
-        <a href="index.html" class="logo">AIスコア投資研究所</a>
-        <a href="realtime.html" style="text-decoration:none; color:#64748b; font-weight:700; font-size:0.9rem;">← ボードに戻る</a>
+        <div class="header-left">
+            <a href="index.html" class="logo">AIスコア研究所</a>
+            <nav>
+                <a href="index.html">TOP</a>
+                <a href="realtime.html" class="active">ボード</a>
+                <a href="aimika.html">MIKA分析</a>
+            </nav>
+        </div>
+        <div class="header-sns">
+            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note">n</a>
+        </div>
     </div>
 </header>
 
-<div class="container">
-    <h1>👩‍💼 AI MIKA 本日の深掘り分析</h1>
-    <div id="analysis-container">
-        <div class="loading">最新データを解析中...</div>
+<div class="title-area">
+    <h1>銘柄リアルタイムボード</h1>
+    <div id="csv-update-time">読み込み中...</div>
+    <div id="last-load" style="font-size:0.65rem; color:#94a3b8; margin-top:5px;"></div>
+</div>
+
+<div class="mika-selection-area" id="mikaSelection">
+    <div class="mika-header">
+        <span>👩‍💼 <strong>AI MIKA 厳選3銘柄</strong></span>
+        <a href="aimika.html" style="color: var(--spike-border); font-size: 0.7rem; text-decoration: underline; margin-left: auto;">分析ページへ</a>
     </div>
+    <div class="mika-cards" id="mikaCards"></div>
+</div>
+
+<div class="info-text">
+    <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
+    <small>
+        ※判定：<strong>(A3×RVOL)≧180 ＋ RVOL 1.5以上 ＋ 価格>VWAP</strong> で「🔥買い」<br>
+        ※厳選：上記 ＋ <strong>信用倍率20倍未満</strong> の上位3件を表示
+    </small>
+</div>
+
+<div class="table-container">
+    <table id="csv-table">
+        <thead id="table-header"></thead>
+        <tbody id="table-body"></tbody>
+    </table>
 </div>
 
 <script>
-async function loadAndAnalyze() {
-    try {
-        const response = await fetch('data_push.csv', {cache: "no-store"});
+let prevVolumeMap = new Map();
+
+function formatNum(val) {
+    let n = parseFloat(val.replace(/,/g, ''));
+    if (isNaN(n)) return val;
+    return val.includes('.') ? val : n.toLocaleString();
+}
+
+function getElapsed() {
+    const n = new Date(), s = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 9, 0, 0);
+    const n1 = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 11, 30, 0), n2 = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 12, 30, 0);
+    if (n < s) return 1;
+    if (n >= n1 && n < n2) return 150;
+    if (n >= n2) return 150 + Math.min(180, (n - n2) / 60000);
+    return Math.max(1, (n - s) / 60000);
+}
+
+async function loadCSV(){
+    try{
+        const response = await fetch('data_push.csv',{cache:"no-store"});
         const data = await response.text();
-        const rows = data.split(/\r?\n/).filter(r => r.trim() !== "");
-        
-        // 厳選3銘柄を抽出（リアルタイムボードと同じロジック）
-        const picks = rows.slice(1).map(row => {
-            const c = row.split(',');
-            if (c.length < 17) return null;
-            return {
-                code: c[0].replace(/"/g,'').trim(),
-                name: c[1].replace(/"/g,'').trim(),
-                price: parseFloat(c[2]?.replace(/,/g,'') || 0),
-                vol: parseFloat(c[4]?.replace(/,/g,'') || 0),
-                vwap: parseFloat(c[5]?.replace(/,/g,'') || 0),
-                a3: parseFloat(c[13] || 0),
-                margin: parseFloat(c[16]?.replace(/,/g,'') || 0),
-                judge: c[10] || ""
-            };
-        }).filter(d => d && d.a3 >= 180 && d.margin < 20 && d.price > d.vwap && d.judge.includes("買い"))
-          .sort((a,b) => b.a3 - a.a3).slice(0, 3);
-
-        renderAnalysis(picks);
-    } catch (e) {
-        document.getElementById('analysis-container').innerHTML = "データの読み込みに失敗しました。";
-    }
+        const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="");
+        renderTable(rows);
+        updateMikaSelection(rows);
+        document.getElementById('last-load').textContent = '更新: ' + new Date().toLocaleTimeString();
+    } catch(e) { console.error(e) }
 }
 
-function renderAnalysis(picks) {
-    const container = document.getElementById('analysis-container');
-    if (picks.length === 0) {
-        container.innerHTML = "<div class='loading'>現在、厳選基準を満たす銘柄はありません。</div>";
-        return;
-    }
+function renderTable(rows) {
+    const tableHeader = document.getElementById('table-header');
+    const tableBody = document.getElementById('table-body');
+    tableHeader.innerHTML = ''; tableBody.innerHTML = '';
+    const hideIndices = [3, 7, 11];
+    let stockCount = 0;
 
-    container.innerHTML = picks.map((p, i) => `
-        <div class="analysis-card">
-            <div class="rank-badge">PICK UP #${i+1}</div>
-            <div class="stock-header">
-                <div class="stock-info">
-                    <span class="code">${p.code}</span>
-                    <span class="name">${p.name}</span>
+    rows.forEach((row, index) => {
+        if(row.includes("Update:")){
+            document.getElementById('csv-update-time').innerHTML = row.split(',')[0].replace("Update:","").trim();
+            return;
+        }
+        const columns = row.split(',');
+        const tr = document.createElement('tr');
+        if(index !== 0 && columns[11]?.replace(/"/g,'').trim() === "1") tr.classList.add('row-highlight');
+        const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
+        if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '40px'; }
+        else { stockCount++; noCell.textContent = stockCount; noCell.style.color = '#94a3b8'; noCell.style.fontSize = '0.7rem'; }
+        tr.appendChild(noCell);
+        for(let i = 0; i <= 10; i++) {
+            if(hideIndices.includes(i)) continue;
+            const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
+            let val = (columns[i] || "").replace(/"/g,'').trim();
+            if(index === 0) { cell.textContent = val; } 
+            else {
+                if(i === 8 || i === 9) {
+                    cell.classList.add("col-rvol-style");
+                    let num = parseFloat(val);
+                    if(!isNaN(num)){
+                        if(num >= 2) cell.classList.add("volume-spike");
+                        cell.textContent = num.toFixed(2);
+                    } else cell.textContent = val;
+                } else if(i === 10) {
+                    cell.textContent = val;
+                    if(val.includes("買い")) cell.classList.add("buy-highlight");
+                } else {
+                    cell.textContent = (i === 0) ? val.replace(/,/g, '') : formatNum(val);
+                }
+            }
+            tr.appendChild(cell);
+        }
+        if(index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
+    });
+}
+
+function updateMikaSelection(rows) {
+    const elapsed = getElapsed();
+    const allPicks = rows.slice(1).map(row => {
+        const c = row.split(',');
+        if (c.length < 17) return null;
+        const code = c[0].replace(/"/g,'').trim();
+        const name = c[1].replace(/"/g,'').trim();
+        const price = parseFloat(c[2]?.replace(/,/g,'') || 0);
+        const vwap = parseFloat(c[5]?.replace(/,/g,'') || 0);
+        const a3 = parseFloat(c[13] || 0);
+        const judge = c[10] || "";
+        const marginRatio = parseFloat(c[16]?.replace(/,/g, '') || 0);
+        return { code, name, a3, vwap, price, judge, marginRatio };
+    }).filter(d => d && d.a3 >= 180 && d.marginRatio < 20 && d.price > d.vwap && (d.judge.includes("🔥") || d.judge.includes("買い")));
+    const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
+    const container = document.getElementById('mikaCards');
+    const area = document.getElementById('mikaSelection');
+    if (picks.length > 0) {
+        area.style.display = 'block';
+        container.innerHTML = picks.map((p, i) => `
+            <div class="mika-card">
+                <div style="display:flex; align-items:center;">
+                    <span class="rank-num">#${i+1}</span>
+                    <div>
+                        <div class="stock-code">${p.code}</div>
+                        <div class="stock-name">${p.name}</div>
+                    </div>
                 </div>
-                <div class="score-box">
-                    <div class="score-label">AI SCORE (A3)</div>
-                    <div class="score-val">${p.a3.toFixed(1)}</div>
+                <div style="text-align:right;">
+                    <div style="font-size:0.6rem; color:var(--text-sub);">SCORE</div>
+                    <div style="font-weight:800; color:var(--gold); font-size:1rem;">${p.a3.toFixed(1)}</div>
                 </div>
             </div>
-
-            <div class="section-title"><i class="fa-solid fa-bullhorn"></i> 最新IR・材料の要約</div>
-            <div class="ir-box">
-                ${getDummyIR(p.code)}
-            </div>
-
-            <div class="section-title"><i class="fa-solid fa-comment-dots"></i> Mika's Eye（ここが買い！）</div>
-            <div class="mika-comment">
-                ${getMikaComment(p.code, p.name)}
-            </div>
-            
-            <div style="margin-top:20px; text-align:right;">
-                <a href="https://www.buffett-code.com/quarterly/${p.code}" target="_blank" style="font-size:0.8rem; color:var(--primary); font-weight:700;">
-                    バフェット・コードで詳細を見る <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-            </div>
-        </div>
-    `).join('');
+        `).join('');
+    } else { area.style.display = 'none'; }
 }
-
-// 銘柄ごとのダミーIR（実際にはここをAIに生成させるか、手動で更新します）
-function getDummyIR(code) {
-    const data = {
-        "3350": "直近でビットコインの追加購入を完了し、保有枚数が大幅に増加。1株あたりのBTC保有量（BTCイールド）の成長が継続しています。財務レバレッジを活用した独自の資本戦略が市場で注目されています。",
-        "default": "最新の適時開示にて業績予想の上方修正、または株主還元の強化が発表されています。RVOL（相対出来高）が上昇しており、大口投資家の資金流入が期待できる局面です。"
-    };
-    return data[code] || data["default"];
-}
-
-// Mikaのコメント生成
-function getMikaComment(code, name) {
-    if(code === "3350") return "メタプラネットは、単なる投資会社を超えて『ビットコイン・スタンダード』を地で行く唯一無二の存在ね。A3スコアが高いのは、将来の含み益を市場が織り込み始めている証拠。VWAPより上で推移している間は、強気で見ていいと思うわ！";
-    return `${name}は、指標面（PER/ROE）のバランスがすごくいいわね。今の株価位置はVWAPをしっかり超えていて、買い方の勢いが勝っている状態。信用倍率も20倍以下で軽いから、上値が期待できそうな「優等生銘柄」よ✨`;
-}
-
-loadAndAnalyze();
+loadCSV();
+setInterval(loadCSV, 30000);
 </script>
+
+<footer>
+    © 2026 AIスコア投資研究所
+</footer>
 
 </body>
 </html>

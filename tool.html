@@ -1,208 +1,281 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-5JCN1FB7ML');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI MIKA 厳選銘柄分析 | AIスコア投資研究所</title>
+    <title>投資ツール集 | AIスコア投資研究所</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+
     <style>
+        /* 基本設定（サイト共通） */
         :root {
-            --primary: #4da3ff;
-            --bg: #f8fafc;
+            --primary-color: #4da3ff;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #1e293b;
+            --text-main: #334155;
             --text-sub: #64748b;
-            --border: #e2e8f0;
-            --gold: #f0a500;
+            --border-color: #e2e8f0;
+            /* 各ツールのアクセントカラー */
+            --chatgpt-color: #10a37f;
+            --rakuten-color: #bf0000;
+            --mt4-color: #1e293b;
+            --book-color: #4da3ff;
         }
 
         body {
-            font-family: "Inter", "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
-            margin: 0;
-            padding: 90px 15px 60px; /* ナビの高さに合わせて調整 */
-            background: var(--bg);
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.7;
             color: var(--text-main);
-            line-height: 1.5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 120px 20px 60px 20px;
+            background-color: var(--bg-color);
         }
 
-        /* --- 以前のシンプルなナビゲーションを復元 --- */
+        /* --- ヘッダー：統一デザイン --- */
         .header {
             position: fixed;
             top: 0; left: 0; width: 100%;
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(12px);
             z-index: 9999;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: center;
-            padding: 10px 0;
+            padding: 14px 0;
+            box-sizing: border-box;
         }
 
         .header-container {
             width: 100%;
             max-width: 850px;
-            padding: 0 15px;
+            padding: 0 20px;
             display: flex;
-            flex-direction: column; /* スマホでは縦並びに */
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
         }
 
-        @media (min-width: 600px) {
-            .header-container { flex-direction: row; justify-content: space-between; padding: 5px 20px; }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
         }
 
-        .logo { font-size: 18px; font-weight: 800; color: var(--primary); text-decoration: none; }
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            white-space: nowrap;
+        }
 
-        nav { display: flex; gap: 15px; }
-        nav a { color: var(--text-sub); text-decoration: none; font-weight: 600; font-size: 14px; }
-        nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        nav { 
+            display: flex; 
+            gap: 20px; 
+        }
 
-        /* --- コンテンツエリア --- */
-        .container { width: 100%; max-width: 700px; }
-        h1 { font-size: 1.4rem; text-align: center; margin: 10px 0 25px; color: #0f172a; }
+        nav a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
 
-        .analysis-card {
+        nav a:hover, nav a.active { color: var(--primary-color); }
+
+        .header-sns {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sns-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: white !important;
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .sns-icon.x { background: #000; }
+        .sns-icon.youtube { background: #ff0000; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 14px; }
+
+        .sns-icon:hover { transform: translateY(-2px); opacity: 0.8; }
+
+        /* メインコンテンツ装飾 */
+        h1 {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+        }
+
+        /* ツールカード */
+        .tool-card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 12px;
+            padding: 24px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
             position: relative;
+            overflow: hidden;
         }
 
-        .rank-badge {
-            position: absolute; top: -12px; left: 15px;
-            background: var(--gold); color: white;
-            padding: 3px 12px; border-radius: 20px; font-weight: 800; font-size: 0.8rem;
+        .tool-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
         }
 
-        .stock-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 15px; }
-        .stock-info .code { font-family: monospace; font-size: 1.1rem; color: var(--primary); font-weight: 700; }
-        .stock-info .name { font-size: 1.2rem; font-weight: 800; display: block; }
-        .score-box { text-align: right; }
-        .score-val { font-size: 1.8rem; font-weight: 900; color: var(--gold); line-height: 1; }
-        .score-label { font-size: 0.6rem; color: var(--text-sub); font-weight: 700; }
+        /* 個別カラー */
+        .chatgpt-card::before { background: var(--chatgpt-color); }
+        .rakuten-card::before { background: var(--rakuten-color); }
+        .mt4-card::before { background: var(--mt4-color); }
+        .book-card::before { background: var(--book-color); }
 
-        .section-title { font-weight: 800; font-size: 0.9rem; margin: 15px 0 8px; display: flex; align-items: center; gap: 6px; color: #334155; }
-        .section-title i { color: var(--primary); font-size: 0.8rem; }
-        
-        .ir-box { background: #f8fafc; padding: 12px; border-radius: 10px; font-size: 0.85rem; border-left: 4px solid var(--primary); color: #475569; }
-        .mika-comment { background: #fffcf0; padding: 12px; border-radius: 10px; font-size: 0.9rem; border: 1px solid #fef3c7; position: relative; margin-top: 15px; }
-        .mika-comment::before { content: "👩‍💼"; position: absolute; top: -12px; left: 10px; font-size: 1.1rem; }
+        .tool-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+        }
 
-        .loading { text-align: center; padding: 50px; font-weight: 700; color: var(--text-sub); font-size: 0.9rem; }
+        .tool-text {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 20px;
+        }
 
-        footer { margin-top: 40px; text-align: center; color: var(--text-sub); font-size: 0.75rem; }
+        /* アクションボタン */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary { background: var(--primary-color); color: white; }
+        .btn-primary:hover { opacity: 0.8; }
+        .btn-outline { border: 1px solid var(--primary-color); color: var(--primary-color); }
+        .btn-outline:hover { background: var(--primary-color); color: white; }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin-top: 60px;
+            padding: 40px 0 20px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            body { padding-top: 160px; }
+            .header-container { flex-direction: column; gap: 12px; }
+            .header-left { flex-direction: column; gap: 8px; }
+            nav { gap: 15px; width: 100%; justify-content: center; overflow-x: auto; padding-bottom: 5px; }
+        }
     </style>
 </head>
+
 <body>
 
 <header class="header">
     <div class="header-container">
-        <a href="index.html" class="logo">AIスコア投資研究所</a>
-        <nav>
-            <a href="index.html">TOP</a>
-            <a href="realtime.html">リアルボード</a>
-            <a href="aimika.html" class="active">AI MIKA分析</a>
-        </nav>
+        <div class="header-left">
+            <a href="index.html" class="logo">AIスコア投資研究所</a>
+            <nav>
+                <a href="index.html">TOP</a>
+                <a href="scoresiki.html">AIスコア計算機</a>
+                <a href="tool.html" class="active">ツール</a>
+                <a href="realtime.html">リアルボード</a>
+            </nav>
+        </div>
+        
+        <div class="header-sns">
+            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x" title="𝕏 (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note" title="note">n</a>
+        </div>
     </div>
 </header>
 
-<div class="container">
-    <h1>👩‍💼 AI MIKA 厳選3銘柄分析</h1>
-    <div id="analysis-container">
-        <div class="loading">最新データを解析中...</div>
+<main>
+    <h1>投資に役立つツール</h1>
+    <p class="subtitle">AIスコア投資を支える厳選ツールを紹介します</p>
+
+    <div class="tool-card chatgpt-card">
+        <div class="tool-title">AIツール</div>
+        <p class="tool-text">
+            銘柄分析や思考整理を高速化する汎用型AI。投資判断の仮説構築に最適です。
+            いくつかのAIを併用することで、分析の幅がさらに広がります。
+        </p>
+        <a href="ai.html" class="btn btn-primary">▶ AIツールリストを見る</a>
     </div>
-</div>
 
-<script>
-async function loadAndAnalyze() {
-    try {
-        const response = await fetch('data_push.csv', {cache: "no-store"});
-        const data = await response.text();
-        const rows = data.split(/\r?\n/).filter(r => r.trim() !== "");
-        
-        const picks = rows.slice(1).map(row => {
-            const c = row.split(',');
-            if (c.length < 17) return null;
-            return {
-                code: c[0].replace(/"/g,'').trim(),
-                name: c[1].replace(/"/g,'').trim(),
-                price: parseFloat(c[2]?.replace(/,/g,'') || 0),
-                vwap: parseFloat(c[5]?.replace(/,/g,'') || 0),
-                a3: parseFloat(c[13] || 0),
-                margin: parseFloat(c[16]?.replace(/,/g,'') || 0),
-                judge: c[10] || ""
-            };
-        }).filter(d => d && d.a3 >= 180 && d.margin < 20 && d.price > d.vwap && (d.judge.includes("🔥") || d.judge.includes("買い")))
-          .sort((a,b) => b.a3 - a.a3).slice(0, 3);
+    <div class="tool-card rakuten-card">
+        <div class="tool-title">楽天RSS</div>
+        <p class="tool-text">
+            Excelにリアルタイム株価を自動取り込み。独自の計算式と組み合わせれば、AIスコアの算出や監視銘柄の評価を完全自動化できます。分析効率を劇的に高める必須ツールです。
+        </p>
+        <a href="https://account.rakuten-sec.co.jp/ApplicationTop/introduceFriend.do?introClientCd=u6mgoVV5MGk%3D&hash=0e1ba608f16b7ca713deb76f462d6924&introBranchCd=TiswAUMUGvU%3D&routeKey=SEC01001&urlSendDt=7zKD03nuwNQH9UBAaAOoYA%3D%3D&sendSnsKbn=1" 
+           target="_blank" class="btn btn-primary">▶ 楽天証券で口座開設（紹介特典あり）</a>
+    </div>
 
-        renderAnalysis(picks);
-    } catch (e) {
-        document.getElementById('analysis-container').innerHTML = "<div class='loading'>データの読み込みに失敗しました。</div>";
-    }
-}
+    <div class="tool-card mt4-card">
+        <div class="tool-title">MetaTrader 4 (MT4)</div>
+        <p class="tool-text">
+            世界標準の高機能チャート分析ツール。カスタムインジケーターを活用した高度な分析が可能です。
+            FXや仮想通貨のテクニカル分析環境として非常に優れています。
+        </p>
+        <a href="https://www.xmtrading.com/jp/referral?token=u2ugPwHW1Udaj8Z7wPFyrw" 
+           target="_blank" class="btn btn-primary">▶ XMでMT4を利用する</a>
+    </div>
 
-function renderAnalysis(picks) {
-    const container = document.getElementById('analysis-container');
-    if (picks.length === 0) {
-        container.innerHTML = "<div class='loading'>現在、条件を満たす銘柄はありません。</div>";
-        return;
-    }
+    <div class="tool-card book-card">
+        <div class="tool-title">投資関連本</div>
+        <p class="tool-text">
+            AIツールだけでなく、基礎となる投資理論や実践的手法の学習も重要です。
+            当研究所が厳選した、投資家として成長するために読むべき書籍リストをまとめています。
+        </p>
+        <a href="books.html" class="btn btn-primary">▶ おすすめ投資本リスト</a>
+    </div>
+</main>
 
-    container.innerHTML = picks.map((p, i) => `
-        <div class="analysis-card">
-            <div class="rank-badge">PICK UP #${i+1}</div>
-            <div class="stock-header">
-                <div class="stock-info">
-                    <span class="code">${p.code}</span>
-                    <span class="name">${p.name}</span>
-                </div>
-                <div class="score-box">
-                    <div class="score-label">AI SCORE</div>
-                    <div class="score-val">${p.a3.toFixed(1)}</div>
-                </div>
-            </div>
+<footer class="footer-note">
+    &copy; 2026 AIスコア投資研究所
+    <p>↓応援クリックお願いします</p>
 
-            <div class="section-title"><i class="fa-solid fa-bullhorn"></i> 最新IR・ニュースの要約</div>
-            <div class="ir-box">${getDummyIR(p.code)}</div>
+    <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
+        <img src="https://b.blogmura.com/stock/88_31.gif" alt="ブログ村">
+    </a>
+</footer>
 
-            <div class="section-title"><i class="fa-solid fa-comment-dots"></i> Mika's Eye</div>
-            <div class="mika-comment">${getMikaComment(p.code, p.name)}</div>
-        </div>
-    `).join('');
-}
-
-function getDummyIR(code) {
-    const data = {
-        "3350": "継続的なビットコイン購入戦略により保有資産の価値が向上。新しい資本配分方針を発表し、市場から高い関心を集めています。",
-        "default": "直近の決算または適時開示にて、堅調な業績進捗や株主還元策が確認されています。AIスコアが示す割安性と需給が噛み合った初動の形です。"
-    };
-    return data[code] || data["default"];
-}
-
-function getMikaComment(code, name) {
-    if(code === "3350") return "メタプラネットは日本で唯一の戦略を取っている面白い会社ね。価格がVWAPをしっかり超えているのが強さの証拠よ✨";
-    return `${name}は、AIスコアで見ても優等生ね。信用倍率が20倍以下で需給が軽いのも大きなプラス材料。今の形を崩さないか見守っていきましょう！`;
-}
-
-loadAndAnalyze();
-</script>
-
-<footer>© 2026 AIスコア投資研究所</footer>
 </body>
 </html>
