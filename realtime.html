@@ -170,6 +170,7 @@ function formatNum(val) {
     if (isNaN(n)) return val;
     return val.includes('.') ? val : n.toLocaleString();
 }
+
 async function loadCSV(){
     try{
         const response = await fetch('data_push.csv',{cache:"no-store"});
@@ -186,7 +187,6 @@ function renderTable(rows) {
     const tableBody = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
     
-    // 表示から隠す列（3列目：市場、7列目：前日比%）
     const hideIndices = [3, 7]; 
     let stockCount = 0;
 
@@ -198,7 +198,7 @@ function renderTable(rows) {
         const columns = row.split(',');
         const tr = document.createElement('tr');
         
-        // ★修正点：13列目（インデックス 12）を見てハイライトを判定
+        // 13列目（Index 12）を見て背景ハイライト
         if(index !== 0 && columns[12]?.replace(/"/g,'').trim() === "1") {
             tr.classList.add('row-highlight');
         }
@@ -208,7 +208,6 @@ function renderTable(rows) {
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
 
-        // ★修正点：判定2（11列目）まで表示するため i <= 11 に変更
         for(let i = 0; i <= 11; i++) {
             if(hideIndices.includes(i)) continue;
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
@@ -224,11 +223,10 @@ function renderTable(rows) {
                         if(num >= 2) cell.classList.add("volume-spike");
                         cell.textContent = num.toFixed(2);
                     } else cell.textContent = val;
-                } else if(i === 10) {
+                } else if(i === 10) { // 11列目（Index 10）：判定1
                     cell.textContent = val;
-                    if(val.includes("買い")) cell.classList.add("buy-highlight");
-                } else if(i === 11) {
-                    // ★判定2（BOLT!）の表示用ロジック
+                    if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
+                } else if(i === 11) { // 12列目（Index 11）：判定2（BOLT!）
                     if(val.includes("BOLT!")) {
                         cell.innerHTML = '<span class="bolt-text"><i class="fa-solid fa-bolt"></i> ' + val + '</span>';
                     } else {
@@ -247,32 +245,55 @@ function renderTable(rows) {
 function updateMikaSelection(rows) {
     const allPicks = rows.slice(1).map(row => {
         const c = row.split(',');
-        if (c.length < 17) return null;
+        // 18列目（Index 17）までデータがあるか確認
+        if (c.length < 18) return null; 
+
         const code = c[0].replace(/"/g,'').trim();
         const name = c[1].replace(/"/g,'').trim();
         const price = parseFloat(c[2]?.replace(/,/g,'') || 0);
         const vwap = parseFloat(c[5]?.replace(/,/g,'') || 0);
-        const a3 = parseFloat(c[13] || 0);
-        const judge = c[10] || "";
-        const marginRatio = parseFloat(c[16]?.replace(/,/g, '') || 0);
+        
+        // ---【修正済みインデックス】---
+        const judge = c[10] || "";         // 11列目
+        const a3 = parseFloat(c[14] || 0);  // 15列目：補正AIスコア
+        const marginRatio = parseFloat(c[17]?.replace(/,/g, '') || 0); // 18列目：信用倍率
+        // -----------------------------
+
         return { code, name, a3, vwap, price, judge, marginRatio };
-    }).filter(d => d && d.a3 >= 180 && d.marginRatio < 20 && d.price > d.vwap && (d.judge.includes("🔥") || d.judge.includes("買い")));
+    }).filter(d => 
+        d && 
+        d.a3 >= 180 && 
+        d.marginRatio < 20 && 
+        d.price > d.vwap && 
+        (d.judge.includes("🔥") || d.judge.includes("買い"))
+    );
+
     const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
     const container = document.getElementById('mikaCards');
     const area = document.getElementById('mikaSelection');
+
     if (picks.length > 0) {
         area.style.display = 'block';
         container.innerHTML = picks.map((p, i) => `
             <div class="mika-card">
                 <div style="display:flex; align-items:center;">
                     <span style="font-weight:800; color:var(--gold); margin-right:12px; font-size:1.3rem;">${i+1}</span>
-                    <div><div style="color:var(--primary-color); font-weight:700; font-size:0.75rem;">${p.code}</div><div style="font-weight:700; font-size:1rem;">${p.name}</div></div>
+                    <div>
+                        <div style="color:var(--primary-color); font-weight:700; font-size:0.75rem;">${p.code}</div>
+                        <div style="font-weight:700; font-size:1rem;">${p.name}</div>
+                    </div>
                 </div>
-                <div style="text-align:right;"><div style="font-size:0.65rem; color:var(--text-sub);">AI SCORE</div><div style="font-weight:800; color:var(--gold); font-size:1.3rem;">${p.a3.toFixed(1)}</div></div>
+                <div style="text-align:right;">
+                    <div style="font-size:0.65rem; color:var(--text-sub);">AI SCORE</div>
+                    <div style="font-weight:800; color:var(--gold); font-size:1.3rem;">${p.a3.toFixed(1)}</div>
+                </div>
             </div>
         `).join('');
-    } else { area.style.display = 'none'; }
+    } else { 
+        area.style.display = 'none'; 
+    }
 }
+
 loadCSV();
 setInterval(loadCSV, 30000);
 </script>
