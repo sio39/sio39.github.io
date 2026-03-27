@@ -143,7 +143,7 @@ function processData(rows) {
     const dataRows = rows.filter(r => {
         const code = r[0]?.replace(/"/g, '').trim() || "";
         const name = r[1]?.replace(/"/g, '').trim() || "";
-        return r.length > 10 && 
+        return r.length >= 18 && 
                code !== "" && 
                !code.includes("Update") && 
                !code.includes("コード") &&
@@ -160,15 +160,11 @@ function processData(rows) {
         const vwap = parseFloat(r[5]?.replace(/,/g, '') || 0);
         const rvol = parseFloat(r[9] || 0);
 
-        // ---【確定したデータ参照先：Indexは列数-1】---
-        const judge = r[10] || "";        // 11列目：判定1（買い/🔥）
-        const a3 = parseFloat(r[13] || 0); // 14列目：補正AIスコア
-        
-        let marginRatio = 0;
-        if (r.length >= 17) {
-            marginRatio = parseFloat(r[16]?.replace(/,/g, '') || 0); // 17列目：信用倍率
-        }
-        // -------------------------
+        // ---【修正済みインデックス：Excel列番号-1】---
+        const judge = r[10] || "";         // 11列目：判定1（買い/🔥）
+        const a3 = parseFloat(r[14] || 0); // 15列目：補正AIスコア
+        const marginRatio = parseFloat(r[17]?.replace(/,/g, '') || 0); // 18列目：信用倍率
+        // ------------------------------------------
 
         let hasBolt = false;
         if (prevVolumeMap.has(code)) {
