@@ -23,7 +23,6 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* ヘッダー共通スタイル */
         .header {
             position: fixed; top: 0; left: 0; width: 100%;
             background: white; border-bottom: 1px solid #e2e8f0;
@@ -33,10 +32,8 @@
         .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 1.2rem; }
 
         .container { width: 100%; max-width: 800px; }
-
         h1 { font-size: 1.5rem; text-align: center; margin-bottom: 30px; color: #0f172a; }
 
-        /* 分析カード */
         .analysis-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -58,15 +55,14 @@
         .score-val { font-size: 2rem; font-weight: 900; color: var(--gold); line-height: 1; }
         .score-label { font-size: 0.7rem; color: #64748b; font-weight: 700; }
 
-        /* 分析コンテンツ */
         .section-title { font-weight: 800; font-size: 1rem; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; color: #334155; }
         .section-title i { color: var(--primary); }
         
         .ir-box { background: #f8fafc; padding: 15px; border-radius: 12px; font-size: 0.9rem; border-left: 4px solid var(--primary); }
-        .mika-comment { background: #fffcf0; padding: 15px; border-radius: 12px; font-size: 0.95rem; border: 1px solid #fef3c7; position: relative; }
+        .mika-comment { background: #fffcf0; padding: 15px; border-radius: 12px; font-size: 0.95rem; border: 1px solid #fef3c7; position: relative; margin-top: 10px; }
         .mika-comment::before { content: "👩‍💼"; position: absolute; top: -12px; left: 10px; font-size: 1.2rem; }
 
-        .loading { text-align: center; padding: 50px; font-weight: 700; color: var(--text-sub); }
+        .loading { text-align: center; padding: 50px; font-weight: 700; color: #64748b; }
     </style>
 </head>
 <body>
@@ -92,7 +88,7 @@ async function loadAndAnalyze() {
         const data = await response.text();
         const rows = data.split(/\r?\n/).filter(r => r.trim() !== "");
         
-        // 厳選3銘柄を抽出（リアルタイムボードと同じロジック）
+        // 厳選銘柄を抽出（リアルタイムボードと同期）
         const picks = rows.slice(1).map(row => {
             const c = row.split(',');
             if (c.length < 17) return null;
@@ -106,7 +102,7 @@ async function loadAndAnalyze() {
                 margin: parseFloat(c[16]?.replace(/,/g,'') || 0),
                 judge: c[10] || ""
             };
-        }).filter(d => d && d.a3 >= 180 && d.margin < 20 && d.price > d.vwap && d.judge.includes("買い"))
+        }).filter(d => d && d.a3 >= 180 && d.margin < 20 && d.price > d.vwap && (d.judge.includes("🔥") || d.judge.includes("買い")))
           .sort((a,b) => b.a3 - a.a3).slice(0, 3);
 
         renderAnalysis(picks);
@@ -141,33 +137,25 @@ function renderAnalysis(picks) {
                 ${getDummyIR(p.code)}
             </div>
 
-            <div class="section-title"><i class="fa-solid fa-comment-dots"></i> Mika's Eye（ここが買い！）</div>
+            <div class="section-title"><i class="fa-solid fa-comment-dots"></i> Mika's Eye（ここが注目！）</div>
             <div class="mika-comment">
                 ${getMikaComment(p.code, p.name)}
-            </div>
-            
-            <div style="margin-top:20px; text-align:right;">
-                <a href="https://www.buffett-code.com/quarterly/${p.code}" target="_blank" style="font-size:0.8rem; color:var(--primary); font-weight:700;">
-                    バフェット・コードで詳細を見る <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
             </div>
         </div>
     `).join('');
 }
 
-// 銘柄ごとのダミーIR（実際にはここをAIに生成させるか、手動で更新します）
 function getDummyIR(code) {
     const data = {
-        "3350": "直近でビットコインの追加購入を完了し、保有枚数が大幅に増加。1株あたりのBTC保有量（BTCイールド）の成長が継続しています。財務レバレッジを活用した独自の資本戦略が市場で注目されています。",
-        "default": "最新の適時開示にて業績予想の上方修正、または株主還元の強化が発表されています。RVOL（相対出来高）が上昇しており、大口投資家の資金流入が期待できる局面です。"
+        "3350": "継続的なビットコイン購入戦略により、保有資産の価値が向上中。株主還元として『BTCイールド』を重視した新しい資本配分方針を発表し、市場から高い関心を集めています。",
+        "default": "直近の決算または適時開示にて、堅調な業績進捗や株主還元策（増配・自社株買い等）が確認されています。AIスコアが示す割安性と、実際の需給（RVOL）が噛み合った初動の形です。"
     };
     return data[code] || data["default"];
 }
 
-// Mikaのコメント生成
 function getMikaComment(code, name) {
-    if(code === "3350") return "メタプラネットは、単なる投資会社を超えて『ビットコイン・スタンダード』を地で行く唯一無二の存在ね。A3スコアが高いのは、将来の含み益を市場が織り込み始めている証拠。VWAPより上で推移している間は、強気で見ていいと思うわ！";
-    return `${name}は、指標面（PER/ROE）のバランスがすごくいいわね。今の株価位置はVWAPをしっかり超えていて、買い方の勢いが勝っている状態。信用倍率も20倍以下で軽いから、上値が期待できそうな「優等生銘柄」よ✨`;
+    if(code === "3350") return "メタプラネットは日本で唯一の戦略を取っている面白い会社ね。A3スコアが高いのはもちろん、価格がVWAPをしっかり超えて推移しているのが強さの証拠。ボラティリティは高いけれど、トレンドが出ている間は目が離せないわ！";
+    return `${name}は、AIスコアで見ても非の打ち所がない優等生ね。信用倍率が20倍以下で需給が軽いのも大きなプラス材料。価格がVWAPをサポートにしている今の形を崩さないか、しっかり見守っていきましょう✨`;
 }
 
 loadAndAnalyze();
