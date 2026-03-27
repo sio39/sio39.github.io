@@ -60,12 +60,8 @@
         }
 
         .header-container {
-            width: 100%;
-            max-width: 850px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            width: 100%; max-width: 850px; padding: 0 20px;
+            display: flex; align-items: center; justify-content: space-between;
         }
 
         .header-left { display: flex; align-items: center; gap: 30px; }
@@ -87,52 +83,28 @@
 
         /* --- Mika厳選ピックセクション --- */
         .mika-selection-area {
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto 30px auto;
-            display: none; /* 初期は非表示 */
+            width: 100%; max-width: 1100px; margin: 0 auto 30px auto; display: none;
         }
         .mika-header {
-            display: flex;
-            align-items: center;
-            background: var(--header-bg);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px 12px 0 0;
-            font-size: 0.95rem;
+            display: flex; align-items: center; background: var(--header-bg);
+            color: white; padding: 12px 20px; border-radius: 12px 12px 0 0; font-size: 0.95rem;
         }
         .mika-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-            background: #f1f5f9;
-            padding: 15px;
-            border-radius: 0 0 12px 12px;
-            border: 1px solid var(--border);
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px; background: #f1f5f9; padding: 15px; border-radius: 0 0 12px 12px; border: 1px solid var(--border);
         }
         .mika-card {
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: var(--card-bg); border: 2px solid var(--border); border-radius: 12px;
+            padding: 16px; display: flex; justify-content: space-between; align-items: center;
+            position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .mika-card.bolt-active {
-            border-color: var(--spike-border);
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.2);
-        }
+        .mika-card.bolt-active { border-color: var(--spike-border); box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); }
         .rank-num { font-weight: 800; color: var(--gold); font-size: 1.2rem; margin-right: 12px; font-family: 'Inter'; }
         .stock-code { color: var(--primary-dark); font-family: monospace; font-weight: 700; font-size: 1.1rem; }
         .stock-name { font-weight: 700; font-size: 1rem; margin-top: 2px; }
         .bolt-badge {
-            position: absolute; top: -10px; right: 10px;
-            background: var(--spike-border); color: #000;
-            font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 20px;
-            animation: pulse 1s infinite;
+            position: absolute; top: -10px; right: 10px; background: var(--spike-border); color: #000;
+            font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 20px; animation: pulse 1s infinite;
         }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
@@ -142,16 +114,14 @@
         #csv-update-time { font-size: 1.05rem; font-weight: 700; color: #ef4444; }
 
         .info-text {
-            font-size: 0.85rem; width: 100%; max-width: 1100px;
-            margin: 0 auto 30px auto; background: var(--card-bg);
-            padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary);
+            font-size: 0.85rem; width: 100%; max-width: 1100px; margin: 0 auto 30px auto;
+            background: var(--card-bg); padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary);
             box-shadow: 0 4px 12px rgba(0,0,0,0.03); box-sizing: border-box;
         }
 
         .table-container {
-            width: 100%; max-width: 1200px; background: var(--card-bg);
-            border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
-            margin: 0 auto; max-height: 70vh; overflow: auto; 
+            width: 100%; max-width: 1200px; background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); margin: 0 auto; max-height: 70vh; overflow: auto; 
         }
 
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 850px; table-layout: fixed; }
@@ -204,7 +174,7 @@
 <div class="info-text">
     <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
     <strong>【背景色の意味】</strong> <span style="background:var(--highlight-bg); padding:2px 6px; border-radius:4px; border:1px solid #fee2e2;">薄オレンジ</span>：AIスコア基準クリア / ⚡️：出来高急増（初動）<br>
-    <small>※判定：(A3×RVOL)≧180 ＋ RVOL 1.5以上 ＋ 価格 > VWAP で「🔥買い」を表示。</small>
+    <small>※判定：(A3×RVOL)≧180 ＋ RVOL 1.5以上 ＋ 価格 > VWAP で「🔥買い」を表示。※信用倍率20倍以上は厳選から除外。</small>
 </div>
 
 <div class="table-container">
@@ -300,7 +270,6 @@ function renderTable(rows) {
 function updateMikaSelection(rows) {
     const elapsed = getElapsed();
     const now = new Date();
-    // 9:15以前は表示しない（マーケット開始直後のノイズ防止）
     if ((now.getHours() === 9 && now.getMinutes() < 15) || now.getHours() < 9) return;
 
     const allPicks = rows.slice(1).map(row => {
@@ -312,6 +281,8 @@ function updateMikaSelection(rows) {
         const vwap = parseFloat(c[5]?.replace(/,/g,'') || 0);
         const price = parseFloat(c[2]?.replace(/,/g,'') || 0);
         const judge = c[10] || "";
+        // 【修正】15列目（Index 14）から信用倍率を取得
+        const marginRatio = parseFloat(c[14]?.replace(/,/g,'') || 0);
 
         let hasBolt = false;
         if (prevVolumeMap.has(code)) {
@@ -321,18 +292,22 @@ function updateMikaSelection(rows) {
         }
         prevVolumeMap.set(code, vol);
 
-        return { code, name: c[1], a3, vwap, price, judge, hasBolt };
-    }).filter(d => d && (d.judge.includes("🔥") || d.judge.includes("買い")) && d.a3 >= 180 && d.price > d.vwap);
+        return { code, name: c[1], a3, vwap, price, judge, hasBolt, marginRatio };
+    }).filter(d => 
+        d && 
+        (d.judge.includes("🔥") || d.judge.includes("買い")) && 
+        d.a3 >= 180 && 
+        d.price > d.vwap &&
+        d.marginRatio < 20 // 【ここ！】信用倍率が20倍未満のものだけに絞り込む
+    );
 
     const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
     const container = document.getElementById('mikaCards');
     const area = document.getElementById('mikaSelection');
 
-    // エリアを表示状態にする
     area.style.display = 'block';
 
     if (picks.length > 0) {
-        // 銘柄がある場合
         container.innerHTML = picks.map((p, i) => `
             <div class="mika-card ${p.hasBolt ? 'bolt-active' : ''}">
                 ${p.hasBolt ? '<div class="bolt-badge">⚡️ 初動検知</div>' : ''}
@@ -350,10 +325,9 @@ function updateMikaSelection(rows) {
             </div>
         `).join('');
     } else {
-        // 銘柄がない場合のメッセージを表示
         container.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 25px; color: #64748b; font-size: 0.9rem; background: #fff; border-radius: 12px; border: 1px dashed #cbd5e1; width: 100%; box-sizing: border-box;">
-                現在、MIKAの厳選基準（A3スコア180以上＋買いサイン）を満たす銘柄はありません 😴
+                現在、MIKAの厳選基準（A3スコア180以上＋買いサイン＋信用倍率20倍未満）を満たす銘柄はありません 😴
             </div>
         `;
     }
