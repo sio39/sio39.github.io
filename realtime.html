@@ -12,19 +12,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>銘柄リアルタイムボード | AIスコア投資研究所</title>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
+        /* TOPページの基本スタイルを継承 */
         :root {
-            --primary: #4da3ff; 
-            --primary-dark: #3b82f6;
-            --bg: #f8fafc;
+            --primary-color: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --bg-color: #f1f5f9;
             --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-sub: #64748b;
-            --border: #e2e8f0;
-            --header-bg: #1e293b;
+            --border-color: #e2e8f0;
+            --header-bg: rgba(255, 255, 255, 0.95);
             --highlight-bg: #fffcf0; 
             --buy-bg: #fef2f2;
             --buy-text: #dc2626;
@@ -34,147 +34,78 @@
         }
 
         body {
-            font-family: "Inter", "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
-            margin: 0;
-            padding: 120px 15px 60px; 
-            background: var(--bg);
-            color: var(--text-main);
-            line-height: 1.5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: "Helvetica Neue", Arial, "Hiragino Sans", Meiryo, sans-serif;
+            margin: 0; padding-top: 100px; /* ヘッダー分の余白 */
+            background-color: var(--bg-color); color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- ヘッダー --- */
+        /* --- 共通ヘッダー（TOPページと統一） --- */
         .header {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(12px);
-            z-index: 9999;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: center;
-            padding: 14px 0;
-            box-sizing: border-box;
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            background: var(--header-bg); backdrop-filter: blur(8px);
+            z-index: 9999; border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center;
         }
-
         .header-container {
-            width: 100%;
-            max-width: 850px;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
         }
-
-        .header-left { display: flex; align-items: center; gap: 30px; }
-        .logo { font-size: 20px; font-weight: 800; color: var(--primary); text-decoration: none; }
-
-        nav { display: flex; gap: 20px; }
-        nav a { color: var(--text-sub); text-decoration: none; font-weight: 600; font-size: 15px; }
-        nav a.active { color: var(--primary); }
-
-        .header-sns { display: flex; align-items: center; gap: 12px; }
-        .sns-icon {
-            display: flex; align-items: center; justify-content: center;
-            width: 34px; height: 34px; border-radius: 50%; color: white !important;
-            text-decoration: none; font-size: 16px;
-        }
-        .sns-icon.x { background: #000; }
+        .header-left { display: flex; align-items: center; gap: 40px; }
+        .logo { font-size: 22px; font-weight: 800; text-decoration: none; color: var(--text-main); }
+        .logo span { color: var(--primary-color); }
+        nav { display: flex; gap: 5px; }
+        nav a { color: var(--text-sub); font-weight: 600; font-size: 15px; padding: 8px 16px; border-radius: 8px; text-decoration: none; }
+        nav a:hover { background-color: #eff6ff; color: var(--primary-color); }
+        nav a.active { background-color: var(--primary-color); color: white; }
+        .header-sns { display: flex; align-items: center; gap: 10px; }
+        .sns-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; color: white !important; font-size: 18px; text-decoration: none; }
+        .sns-icon.x { background: #14171a; }
         .sns-icon.youtube { background: #ff0000; }
-        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 14px; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
 
-        /* --- Mika厳選ピックセクション --- */
-        .mika-selection-area {
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto 30px auto;
-            display: none; 
-        }
-        .mika-header {
-            display: flex;
-            align-items: center;
-            background: var(--header-bg);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px 12px 0 0;
-            font-size: 0.95rem;
-        }
-        .mika-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-            background: #f1f5f9;
-            padding: 15px;
-            border-radius: 0 0 12px 12px;
-            border: 1px solid var(--border);
-        }
-        .mika-card {
-            background: var(--card-bg);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .mika-card.bolt-active {
-            border-color: var(--spike-border);
-            box-shadow: 0 0 15px rgba(250, 204, 21, 0.2);
-        }
-        .rank-num { font-weight: 800; color: var(--gold); font-size: 1.2rem; margin-right: 12px; font-family: 'Inter'; }
-        .stock-code { color: var(--primary-dark); font-family: monospace; font-weight: 700; font-size: 1.1rem; }
-        .stock-name { font-weight: 700; font-size: 1rem; margin-top: 2px; }
-        .bolt-badge {
-            position: absolute; top: -10px; right: 10px;
-            background: var(--spike-border); color: #000;
-            font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 20px;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
-        /* --- ボード用 --- */
+        /* --- ボード専用スタイル --- */
         .title-area { text-align: center; margin-bottom: 25px; }
-        h1 { font-size: 1.8rem; font-weight: 800; color: #0f172a; margin: 0 0 10px 0; }
+        h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 10px 0; }
         #csv-update-time { font-size: 1.05rem; font-weight: 700; color: #ef4444; }
 
-        .info-text {
-            font-size: 0.85rem; width: 100%; max-width: 1100px;
-            margin: 0 auto 30px auto; background: var(--card-bg);
-            padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03); box-sizing: border-box;
-        }
+        .mika-selection-area { width: 100%; max-width: 1100px; margin-bottom: 30px; display: none; }
+        .mika-header { display: flex; align-items: center; background: #1e293b; color: white; padding: 12px 20px; border-radius: 12px 12px 0 0; font-size: 0.95rem; }
+        .mika-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; background: #f1f5f9; padding: 15px; border-radius: 0 0 12px 12px; border: 1px solid var(--border-color); }
+        .mika-card { background: white; border: 2px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .info-text { font-size: 0.85rem; width: 100%; max-width: 1100px; margin-bottom: 30px; background: white; padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary-color); }
 
-        .table-container {
-            width: 100%; max-width: 1200px; background: var(--card-bg);
-            border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
-            margin: 0 auto; max-height: 70vh; overflow: auto; 
-        }
-
-        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 850px; table-layout: fixed; }
-        thead th { position: sticky; top: 0; z-index: 10; background: var(--header-bg); color: #fff; font-size: 0.8rem; padding: 14px 10px; }
-        td { padding: 14px 10px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.88rem; font-weight: 500; }
+        .table-container { width: 100%; max-width: 1200px; background: white; border-radius: 16px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); overflow: auto; max-height: 70vh; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 850px; }
+        thead th { position: sticky; top: 0; z-index: 10; background: #1e293b; color: white; font-size: 0.8rem; padding: 14px 10px; }
+        td { padding: 14px 10px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 0.88rem; }
+        
         tr.row-highlight td { background-color: var(--highlight-bg) !important; }
         .col-rvol-style { background: #fffef3 !important; font-weight: 700; color: #854d0e; }
         .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; }
         .volume-spike { background: var(--spike-bg) !important; box-shadow: inset 0 0 0 2px var(--spike-border); }
 
-        footer { margin-top: 60px; padding-bottom: 40px; text-align: center; color: var(--text-sub); font-size: 0.8rem; }
+        /* スマホ対応 */
+        @media (max-width: 768px) {
+            body { padding-top: 140px; }
+            .header { height: auto; padding: 10px 0; }
+            .header-container { flex-direction: column; gap: 10px; }
+            .header-left { flex-direction: column; gap: 5px; }
+            nav { width: 100%; justify-content: center; overflow-x: auto; white-space: nowrap; }
+            nav a { font-size: 14px; padding: 6px 10px; }
+        }
     </style>
 </head>
-
 <body>
 
 <header class="header">
     <div class="header-container">
         <div class="header-left">
-            <a href="index.html" class="logo">AIスコア投資研究所</a>
+            <a href="index.html" class="logo"><span>AI</span>スコア投資研究所</a>
             <nav>
                 <a href="index.html">TOP</a>
-                <a href="scoresiki.html">AIスコア計算機</a>
+                <a href="scoresiki.html">スコア計算機</a>
                 <a href="tool.html">ツール</a>
                 <a href="realtime.html" class="active">リアルボード</a>
             </nav>
@@ -196,18 +127,13 @@
 <div class="mika-selection-area" id="mikaSelection">
     <div class="mika-header">
         <span>👩‍💼 <strong>AI MIKA 厳選3銘柄</strong></span>
-        <a href="https://sio39.github.io/aimika.html" target="_blank" style="color: var(--spike-border); font-size: 0.75rem; text-decoration: underline; margin-left: auto;">判定詳細ページへ</a>
     </div>
     <div class="mika-cards" id="mikaCards"></div>
 </div>
 
 <div class="info-text">
     <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
-    <strong>【背景色の意味】</strong> <span style="background:var(--highlight-bg); padding:2px 6px; border-radius:4px; border:1px solid #fee2e2;">薄オレンジ</span>：AIスコア基準クリア / ⚡️：出来高急増（初動）<br>
-    <small>
-        ※判定：<strong>(A3 × RVOL) ≧ 180 ＋ RVOL 1.5以上 ＋ 価格 > VWAP</strong> で「🔥買い」を表示。<br>
-        ※厳選：上記条件を満たす銘柄から <strong>信用倍率20倍未満</strong> の上位3件をピックアップ。
-    </small>
+    <small>※判定：<strong>(A3 × RVOL) ≧ 180 ＋ RVOL 1.5以上 ＋ 価格 > VWAP</strong> で「🔥買い」を表示。</small>
 </div>
 
 <div class="table-container">
@@ -219,66 +145,43 @@
 
 <script>
 let prevVolumeMap = new Map();
-
 function formatNum(val) {
     let n = parseFloat(val.replace(/,/g, ''));
     if (isNaN(n)) return val;
     return val.includes('.') ? val : n.toLocaleString();
 }
-
-function getElapsed() {
-    const n = new Date(), s = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 9, 0, 0);
-    const n1 = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 11, 30, 0), n2 = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 12, 30, 0);
-    if (n < s) return 1;
-    if (n >= n1 && n < n2) return 150;
-    if (n >= n2) return 150 + Math.min(180, (n - n2) / 60000);
-    return Math.max(1, (n - s) / 60000);
-}
-
 async function loadCSV(){
     try{
         const response = await fetch('data_push.csv',{cache:"no-store"});
         const data = await response.text();
         const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="");
-        
         renderTable(rows);
         updateMikaSelection(rows);
-        
-        document.getElementById('last-load').textContent = 'ブラウザ更新: ' + new Date().toLocaleTimeString();
+        document.getElementById('last-load').textContent = '更新: ' + new Date().toLocaleTimeString();
     } catch(e) { console.error(e) }
 }
-
 function renderTable(rows) {
     const tableHeader = document.getElementById('table-header');
     const tableBody = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
-    
     const hideIndices = [3, 7, 11];
     let stockCount = 0;
-
     rows.forEach((row, index) => {
         if(row.includes("Update:")){
-            document.getElementById('csv-update-time').innerHTML = 
-                '<span style="font-size:0.85rem; color:#64748b; font-weight:normal;">最終更新:</span> ' + row.split(',')[0].replace("Update:","").trim();
+            document.getElementById('csv-update-time').innerHTML = '<span style="font-size:0.85rem; color:#64748b; font-weight:normal;">最終更新:</span> ' + row.split(',')[0].replace("Update:","").trim();
             return;
         }
-
         const columns = row.split(',');
         const tr = document.createElement('tr');
-
         if(index !== 0 && columns[11]?.replace(/"/g,'').trim() === "1") tr.classList.add('row-highlight');
-
-        // No.列
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
         if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = '#94a3b8'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
-
         for(let i = 0; i <= 10; i++) {
             if(hideIndices.includes(i)) continue;
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
             let val = (columns[i] || "").replace(/"/g,'').trim();
-
             if(index === 0) { cell.textContent = val; } 
             else {
                 if(i === 8 || i === 9) {
@@ -291,92 +194,48 @@ function renderTable(rows) {
                 } else if(i === 10) {
                     cell.textContent = val;
                     if(val.includes("買い")) cell.classList.add("buy-highlight");
-                } else {
-                    cell.textContent = (i === 0) ? val.replace(/,/g, '') : formatNum(val);
-                }
+                } else { cell.textContent = (i === 0) ? val.replace(/,/g, '') : formatNum(val); }
             }
             tr.appendChild(cell);
         }
         if(index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
     });
 }
-
 function updateMikaSelection(rows) {
-    const elapsed = getElapsed();
-    const now = new Date();
-    if ((now.getHours() === 9 && now.getMinutes() < 15) || now.getHours() < 9) return;
-
     const allPicks = rows.slice(1).map(row => {
         const c = row.split(',');
         if (c.length < 17) return null;
-
         const code = c[0].replace(/"/g,'').trim();
         const name = c[1].replace(/"/g,'').trim();
         const price = parseFloat(c[2]?.replace(/,/g,'') || 0);
-        const vol = parseFloat(c[4]?.replace(/,/g,'') || 0);
         const vwap = parseFloat(c[5]?.replace(/,/g,'') || 0);
         const a3 = parseFloat(c[13] || 0);
-        const judge = c[10] || ""; // 元の判定（🔥など）も考慮
-        
+        const judge = c[10] || "";
         const marginRatio = parseFloat(c[16]?.replace(/,/g, '') || 0);
-
-        let hasBolt = false;
-        if (prevVolumeMap.has(code)) {
-            const lastVol = prevVolumeMap.get(code);
-            const diff = vol - lastVol;
-            const avg5min = (vol * (330 / elapsed)) / 66;
-            if (diff > avg5min * 2 && diff > 1000) hasBolt = true;
-        }
-        prevVolumeMap.set(code, vol);
-
-        return { code, name, a3, vwap, price, judge, marginRatio, hasBolt };
-    }).filter(d => 
-        d && 
-        d.a3 >= 180 && 
-        d.marginRatio < 20 && 
-        d.price > d.vwap &&
-        (d.judge.includes("🔥") || d.judge.includes("買い")) // 念のため元の判定も含める
-    );
-
+        return { code, name, a3, vwap, price, judge, marginRatio };
+    }).filter(d => d && d.a3 >= 180 && d.marginRatio < 20 && d.price > d.vwap && (d.judge.includes("🔥") || d.judge.includes("買い")));
     const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
     const container = document.getElementById('mikaCards');
     const area = document.getElementById('mikaSelection');
-
     if (picks.length > 0) {
         area.style.display = 'block';
         container.innerHTML = picks.map((p, i) => `
-            <div class="mika-card ${p.hasBolt ? 'bolt-active' : ''}">
-                ${p.hasBolt ? '<div class="bolt-badge">⚡️ 初動検知</div>' : ''}
+            <div class="mika-card">
                 <div style="display:flex; align-items:center;">
-                    <span class="rank-num">#${i+1}</span>
-                    <div>
-                        <div class="stock-code">${p.code}</div>
-                        <div class="stock-name">${p.name}</div>
-                    </div>
+                    <span style="font-weight:800; color:var(--gold); margin-right:10px;">#${i+1}</span>
+                    <div><div style="color:var(--primary-dark); font-weight:700;">${p.code}</div><div style="font-weight:700; font-size:0.9rem;">${p.name}</div></div>
                 </div>
-                <div style="text-align:right;">
-                    <div style="font-size:0.65rem; color:var(--text-sub);">AI SCORE</div>
-                    <div style="font-weight:800; color:var(--gold); font-size:1.1rem;">${p.a3.toFixed(1)}</div>
-                </div>
+                <div style="text-align:right;"><div style="font-size:0.6rem; color:var(--text-sub);">SCORE</div><div style="font-weight:800; color:var(--gold); font-size:1.1rem;">${p.a3.toFixed(1)}</div></div>
             </div>
         `).join('');
-    } else {
-        area.style.display = 'none';
-    }
+    } else { area.style.display = 'none'; }
 }
-
 loadCSV();
 setInterval(loadCSV, 30000);
 </script>
 
-<footer>
+<footer style="margin-top:60px; padding:40px; text-align:center; color:var(--text-sub); border-top:1px solid var(--border-color); background:white;">
     © 2026 AIスコア投資研究所
-    <div style="margin-top:15px;">
-        <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
-            <img src="https://b.blogmura.com/stock/88_31.gif" alt="ブログ村">
-        </a>
-    </div>
 </footer>
-
 </body>
 </html>

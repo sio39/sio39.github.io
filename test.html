@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
+        /* TOPページの基本スタイルを継承 */
         :root {
             --primary-color: #3b82f6;
             --primary-dark: #1d4ed8;
@@ -34,11 +35,12 @@
 
         body {
             font-family: "Helvetica Neue", Arial, "Hiragino Sans", Meiryo, sans-serif;
-            margin: 0; padding-top: 100px;
+            margin: 0; padding-top: 100px; /* ヘッダー分の余白 */
             background-color: var(--bg-color); color: var(--text-main);
             display: flex; flex-direction: column; align-items: center;
         }
 
+        /* --- 共通ヘッダー（TOPページと統一） --- */
         .header {
             position: fixed; top: 0; left: 0; width: 100%; height: 70px;
             background: var(--header-bg); backdrop-filter: blur(8px);
@@ -62,6 +64,7 @@
         .sns-icon.youtube { background: #ff0000; }
         .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
 
+        /* --- ボード専用スタイル --- */
         .title-area { text-align: center; margin-bottom: 25px; }
         h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 10px 0; }
         #csv-update-time { font-size: 1.05rem; font-weight: 700; color: #ef4444; }
@@ -83,6 +86,7 @@
         .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; }
         .volume-spike { background: var(--spike-bg) !important; box-shadow: inset 0 0 0 2px var(--spike-border); }
 
+        /* スマホ対応 */
         @media (max-width: 768px) {
             body { padding-top: 140px; }
             .header { height: auto; padding: 10px 0; }
@@ -122,7 +126,7 @@
 
 <div class="mika-selection-area" id="mikaSelection">
     <div class="mika-header">
-        <span>👩‍💼 <strong>AI MIKA 厳選銘柄</strong></span>
+        <span>👩‍💼 <strong>AI MIKA 厳選3銘柄</strong></span>
     </div>
     <div class="mika-cards" id="mikaCards"></div>
 </div>
@@ -130,13 +134,6 @@
 <div class="info-text">
     <strong>【データ更新】</strong> 5分毎に自動更新されます。<br>
     <small>※判定：<strong>(A3 × RVOL) ≧ 180 ＋ RVOL 1.5以上 ＋ 価格 > VWAP</strong> で「🔥買い」を表示。</small>
-    <hr style="border:0; border-top:1px solid var(--border-color); margin:15px 0;">
-    <div style="font-weight: 800; color: var(--primary-color); margin-bottom:5px;">👩‍💼 AI MIKA's Strategy</div>
-    <ul style="margin: 0; padding-left: 20px; line-height: 1.7;">
-        <li><strong>VWAPで拾う：</strong> 勢いのある株がVWAPまで押してきた反発タイミングを狙う🌸</li>
-        <li><strong>出来高をチェック：</strong> 押し目で出来高が減っていれば、売り圧力が弱い証拠！</li>
-        <li><strong>リスク管理：</strong> VWAPを明確に割ったら、潔く撤退して次を待つのがMika流✨</li>
-    </ul>
 </div>
 
 <div class="table-container">
@@ -147,6 +144,12 @@
 </div>
 
 <script>
+let prevVolumeMap = new Map();
+function formatNum(val) {
+    let n = parseFloat(val.replace(/,/g, ''));
+    if (isNaN(n)) return val;
+    return val.includes('.') ? val : n.toLocaleString();
+}
 async function loadCSV(){
     try{
         const response = await fetch('data_push.csv',{cache:"no-store"});
@@ -191,7 +194,7 @@ function renderTable(rows) {
                 } else if(i === 10) {
                     cell.textContent = val;
                     if(val.includes("買い")) cell.classList.add("buy-highlight");
-                } else { cell.textContent = val; }
+                } else { cell.textContent = (i === 0) ? val.replace(/,/g, '') : formatNum(val); }
             }
             tr.appendChild(cell);
         }
