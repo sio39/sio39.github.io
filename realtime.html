@@ -265,6 +265,7 @@ function renderTable(rows) {
 
         if(index !== 0 && columns[11]?.replace(/"/g,'').trim() === "1") tr.classList.add('row-highlight');
 
+        // No.列
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
         if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = '#94a3b8'; noCell.style.fontSize = '0.75rem'; }
@@ -300,7 +301,6 @@ function renderTable(rows) {
 function updateMikaSelection(rows) {
     const elapsed = getElapsed();
     const now = new Date();
-    // 9:15以前は表示しない（マーケット開始直後のノイズ防止）
     if ((now.getHours() === 9 && now.getMinutes() < 15) || now.getHours() < 9) return;
 
     const allPicks = rows.slice(1).map(row => {
@@ -328,11 +328,8 @@ function updateMikaSelection(rows) {
     const container = document.getElementById('mikaCards');
     const area = document.getElementById('mikaSelection');
 
-    // エリアを表示状態にする
-    area.style.display = 'block';
-
     if (picks.length > 0) {
-        // 銘柄がある場合
+        area.style.display = 'block';
         container.innerHTML = picks.map((p, i) => `
             <div class="mika-card ${p.hasBolt ? 'bolt-active' : ''}">
                 ${p.hasBolt ? '<div class="bolt-badge">⚡️ 初動検知</div>' : ''}
@@ -349,13 +346,6 @@ function updateMikaSelection(rows) {
                 </div>
             </div>
         `).join('');
-    } else {
-        // 銘柄がない場合のメッセージを表示
-        container.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 25px; color: #64748b; font-size: 0.9rem; background: #fff; border-radius: 12px; border: 1px dashed #cbd5e1; width: 100%; box-sizing: border-box;">
-                現在、MIKAの厳選基準（A3スコア180以上＋買いサイン）を満たす銘柄はありません 😴
-            </div>
-        `;
     }
 }
 
