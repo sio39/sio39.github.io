@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5JCN1FB7ML');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIスコア投資研究所 — Mika's Selection</title>
@@ -87,6 +94,10 @@
                 <div class="stat-item"><div class="stat-label">分析対象</div><div class="stat-val" id="statTotal">0</div></div>
                 <div class="stat-item"><div class="stat-label">厳選</div><div class="stat-val" id="statPick">0</div></div>
             </div>
+            <div style="font-size:0.65rem; color:var(--text2); margin-top:10px; text-align:center;">
+                ※A3 180以上 / 買いサイン / 価格 > VWAP<br>
+                かつ <strong>信用倍率20倍未満</strong> のみを抽出
+            </div>
         </div>
     </div>
 
@@ -129,12 +140,9 @@ function getElapsed() {
 }
 
 function processData(rows) {
-    // 【重要：フィルタリングの強化】
-    // 証券コード(r[0])が4桁の数字、かつ銘柄名(r[1])が存在する行だけを「有効な銘柄」としてカウント
     const dataRows = rows.filter(r => {
         const code = r[0]?.replace(/"/g, '').trim() || "";
         const name = r[1]?.replace(/"/g, '').trim() || "";
-        // 「Update」で始まらず、かつコードが空でなく、ヘッダー（コードという文字）でもないものを抽出
         return r.length > 10 && 
                code !== "" && 
                !code.includes("Update") && 
@@ -153,6 +161,12 @@ function processData(rows) {
         const judge = r[10] || "";
         const rvol = parseFloat(r[9] || 0);
         const a3 = parseFloat(r[13] || 0);
+        
+        // 【修正】17列目（Index 16）から信用倍率を取得
+        let marginRatio = 0;
+        if (r.length >= 17) {
+            marginRatio = parseFloat(r[16]?.replace(/,/g, '') || 0);
+        }
 
         let hasBolt = false;
         if (prevVolumeMap.has(code)) {
@@ -163,13 +177,15 @@ function processData(rows) {
         }
         prevVolumeMap.set(code, vol);
 
-        return { code, name, price, vwap, vol, judge, rvol, a3, hasBolt };
+        return { code, name, price, vwap, vol, judge, rvol, a3, hasBolt, marginRatio };
     });
 
-    // 厳選：条件に合うものを抽出
+    // 厳選：条件に加えて、信用倍率20倍未満でフィルタリング
     const picks = all.filter(d => 
         (d.judge.includes('🔥') || d.judge.includes('買い')) &&
-        d.a3 >= 180 && d.price > d.vwap
+        d.a3 >= 180 && 
+        d.price > d.vwap &&
+        d.marginRatio < 20 // ここでSBI(47.33倍)が消えるはず！
     ).sort((a, b) => b.a3 - a.a3).slice(0, 3);
 
     render(all.length, picks);

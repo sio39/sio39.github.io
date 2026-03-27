@@ -161,8 +161,12 @@ function processData(rows) {
         const judge = r[10] || "";
         const rvol = parseFloat(r[9] || 0);
         const a3 = parseFloat(r[13] || 0);
-        // 【重要】信用倍率（15列目: Index 14）を取得
-        const marginRatio = parseFloat(r[14]?.replace(/,/g, '') || 0);
+        
+        // 【修正】17列目（Index 16）から信用倍率を取得
+        let marginRatio = 0;
+        if (r.length >= 17) {
+            marginRatio = parseFloat(r[16]?.replace(/,/g, '') || 0);
+        }
 
         let hasBolt = false;
         if (prevVolumeMap.has(code)) {
@@ -176,12 +180,12 @@ function processData(rows) {
         return { code, name, price, vwap, vol, judge, rvol, a3, hasBolt, marginRatio };
     });
 
-    // 厳選：条件に加えて、信用倍率20倍未満を追加！
+    // 厳選：条件に加えて、信用倍率20倍未満でフィルタリング
     const picks = all.filter(d => 
         (d.judge.includes('🔥') || d.judge.includes('買い')) &&
         d.a3 >= 180 && 
         d.price > d.vwap &&
-        d.marginRatio < 20 // 【ここ！】
+        d.marginRatio < 20 // ここでSBI(47.33倍)が消えるはず！
     ).sort((a, b) => b.a3 - a.a3).slice(0, 3);
 
     render(all.length, picks);
