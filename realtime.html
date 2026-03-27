@@ -24,7 +24,6 @@
             --text-main: #0f172a;
             --text-sub: #64748b;
             
-            /* 【修正】区分1：ごく薄く、主張を抑えた上品なブルーグレー */
             --level1-bg: #f0f9ff; 
             --level1-border: #bae6fd;
 
@@ -33,6 +32,7 @@
             --buy-border: #ef4444;
             
             --gold: #b45309;
+            --bolt-color: #ef4444;
         }
 
         body {
@@ -43,7 +43,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ヘッダー */
         .header {
             position: fixed; top: 0; left: 0; width: 100%; height: 70px;
             background: var(--header-bg); backdrop-filter: blur(12px);
@@ -70,31 +69,25 @@
         .sns-icon.youtube { background: #ff0000; }
         .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
 
-        /* タイトルエリア */
         .title-area { text-align: center; margin-bottom: 30px; width: 100%; }
         h1 { font-size: 2rem; font-weight: 800; margin: 0 0 10px 0; color: var(--text-main); letter-spacing: -0.5px; }
         #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
 
-        /* 厳選銘柄エリア */
         .mika-selection-area { width: 95%; max-width: 1100px; margin-bottom: 35px; display: none; }
         .mika-header { display: flex; align-items: center; background: #fff; color: var(--text-main); padding: 15px 20px; border-radius: 16px 16px 0 0; font-size: 1rem; border: 1px solid var(--border-color); border-bottom: none; font-weight: 700; }
         .mika-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; background: rgba(241, 245, 249, 0.6); padding: 20px; border-radius: 0 0 16px 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
         .mika-card { background: #fff; border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         
-        /* 説明文 */
         .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin-bottom: 30px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
 
-        /* 凡例 */
         .color-legend { width: 95%; max-width: 1100px; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; color: var(--text-sub); font-size: 0.85rem; }
         .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
 
-        /* テーブル */
         .table-container { width: 95%; max-width: 1200px; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08); }
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 900px; }
         thead th { position: sticky; top: 0; z-index: 10; background: #f1f5f9; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
         td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
         
-        /* 【修正】区分1ハイライト：背景をごく薄くし、左端のラインも主張を抑える */
         tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
         tr.row-highlight td:first-child::before {
             content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: var(--level1-border);
@@ -103,6 +96,7 @@
         .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; border: 1px solid var(--buy-border); border-radius: 6px; padding: 3px 10px; font-size: 0.8rem; }
         .col-rvol-style { color: var(--gold); font-weight: 700; }
         .volume-spike { color: var(--gold) !important; text-shadow: 0 1px 3px rgba(180, 83, 9, 0.2); }
+        .bolt-text { color: var(--bolt-color); font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
 
         footer { margin-top: 60px; padding: 50px; text-align: center; color: var(--text-sub); border-top: 1px solid var(--border-color); background: #fff; width: 100%; }
 
@@ -185,12 +179,16 @@ async function loadCSV(){
         document.getElementById('last-load').textContent = '更新: ' + new Date().toLocaleTimeString();
     } catch(e) { console.error(e) }
 }
+
 function renderTable(rows) {
     const tableHeader = document.getElementById('table-header');
     const tableBody = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
-    const hideIndices = [3, 7, 11];
+    
+    // 表示から隠す列（3列目：市場、7列目：前日比%）
+    const hideIndices = [3, 7]; 
     let stockCount = 0;
+
     rows.forEach((row, index) => {
         if(row.includes("Update:")){
             document.getElementById('csv-update-time').innerHTML = '<span style="font-size:0.85rem; color:var(--text-sub); font-weight:normal;">最終更新:</span> ' + row.split(',')[0].replace("Update:","").trim();
@@ -198,20 +196,26 @@ function renderTable(rows) {
         }
         const columns = row.split(',');
         const tr = document.createElement('tr');
-        // 区分1（11列目）が"1"ならハイライト
-        if(index !== 0 && columns[11]?.replace(/"/g,'').trim() === "1") tr.classList.add('row-highlight');
+        
+        // ★修正点：13列目（インデックス 12）を見てハイライトを判定
+        if(index !== 0 && columns[12]?.replace(/"/g,'').trim() === "1") {
+            tr.classList.add('row-highlight');
+        }
         
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
         if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
 
-        for(let i = 0; i <= 10; i++) {
+        // ★修正点：判定2（11列目）まで表示するため i <= 11 に変更
+        for(let i = 0; i <= 11; i++) {
             if(hideIndices.includes(i)) continue;
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
             let val = (columns[i] || "").replace(/"/g,'').trim();
-            if(index === 0) { cell.textContent = val; } 
-            else {
+            
+            if(index === 0) { 
+                cell.textContent = val; 
+            } else {
                 if(i === 8 || i === 9) {
                     cell.classList.add("col-rvol-style");
                     let num = parseFloat(val);
@@ -222,13 +226,23 @@ function renderTable(rows) {
                 } else if(i === 10) {
                     cell.textContent = val;
                     if(val.includes("買い")) cell.classList.add("buy-highlight");
-                } else { cell.textContent = (i === 0) ? val.replace(/,/g, '') : formatNum(val); }
+                } else if(i === 11) {
+                    // ★判定2（BOLT!）の表示用ロジック
+                    if(val.includes("BOLT!")) {
+                        cell.innerHTML = '<span class="bolt-text"><i class="fa-solid fa-bolt"></i> ' + val + '</span>';
+                    } else {
+                        cell.textContent = val;
+                    }
+                } else { 
+                    cell.textContent = (i === 0) ? val.replace(/,/g, '') : formatNum(val); 
+                }
             }
             tr.appendChild(cell);
         }
         if(index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
     });
 }
+
 function updateMikaSelection(rows) {
     const allPicks = rows.slice(1).map(row => {
         const c = row.split(',');
