@@ -11,11 +11,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIスコア投資研究所 — Mika's Selection</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --bg: #0a0e1a;
-            --bg2: #0f1628;
             --card: #111827;
             --border: #1e2d4a;
             --gold: #f0a500;
@@ -26,202 +27,178 @@
             --bolt: #ffeb3b;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-
-        body::before {
-            content: ''; position: fixed; inset: 0;
-            background-image: linear-gradient(rgba(77,166,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(77,166,255,0.03) 1px, transparent 1px);
-            background-size: 40px 40px; pointer-events: none;
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
         }
 
-        .main-container { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 350px 1fr; gap: 30px; position: relative; z-index: 1; }
+        .main-container {
+            max-width: 1100px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+        }
 
-        .mika-panel { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 30px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .mika-head { display: flex; align-items: center; gap: 15px; }
-        .mika-avatar { font-size: 2.5rem; }
-        .mika-name { font-weight: 700; font-size: 1.1rem; color: var(--gold); }
-        .mika-speech { font-size: 0.9rem; line-height: 1.8; color: var(--text2); background: #151e35; border-radius: 15px; padding: 20px; border-left: 4px solid var(--gold); position: relative; }
+        .mika-panel {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
 
-        .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
-        .stat-item { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; text-align: center; border: 1px solid var(--border); }
-        .stat-label { font-size: 0.7rem; color: var(--text2); margin-bottom: 5px; }
-        .stat-val { font-family: 'DM Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--text); }
+        .picks-grid {
+            display: grid;
+            gap: 15px;
+        }
 
-        .picks-container { display: flex; flex-direction: column; gap: 20px; }
-        .picks-title { font-size: 1.1rem; font-weight: 700; color: var(--text); display: flex; justify-content: space-between; align-items: center; }
-        .picks-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .pick-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 60px 1fr 200px;
+            gap: 10px;
+            align-items: center;
+            position: relative;
+        }
 
-        .pick-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; display: grid; grid-template-columns: 80px 1fr 180px; align-items: center; gap: 20px; transition: all 0.3s; position: relative; }
-        .pick-card.has-bolt { border-color: var(--bolt); box-shadow: 0 0 20px rgba(255, 235, 59, 0.1); }
-        .rank-badge { font-family: 'DM Mono', monospace; font-size: 1.2rem; font-weight: 700; color: var(--gold); }
-        
-        .stock-info .code { font-family: 'DM Mono', monospace; color: var(--blue); font-size: 1.1rem; }
-        .stock-info .name { font-weight: 700; font-size: 1.1rem; margin-top: 5px; }
+        .pick-card.has-bolt {
+            border-color: var(--bolt);
+        }
 
-        .metric-group { display: flex; gap: 15px; justify-content: flex-end; }
-        .m-item { text-align: right; }
-        .m-label { font-size: 0.6rem; color: var(--text2); }
-        .m-val { font-family: 'DM Mono', monospace; font-weight: 700; font-size: 1.1rem; color: var(--text); }
+        .rank-badge {
+            color: var(--gold);
+            font-weight: bold;
+        }
 
-        .bolt-label { position: absolute; top: -10px; right: 20px; background: var(--bolt); color: #000; font-size: 0.65rem; font-weight: 800; padding: 2px 10px; border-radius: 10px; animation: pulse 1s infinite; z-index: 2; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .code { color: var(--blue); }
 
-        .loading { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; font-weight: bold; color: var(--gold); }
+        .metric-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
 
-        @media (max-width: 850px) {
-            .main-container { grid-template-columns: 1fr; }
-            .pick-card { grid-template-columns: 50px 1fr; }
-            .metric-group { grid-column: 1 / span 2; justify-content: flex-start; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
+        .bolt-label {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--bolt);
+            color: #000;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--gold);
+            margin-top: 50px;
         }
     </style>
 </head>
+
 <body>
 
 <div id="loading" class="loading">MIKA ANALYSING...</div>
 
 <div class="main-container">
-    <div class="mika-side">
-        <div class="mika-panel">
-            <div class="mika-head">
-                <div class="mika-avatar">👩‍💼</div>
-                <div class="mika-name">AI Mika Analyser</div>
-            </div>
-            <div class="mika-speech" id="mikaIntro">
-                今日の市場をスキャンしたわ。<br>私の厳しい基準をクリアした精鋭銘柄を発表するね✨
-            </div>
-            <div class="stat-row">
-                <div class="stat-item"><div class="stat-label">分析対象</div><div class="stat-val" id="statTotal">0</div></div>
-                <div class="stat-item"><div class="stat-label">厳選</div><div class="stat-val" id="statPick">0</div></div>
-            </div>
-            <div style="font-size:0.65rem; color:var(--text2); margin-top:10px; text-align:center;">
-                ※AIスコア 180以上 / 買いサイン / 価格 > VWAP<br>
-                かつ <strong>信用倍率20倍未満</strong> のみを抽出
-            </div>
+
+    <div class="mika-panel">
+        <div style="font-weight:bold;color:var(--gold)">AI Mika Analyser</div>
+        <div style="font-size:12px;margin-top:10px;">
+            ※AIスコア180以上 / VWAP / 信用倍率20未満
         </div>
     </div>
 
-    <div class="picks-container">
-        <div class="picks-title">
-            <span>Today's Top Picks</span>
-            <span id="update-timer" style="font-size: 0.7rem; color: var(--text2);">取得中...</span>
-        </div>
-        <div class="picks-grid" id="pickCards"></div>
+    <div>
+        <div id="pickCards" class="picks-grid"></div>
     </div>
+
 </div>
 
 <script>
+
 let prevVolumeMap = new Map();
 
 async function fetchData() {
-    try {
-        const response = await fetch('data_push.csv', { cache: "no-store" });
-        const csvText = await response.text();
-        const rows = csvText.split(/\r?\n/).filter(line => line.trim() !== "").map(line => line.split(','));
-        processData(rows);
-        
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('update-timer').textContent = "最終更新: " + new Date().toLocaleTimeString();
-    } catch (err) { 
-        console.error("Fetch error:", err); 
-        document.getElementById('loading').textContent = "データ読み込み失敗...";
-    }
+    const res = await fetch('data_push.csv', { cache: "no-store" });
+    const text = await res.text();
+    const rows = text.split(/\n/).map(l => l.split(','));
+    processData(rows);
+    document.getElementById('loading').style.display = 'none';
 }
 
 function getElapsed() {
     const n = new Date();
-    const s = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 9, 0, 0);
-    const n1 = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 11, 30, 0);
-    const n2 = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 12, 30, 0);
-    if (n < s) return 1;
-    if (n >= n1 && n < n2) return 150;
-    if (n >= n2) return 150 + Math.min(180, (n - n2) / 60000);
+    const s = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 9, 0);
     return Math.max(1, (n - s) / 60000);
 }
 
 function processData(rows) {
-    const dataRows = rows.filter(r => {
-        const code = r[0]?.replace(/"/g, '').trim() || "";
-        const name = r[1]?.replace(/"/g, '').trim() || "";
-        return r.length >= 18 && 
-               code !== "" && 
-               !code.includes("Update") && 
-               !code.includes("コード") &&
-               name !== "";
-    });
 
     const elapsed = getElapsed();
 
-    const all = dataRows.map(r => {
-        const code = r[0].replace(/"/g, '').trim();
-        const name = r[1].replace(/"/g, '').trim();
-        const price = parseFloat(r[2]?.replace(/,/g, '') || 0);
-        const vol = parseFloat(r[4]?.replace(/,/g, '') || 0);
-        const vwap = parseFloat(r[5]?.replace(/,/g, '') || 0);
-        const rvol = parseFloat(r[9] || 0);
+    const all = rows.map(r => {
 
-        // ---【修正済みインデックス：Excel列番号-1】---
-        const judge = r[10] || "";         // 11列目：判定1（買い/🔥）
-        const a3 = parseFloat(r[14] || 0); // 15列目：補正AIスコア
-        const marginRatio = parseFloat(r[17]?.replace(/,/g, '') || 0); // 18列目：信用倍率
-        // ------------------------------------------
+        const code = r[0];
+        const name = r[1];
+        const price = parseFloat(r[2] || 0);
+        const vol = parseFloat(r[4] || 0);
+        const vwap = parseFloat(r[5] || 0);
+        const rvol = parseFloat(r[9] || 0);
+        const judge = r[10] || "";
+        const a3 = parseFloat(r[14] || 0); // ←補正A3（そのまま使う）
+        const marginRatio = parseFloat(r[17] || 0);
 
         let hasBolt = false;
         if (prevVolumeMap.has(code)) {
-            const lastVol = prevVolumeMap.get(code);
-            const diff = vol - lastVol;
-            const avg5min = (vol * (330 / elapsed)) / 66; 
-            if (diff > avg5min * 2 && diff > 1000) hasBolt = true;
+            const diff = vol - prevVolumeMap.get(code);
+            const avg = (vol * (330 / elapsed)) / 66;
+            if (diff > avg * 2 && diff > 1000) hasBolt = true;
         }
         prevVolumeMap.set(code, vol);
 
-        return { code, name, price, vwap, vol, judge, rvol, a3, hasBolt, marginRatio };
+        return { code, name, price, vwap, rvol, a3, judge, marginRatio, hasBolt };
     });
 
-    const picks = all.filter(d => 
+    const picks = all.filter(d =>
         (d.judge.includes('🔥') || d.judge.includes('買い')) &&
-        d.a3 >= 180 && 
-        d.price > d.vwap &&
+        d.a3 >= 180 &&
+        d.price >= d.vwap * 0.995 &&
+        d.price <= d.vwap * 1.05 &&
         d.marginRatio < 20
-    ).sort((a, b) => b.a3 - a.a3).slice(0, 3);
+    )
+    .sort((a, b) => b.a3 - a.a3)
+    .slice(0, 3);
 
-    render(all.length, picks);
+    render(picks);
 }
 
-function render(total, picks) {
-    document.getElementById('statTotal').textContent = total;
-    document.getElementById('statPick').textContent = picks.length;
+function render(picks){
 
-    const cardContainer = document.getElementById('pickCards');
-    
-    if (picks.length === 0) {
-        cardContainer.innerHTML = '<div style="color:var(--text2); text-align:center; padding:40px; border:1px dashed var(--border); border-radius:20px;">現在、MIKAの基準を満たす銘柄はありません 😴</div>';
+    const el = document.getElementById('pickCards');
+
+    if(picks.length === 0){
+        el.innerHTML = "該当銘柄なし";
         return;
     }
 
-    if (picks.some(p => p.hasBolt)) {
-        document.getElementById('mikaIntro').innerHTML = "⚡️マークが出ている銘柄に注目して！今まさに強い資金が流れ込んでるわ✨";
-    } else {
-        document.getElementById('mikaIntro').innerHTML = "今日の市場をスキャンしたわ。<br>私の厳しい基準をクリアした精鋭銘柄を発表するね✨";
-    }
-
-    cardContainer.innerHTML = picks.map((p, i) => `
-        <div class="pick-card ${p.hasBolt ? 'has-bolt' : ''}">
-            ${p.hasBolt ? '<div class="bolt-label">⚡️ BOLT DETECTED</div>' : ''}
-            <div class="rank-badge">#0${i+1}</div>
-            <div class="stock-info">
+    el.innerHTML = picks.map((p,i)=>`
+        <div class="pick-card ${p.hasBolt?'has-bolt':''}">
+            ${p.hasBolt?'<div class="bolt-label">⚡</div>':''}
+            <div class="rank-badge">#${i+1}</div>
+            <div>
                 <div class="code">${p.code}</div>
-                <div class="name">${p.name}</div>
+                <div>${p.name}</div>
             </div>
             <div class="metric-group">
-                <div class="m-item">
-                    <div class="m-label">AI SCORE</div>
-                    <div class="m-val" style="color:var(--gold)">${p.a3.toFixed(1)}</div>
-                </div>
-                <div class="m-item">
-                    <div class="m-label">RVOL</div>
-                    <div class="m-val" style="color:var(--green)">${p.rvol.toFixed(2)}</div>
-                </div>
+                <div>AI ${p.a3.toFixed(0)}</div>
+                <div>RVOL ${p.rvol.toFixed(2)}</div>
             </div>
         </div>
     `).join('');
@@ -229,6 +206,7 @@ function render(total, picks) {
 
 fetchData();
 setInterval(fetchData, 30000);
+
 </script>
 
 </body>
