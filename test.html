@@ -14,15 +14,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0e1a;
-            --card: #111827;
-            --border: #1e2d4a;
-            --gold: #f0a500;
-            --blue: #4da6ff;
-            --green: #00d4a0;
-            --text: #e8edf5;
-            --text2: #8a9bb8;
-            --bolt: #ffeb3b;
+            --bg: #0a0e1a; --card: #111827; --border: #1e2d4a;
+            --gold: #f0a500; --blue: #4da6ff; --text: #e8edf5;
+            --text2: #8a9bb8; --bolt: #ffeb3b;
         }
         body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
         .main-container { max-width: 1000px; margin: auto; display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
@@ -33,12 +27,12 @@
         .pick-card.has-bolt { border-color: var(--bolt); box-shadow: 0 0 15px rgba(255, 235, 59, 0.2); }
         .rank-badge { color: var(--gold); font-size: 20px; font-weight: 800; font-family: 'Playfair Display', serif; }
         .code { color: var(--blue); font-family: 'DM Mono', monospace; font-weight: 500; }
-        .name { font-weight: bold; font-size: 16px; margin-top: 2px; }
+        .name { font-weight: bold; font-size: 16px; }
         .metric-group { display: flex; gap: 20px; text-align: right; }
         .metric-label { font-size: 10px; color: var(--text2); margin-bottom: 2px; }
         .metric-val { font-family: 'DM Mono', monospace; font-weight: 500; }
         .bolt-label { position: absolute; top: -12px; right: 15px; background: var(--bolt); color: #000; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .loading { text-align: center; color: var(--gold); padding: 50px; font-weight: bold; letter-spacing: 2px; }
+        .loading { text-align: center; color: var(--gold); padding: 50px; font-weight: bold; }
         .update-time { font-size: 10px; color: var(--text2); margin-top: 20px; text-align: center; }
     </style>
 </head>
@@ -48,8 +42,7 @@
     <div class="mika-panel">
         <div style="font-weight:bold;color:var(--gold);font-size:18px;">AI Mika Analyser</div>
         <div style="font-size:12px;margin-top:15px;color:var(--text2);line-height:1.6;">
-            今日の注目銘柄をAIがスコアリング。<br><br>
-            Excelで「買い」判定が出た銘柄の中から、スコア上位3銘柄を表示しています。
+            Excelの「買い」判定の中からスコア上位3つを表示しています。
         </div>
     </div>
     <div>
@@ -71,25 +64,27 @@ async function fetchData() {
 
 function processData(rows) {
     const all = rows.map(r => {
+        // Mikaさんの教えてくれた列番号に基づき修正 (n列目ならインデックスは n-1)
         return {
-            code: r[0],            // A列
-            name: r[1],            // B列
-            rvol: parseFloat(r[8] || 0),   // I列:RVOL
-            judge: r[9] || "",             // J列:判定（買い/🔥）
-            boltSign: r[11] || "",         // L列:BOLT!サイン
-            boltCount: r[12] || "0",       // M列:ボルト回数
-            a3: parseFloat(r[13] || 0)     // N列:補正A3スコア
+            code: r[0],            // 1列目 (A)
+            name: r[1],            // 2列目 (B)
+            rvol: parseFloat(r[8] || 0),   // 9列目 (I)
+            judge: (r[10] || "").trim(),   // 11列目 (K): 買いサイン ★修正
+            boltSign: r[11] || "",         // 12列目 (L): BOLT! ★修正
+            boltCount: r[12] || "0",       // 13列目 (M): 回数 ★修正
+            a3: parseFloat(r[13] || 0)     // 14列目 (N): スコア ★修正
         };
     });
 
-    // --- シンプルにExcelの判定（J列）のみでフィルター ---
+    // フィルター：Excelで「買い」か「🔥」がついているもの
     const picks = all.filter(d => 
-        d.code && d.code !== "銘柄コード" &&
+        d.code && d.code !== "コード" && d.code !== "銘柄コード" &&
         (d.judge.includes('🔥') || d.judge.includes('買い'))
     )
-    .sort((a, b) => b.a3 - a.a3) // スコアが高い順
-    .slice(0, 3); // 上位3つだけ選ぶ
+    .sort((a, b) => b.a3 - a.a3) // スコア順
+    .slice(0, 3); // 上位3つ
 
+    // 更新時刻の取得
     const timeRow = rows.find(r => r[0] && r[0].includes("Update:"));
     const timeStr = timeRow ? timeRow[0] : "";
     render(picks, timeStr);
@@ -108,23 +103,11 @@ function render(picks, timeStr){
         <div class="pick-card ${hasBolt ? 'has-bolt' : ''}">
             ${hasBolt ? '<div class="bolt-label">⚡ BOLT DETECTED</div>' : ''}
             <div class="rank-badge">#${i+1}</div>
-            <div>
-                <div class="code">${p.code}</div>
-                <div class="name">${p.name}</div>
-            </div>
+            <div><div class="code">${p.code}</div><div class="name">${p.name}</div></div>
             <div class="metric-group">
-                <div>
-                    <div class="metric-label">AI SCORE</div>
-                    <div class="metric-val" style="color:var(--gold);font-weight:bold;">${p.a3.toFixed(0)}</div>
-                </div>
-                <div>
-                    <div class="metric-label">RVOL</div>
-                    <div class="metric-val">${p.rvol.toFixed(2)}</div>
-                </div>
-                <div>
-                    <div class="metric-label">BOLT回数</div>
-                    <div class="metric-val" style="color:var(--blue)">${p.boltCount}回</div>
-                </div>
+                <div><div class="metric-label">AI SCORE</div><div class="metric-val" style="color:var(--gold);font-weight:bold;">${p.a3.toFixed(0)}</div></div>
+                <div><div class="metric-label">RVOL</div><div class="metric-val">${p.rvol.toFixed(2)}</div></div>
+                <div><div class="metric-label">BOLT回数</div><div class="metric-val" style="color:var(--blue)">${p.boltCount}回</div></div>
             </div>
         </div>`;
     }).join('');
