@@ -11,9 +11,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIスコア投資研究所 — Mika's Selection</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --bg: #0a0e1a;
@@ -26,188 +24,114 @@
             --text2: #8a9bb8;
             --bolt: #ffeb3b;
         }
-
-        body {
-            font-family: 'Noto Sans JP', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            padding: 20px;
-        }
-
-        .main-container {
-            max-width: 1100px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 30px;
-        }
-
-        .mika-panel {
-            background: var(--card);
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .picks-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        .pick-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 15px;
-            display: grid;
-            grid-template-columns: 60px 1fr 200px;
-            gap: 10px;
-            align-items: center;
-            position: relative;
-        }
-
-        .pick-card.has-bolt {
-            border-color: var(--bolt);
-        }
-
-        .rank-badge {
-            color: var(--gold);
-            font-weight: bold;
-        }
-
-        .code { color: var(--blue); }
-
-        .metric-group {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .bolt-label {
-            position: absolute;
-            top: -10px;
-            right: 10px;
-            background: var(--bolt);
-            color: #000;
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-
-        .loading {
-            text-align: center;
-            color: var(--gold);
-            margin-top: 50px;
-        }
+        body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+        .main-container { max-width: 1000px; margin: auto; display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
+        @media (max-width: 768px) { .main-container { grid-template-columns: 1fr; } }
+        .mika-panel { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); height: fit-content; position: sticky; top: 20px; }
+        .picks-grid { display: grid; gap: 20px; }
+        .pick-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 20px; display: grid; grid-template-columns: 50px 1fr auto; gap: 15px; align-items: center; position: relative; transition: 0.3s; }
+        .pick-card.has-bolt { border-color: var(--bolt); box-shadow: 0 0 15px rgba(255, 235, 59, 0.2); }
+        .rank-badge { color: var(--gold); font-size: 20px; font-weight: 800; font-family: 'Playfair Display', serif; }
+        .code { color: var(--blue); font-family: 'DM Mono', monospace; font-weight: 500; }
+        .name { font-weight: bold; font-size: 16px; margin-top: 2px; }
+        .metric-group { display: flex; gap: 20px; text-align: right; }
+        .metric-label { font-size: 10px; color: var(--text2); margin-bottom: 2px; }
+        .metric-val { font-family: 'DM Mono', monospace; font-weight: 500; }
+        .bolt-label { position: absolute; top: -12px; right: 15px; background: var(--bolt); color: #000; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .loading { text-align: center; color: var(--gold); padding: 50px; font-weight: bold; letter-spacing: 2px; }
+        .update-time { font-size: 10px; color: var(--text2); margin-top: 20px; text-align: center; }
     </style>
 </head>
-
 <body>
-
 <div id="loading" class="loading">MIKA ANALYSING...</div>
-
 <div class="main-container">
-
     <div class="mika-panel">
-        <div style="font-weight:bold;color:var(--gold)">AI Mika Analyser</div>
-        <div style="font-size:12px;margin-top:10px;">
-            ※AIスコア180以上 / VWAP / 信用倍率20未満
+        <div style="font-weight:bold;color:var(--gold);font-size:18px;">AI Mika Analyser</div>
+        <div style="font-size:12px;margin-top:15px;color:var(--text2);line-height:1.6;">
+            今日の注目銘柄をAIがスコアリング。<br><br>
+            Excelで「買い」判定が出た銘柄の中から、スコア上位3銘柄を表示しています。
         </div>
     </div>
-
     <div>
         <div id="pickCards" class="picks-grid"></div>
+        <div id="updateStamp" class="update-time"></div>
     </div>
-
 </div>
 
 <script>
-
-let prevVolumeMap = new Map();
-
 async function fetchData() {
-    const res = await fetch('data_push.csv', { cache: "no-store" });
-    const text = await res.text();
-    const rows = text.split(/\n/).map(l => l.split(','));
-    processData(rows);
-    document.getElementById('loading').style.display = 'none';
-}
-
-function getElapsed() {
-    const n = new Date();
-    const s = new Date(n.getFullYear(), n.getMonth(), n.getDate(), 9, 0);
-    return Math.max(1, (n - s) / 60000);
+    try {
+        const res = await fetch('data_push.csv', { cache: "no-store" });
+        const text = await res.text();
+        const rows = text.split(/\r?\n/).filter(line => line.trim() !== "").map(l => l.split(','));
+        processData(rows);
+        document.getElementById('loading').style.display = 'none';
+    } catch (e) { console.error("Fetch error:", e); }
 }
 
 function processData(rows) {
-
-    const elapsed = getElapsed();
-
     const all = rows.map(r => {
-
-        const code = r[0];
-        const name = r[1];
-        const price = parseFloat(r[2] || 0);
-        const vol = parseFloat(r[4] || 0);
-        const vwap = parseFloat(r[5] || 0);
-        const rvol = parseFloat(r[9] || 0);
-        const judge = r[10] || "";
-        const a3 = parseFloat(r[14] || 0); // ←補正A3（そのまま使う）
-        const marginRatio = parseFloat(r[17] || 0);
-
-        let hasBolt = false;
-        if (prevVolumeMap.has(code)) {
-            const diff = vol - prevVolumeMap.get(code);
-            const avg = (vol * (330 / elapsed)) / 66;
-            if (diff > avg * 2 && diff > 1000) hasBolt = true;
-        }
-        prevVolumeMap.set(code, vol);
-
-        return { code, name, price, vwap, rvol, a3, judge, marginRatio, hasBolt };
+        return {
+            code: r[0],            // A列
+            name: r[1],            // B列
+            rvol: parseFloat(r[8] || 0),   // I列:RVOL
+            judge: r[9] || "",             // J列:判定（買い/🔥）
+            boltSign: r[11] || "",         // L列:BOLT!サイン
+            boltCount: r[12] || "0",       // M列:ボルト回数
+            a3: parseFloat(r[13] || 0)     // N列:補正A3スコア
+        };
     });
 
-    const picks = all.filter(d =>
-        (d.judge.includes('🔥') || d.judge.includes('買い')) &&
-        d.a3 >= 180 &&
-        d.price >= d.vwap * 0.995 &&
-        d.price <= d.vwap * 1.05 &&
-        d.marginRatio < 20
+    // --- シンプルにExcelの判定（J列）のみでフィルター ---
+    const picks = all.filter(d => 
+        d.code && d.code !== "銘柄コード" &&
+        (d.judge.includes('🔥') || d.judge.includes('買い'))
     )
-    .sort((a, b) => b.a3 - a.a3)
-    .slice(0, 3);
+    .sort((a, b) => b.a3 - a.a3) // スコアが高い順
+    .slice(0, 3); // 上位3つだけ選ぶ
 
-    render(picks);
+    const timeRow = rows.find(r => r[0] && r[0].includes("Update:"));
+    const timeStr = timeRow ? timeRow[0] : "";
+    render(picks, timeStr);
 }
 
-function render(picks){
-
+function render(picks, timeStr){
     const el = document.getElementById('pickCards');
-
+    const stamp = document.getElementById('updateStamp');
     if(picks.length === 0){
-        el.innerHTML = "該当銘柄なし";
+        el.innerHTML = '<div style="color:var(--text2);text-align:center;padding:40px;background:var(--card);border-radius:15px;border:1px dashed var(--border);">現在、Excel側で「買い」サインが出ている銘柄はありません。</div>';
         return;
     }
-
-    el.innerHTML = picks.map((p,i)=>`
-        <div class="pick-card ${p.hasBolt?'has-bolt':''}">
-            ${p.hasBolt?'<div class="bolt-label">⚡</div>':''}
+    el.innerHTML = picks.map((p, i) => {
+        const hasBolt = p.boltSign.includes("BOLT!");
+        return `
+        <div class="pick-card ${hasBolt ? 'has-bolt' : ''}">
+            ${hasBolt ? '<div class="bolt-label">⚡ BOLT DETECTED</div>' : ''}
             <div class="rank-badge">#${i+1}</div>
             <div>
                 <div class="code">${p.code}</div>
-                <div>${p.name}</div>
+                <div class="name">${p.name}</div>
             </div>
             <div class="metric-group">
-                <div>AI ${p.a3.toFixed(0)}</div>
-                <div>RVOL ${p.rvol.toFixed(2)}</div>
+                <div>
+                    <div class="metric-label">AI SCORE</div>
+                    <div class="metric-val" style="color:var(--gold);font-weight:bold;">${p.a3.toFixed(0)}</div>
+                </div>
+                <div>
+                    <div class="metric-label">RVOL</div>
+                    <div class="metric-val">${p.rvol.toFixed(2)}</div>
+                </div>
+                <div>
+                    <div class="metric-label">BOLT回数</div>
+                    <div class="metric-val" style="color:var(--blue)">${p.boltCount}回</div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
+    stamp.innerText = timeStr;
 }
-
 fetchData();
 setInterval(fetchData, 30000);
-
 </script>
-
 </body>
 </html>
