@@ -23,14 +23,11 @@
             --border-color: #e2e8f0;
             --text-main: #0f172a;
             --text-sub: #64748b;
-            
             --level1-bg: #f0f9ff; 
             --level1-border: #bae6fd;
-
             --buy-bg: rgba(239, 68, 68, 0.06);
             --buy-text: #dc2626;
             --buy-border: #ef4444;
-            
             --gold: #b45309;
             --bolt-color: #ef4444;
         }
@@ -88,6 +85,7 @@
         thead th { position: sticky; top: 0; z-index: 10; background: #f1f5f9; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
         td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
         
+        /* ★ AIスコアクリア銘柄のハイライト（水色背景） */
         tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
         tr.row-highlight td:first-child::before {
             content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: var(--level1-border);
@@ -97,6 +95,18 @@
         .col-rvol-style { color: var(--gold); font-weight: 700; }
         .volume-spike { color: var(--gold) !important; text-shadow: 0 1px 3px rgba(180, 83, 9, 0.2); }
         .bolt-text { color: var(--bolt-color); font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+        /* BOLT回数バッジ */
+        .bolt-count-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(239,68,68,0.08); color: var(--bolt-color);
+            font-weight: 800; font-size: 0.82rem;
+            border: 1px solid rgba(239,68,68,0.25);
+            border-radius: 20px; padding: 2px 10px;
+        }
+        .bolt-count-zero {
+            color: var(--text-sub); font-size: 0.82rem;
+        }
 
         footer { margin-top: 60px; padding: 50px; text-align: center; color: var(--text-sub); border-top: 1px solid var(--border-color); background: #fff; width: 100%; }
 
@@ -187,6 +197,7 @@ function renderTable(rows) {
     const tableBody = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
     
+    // 非表示にする列インデックス（元のまま）
     const hideIndices = [3, 7]; 
     let stockCount = 0;
 
@@ -197,18 +208,22 @@ function renderTable(rows) {
         }
         const columns = row.split(',');
         const tr = document.createElement('tr');
-        
-        // 13列目（Index 12）を見て背景ハイライト
-        if(index !== 0 && columns[12]?.replace(/"/g,'').trim() === "1") {
-            tr.classList.add('row-highlight');
+
+        // 区分列（index 13）が "1" の行をハイライト
+        if(index !== 0) {
+            const kubun = (columns[13] || "").replace(/"/g,'').trim();
+            if (kubun === "1") {
+                tr.classList.add('row-highlight');
+            }
         }
-        
+
+        // No.列
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
         if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
 
-        for(let i = 0; i <= 11; i++) {
+        for(let i = 0; i <= 12; i++) {
             if(hideIndices.includes(i)) continue;
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
             let val = (columns[i] || "").replace(/"/g,'').trim();
@@ -217,21 +232,36 @@ function renderTable(rows) {
                 cell.textContent = val; 
             } else {
                 if(i === 8 || i === 9) {
+                    // 出来高系
                     cell.classList.add("col-rvol-style");
                     let num = parseFloat(val);
                     if(!isNaN(num)){
                         if(num >= 2) cell.classList.add("volume-spike");
                         cell.textContent = num.toFixed(2);
                     } else cell.textContent = val;
-                } else if(i === 10) { // 11列目（Index 10）：判定1
+
+                } else if(i === 10) {
+                    // 判定1
                     cell.textContent = val;
                     if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
-                } else if(i === 11) { // 12列目（Index 11）：判定2（BOLT!）
+
+                } else if(i === 11) {
+                    // 判定2（BOLT!）
                     if(val.includes("BOLT!")) {
                         cell.innerHTML = '<span class="bolt-text"><i class="fa-solid fa-bolt"></i> ' + val + '</span>';
                     } else {
                         cell.textContent = val;
                     }
+
+                } else if(i === 12) {
+                    // ★ 修正点③: BOLT回数列を新たに表示
+                    let count = parseInt(val);
+                    if(!isNaN(count) && count > 0) {
+                        cell.innerHTML = '<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>' + count + '回</span>';
+                    } else {
+                        cell.innerHTML = '<span class="bolt-count-zero">—</span>';
+                    }
+
                 } else { 
                     cell.textContent = (i === 0) ? val.replace(/,/g, '') : formatNum(val); 
                 }
@@ -245,26 +275,17 @@ function renderTable(rows) {
 function updateMikaSelection(rows) {
     const allPicks = rows.slice(1).map(row => {
         const c = row.split(',');
-        // 18列目（Index 17）までデータがあるか確認
-        if (c.length < 18) return null; 
+        if (c.length < 15) return null; 
 
         const code = c[0].replace(/"/g,'').trim();
         const name = c[1].replace(/"/g,'').trim();
-        const price = parseFloat(c[2]?.replace(/,/g,'') || 0);
-        const vwap = parseFloat(c[5]?.replace(/,/g,'') || 0);
-        
-        // ---【修正済みインデックス】---
-        const judge = c[10] || "";         // 11列目
-        const a3 = parseFloat(c[14] || 0);  // 15列目：補正AIスコア
-        const marginRatio = parseFloat(c[17]?.replace(/,/g, '') || 0); // 18列目：信用倍率
-        // -----------------------------
+        const judge = c[10] || "";         
+        const boltCount = c[12] || "0";    
+        const a3 = parseFloat(c[14] || 0);  
 
-        return { code, name, a3, vwap, price, judge, marginRatio };
+        return { code, name, a3, judge, boltCount };
     }).filter(d => 
-        d && 
-        d.a3 >= 180 && 
-        d.marginRatio < 20 && 
-        d.price > d.vwap && 
+        d && d.code && d.code !== "コード" &&
         (d.judge.includes("🔥") || d.judge.includes("買い"))
     );
 
@@ -281,6 +302,9 @@ function updateMikaSelection(rows) {
                     <div>
                         <div style="color:var(--primary-color); font-weight:700; font-size:0.75rem;">${p.code}</div>
                         <div style="font-weight:700; font-size:1rem;">${p.name}</div>
+                        <div style="font-size:0.75rem; color:var(--bolt-color); font-weight:bold; margin-top:2px;">
+                            <i class="fa-solid fa-bolt"></i> ${p.boltCount}回
+                        </div>
                     </div>
                 </div>
                 <div style="text-align:right;">
