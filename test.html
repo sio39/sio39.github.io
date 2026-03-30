@@ -70,43 +70,32 @@
         h1 { font-size: 2rem; font-weight: 800; margin: 0 0 10px 0; color: var(--text-main); letter-spacing: -0.5px; }
         #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
 
-        .mika-selection-area { width: 95%; max-width: 1100px; margin-bottom: 35px; display: none; }
+        .mika-selection-area { width: 95%; max-width: 1100px; margin-bottom: 35px; }
         .mika-header { display: flex; align-items: center; background: #fff; color: var(--text-main); padding: 15px 20px; border-radius: 16px 16px 0 0; font-size: 1rem; border: 1px solid var(--border-color); border-bottom: none; font-weight: 700; }
         .mika-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; background: rgba(241, 245, 249, 0.6); padding: 20px; border-radius: 0 0 16px 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
         .mika-card { background: #fff; border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         
+        .no-picks-msg { grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-sub); font-weight: 600; font-size: 0.95rem; background: #fff; border-radius: 12px; border: 1px dashed var(--border-color); }
+
         .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin-bottom: 30px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
 
         .color-legend { width: 95%; max-width: 1100px; margin-bottom: 15px; display: flex; align-items: center; gap: 12px; color: var(--text-sub); font-size: 0.85rem; }
         .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
 
         .table-container { width: 95%; max-width: 1200px; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08); }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 900px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
         thead th { position: sticky; top: 0; z-index: 10; background: #f1f5f9; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
         td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
         
-        /* ★ AIスコアクリア銘柄のハイライト（水色背景） */
         tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
-        tr.row-highlight td:first-child::before {
-            content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: var(--level1-border);
-        }
+        tr.row-highlight td:first-child::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background-color: var(--level1-border); }
 
         .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; border: 1px solid var(--buy-border); border-radius: 6px; padding: 3px 10px; font-size: 0.8rem; }
         .col-rvol-style { color: var(--gold); font-weight: 700; }
         .volume-spike { color: var(--gold) !important; text-shadow: 0 1px 3px rgba(180, 83, 9, 0.2); }
-        .bolt-text { color: var(--bolt-color); font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
 
-        /* BOLT回数バッジ */
-        .bolt-count-badge {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: rgba(239,68,68,0.08); color: var(--bolt-color);
-            font-weight: 800; font-size: 0.82rem;
-            border: 1px solid rgba(239,68,68,0.25);
-            border-radius: 20px; padding: 2px 10px;
-        }
-        .bolt-count-zero {
-            color: var(--text-sub); font-size: 0.82rem;
-        }
+        .bolt-count-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.08); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.25); border-radius: 20px; padding: 2px 10px; }
+        .bolt-count-zero { color: var(--text-sub); font-size: 0.82rem; }
 
         footer { margin-top: 60px; padding: 50px; text-align: center; color: var(--text-sub); border-top: 1px solid var(--border-color); background: #fff; width: 100%; }
 
@@ -178,6 +167,7 @@
 function formatNum(val) {
     let n = parseFloat(val.replace(/,/g, ''));
     if (isNaN(n)) return val;
+    // 小数点が含まれているものはそのまま、そうでなければカンマ区切りに
     return val.includes('.') ? val : n.toLocaleString();
 }
 
@@ -197,8 +187,8 @@ function renderTable(rows) {
     const tableBody = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
     
-    // 非表示にする列インデックス（元のまま）
-    const hideIndices = [3, 7]; 
+    // 非表示：Index 3(市場), 7(VWAP乖離率), 8(乖離率判定)
+    const hideIndices = [3, 7, 8]; 
     let stockCount = 0;
 
     rows.forEach((row, index) => {
@@ -209,21 +199,17 @@ function renderTable(rows) {
         const columns = row.split(',');
         const tr = document.createElement('tr');
 
-        // 区分列（index 13）が "1" の行をハイライト
         if(index !== 0) {
-            const kubun = (columns[13] || "").replace(/"/g,'').trim();
-            if (kubun === "1") {
-                tr.classList.add('row-highlight');
-            }
+            const kubun = (columns[14] || "").replace(/"/g,'').trim();
+            if (kubun === "1") tr.classList.add('row-highlight');
         }
 
-        // No.列
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
         if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
 
-        for(let i = 0; i <= 12; i++) {
+        for(let i = 0; i <= 13; i++) {
             if(hideIndices.includes(i)) continue;
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
             let val = (columns[i] || "").replace(/"/g,'').trim();
@@ -231,38 +217,42 @@ function renderTable(rows) {
             if(index === 0) { 
                 cell.textContent = val; 
             } else {
-                if(i === 8 || i === 9) {
-                    // 出来高系
+                if (i === 4) { // 前日比率（小数点2位）
+                    let num = parseFloat(val);
+                    cell.textContent = isNaN(num) ? val : num.toFixed(2);
+                }
+                else if (i === 5) { // VWAP（小数点2位）
+                    let num = parseFloat(val.replace(/,/g, ''));
+                    cell.textContent = isNaN(num) ? val : num.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+                else if (i === 6) { // ★修正：20日平均出来高（小数点なし・必ず整数）
+                    let num = parseFloat(val.replace(/,/g, ''));
+                    cell.textContent = isNaN(num) ? val : Math.round(num).toLocaleString();
+                }
+                else if(i === 9 || i === 10) { // RVOL系（小数点2位）
                     cell.classList.add("col-rvol-style");
                     let num = parseFloat(val);
                     if(!isNaN(num)){
                         if(num >= 2) cell.classList.add("volume-spike");
                         cell.textContent = num.toFixed(2);
                     } else cell.textContent = val;
-
-                } else if(i === 10) {
-                    // 判定1
+                } 
+                else if(i === 11) { // 判定1
                     cell.textContent = val;
                     if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
-
-                } else if(i === 11) {
-                    // 判定2（BOLT!）
-                    if(val.includes("BOLT!")) {
-                        cell.innerHTML = '<span class="bolt-text"><i class="fa-solid fa-bolt"></i> ' + val + '</span>';
-                    } else {
-                        cell.textContent = val;
-                    }
-
-                } else if(i === 12) {
-                    // ★ 修正点③: BOLT回数列を新たに表示
+                } 
+                else if(i === 12) { // ボルト判定
+                    cell.textContent = val;
+                }
+                else if(i === 13) { // ボルト回数
                     let count = parseInt(val);
                     if(!isNaN(count) && count > 0) {
                         cell.innerHTML = '<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>' + count + '回</span>';
                     } else {
                         cell.innerHTML = '<span class="bolt-count-zero">—</span>';
                     }
-
-                } else { 
+                } 
+                else { 
                     cell.textContent = (i === 0) ? val.replace(/,/g, '') : formatNum(val); 
                 }
             }
@@ -280,7 +270,7 @@ function updateMikaSelection(rows) {
         const code = c[0].replace(/"/g,'').trim();
         const name = c[1].replace(/"/g,'').trim();
         const judge = c[10] || "";         
-        const boltCount = c[12] || "0";    
+        const boltCount = c[13] || "0"; 
         const a3 = parseFloat(c[14] || 0);  
 
         return { code, name, a3, judge, boltCount };
@@ -291,10 +281,8 @@ function updateMikaSelection(rows) {
 
     const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
     const container = document.getElementById('mikaCards');
-    const area = document.getElementById('mikaSelection');
 
     if (picks.length > 0) {
-        area.style.display = 'block';
         container.innerHTML = picks.map((p, i) => `
             <div class="mika-card">
                 <div style="display:flex; align-items:center;">
@@ -314,7 +302,12 @@ function updateMikaSelection(rows) {
             </div>
         `).join('');
     } else { 
-        area.style.display = 'none'; 
+        container.innerHTML = `
+            <div class="no-picks-msg">
+                <i class="fa-solid fa-mug-hot" style="margin-right:8px;"></i>
+                現在、厳選銘柄はありません。次のチャンスを待ちましょう！
+            </div>
+        `;
     }
 }
 
