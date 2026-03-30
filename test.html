@@ -241,7 +241,12 @@ function renderTable(rows) {
                         cell.innerHTML = '<span class="bolt-count-zero">—</span>';
                     }
                 } 
+                else if (i === 0) {
+                    // 銘柄コード(0番目)はカンマを付けない
+                    cell.textContent = val;
+                }
                 else { 
+                    // それ以外は数値フォーマット（カンマ）を適用
                     cell.textContent = formatNum(val); 
                 }
             }
