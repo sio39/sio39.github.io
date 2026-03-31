@@ -196,6 +196,7 @@ function renderTable(rows) {
         const tr = document.createElement('tr');
 
         if(index !== 0) {
+            // 背景ハイライト判定 (15番目のフラグ)
             if (columns[15] === "1") tr.classList.add('row-highlight');
         }
 
@@ -253,22 +254,33 @@ function renderTable(rows) {
 }
 
 function updateMikaSelection(rows) {
-    const allPicks = rows.slice(1).map(row => {
+    const dataRows = rows.slice(1);
+
+    const allPicks = dataRows.map(row => {
         const c = row.split(',');
         if (c.length < 12) return null;
-        const code = c[0].replace(/"/g,'').trim();
-        const name = c[1].replace(/"/g,'').trim();
-        if (!code || code === "コード") return null;
-        // ★ 判定列(index11)の値を正規化してマッチ
-        const judge = (c[11] || "").replace(/"/g,'').trim();
+
+        const code = (c[0] || "").replace(/"/g,'').trim();
+        const name = (c[1] || "").replace(/"/g,'').trim();
+        const judge = (c[11] || "").replace(/"/g,'').trim(); // 判定列
         const boltCount = (c[14] || "0").replace(/"/g,'').trim();
-        const a3 = parseFloat((c[16] || "0").replace(/,/g,''));
-        // ★ 空でも「—」でもなければ買いサインありとみなす
-        const hasBuySign = judge.length > 0 && judge !== "—" && judge !== "-";
-        return hasBuySign ? { code, name, a3, judge, boltCount } : null;
+        
+        // 補正A3スコア (index 16)
+        const a3Str = (c[16] || "0").replace(/"/g,'').replace(/,/g,'');
+        const a3 = parseFloat(a3Str);
+
+        // 「買い」という文字が含まれているか、炎マークがあるかチェック
+        const hasBuySign = judge.includes("買い") || judge.includes("🔥");
+
+        if (hasBuySign && code && code !== "コード") {
+            return { code, name, a3, judge, boltCount };
+        }
+        return null;
     }).filter(d => d !== null);
 
-    const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
+    // スコア(a3)が高い順にソートして、上位3つを取得
+    const picks = allPicks.sort((a,b) => (b.a3 || 0) - (a.a3 || 0)).slice(0, 3);
+    
     const container = document.getElementById('mikaCards');
 
     if (picks.length > 0) {
