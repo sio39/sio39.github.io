@@ -184,7 +184,6 @@ function renderTable(rows) {
     const tableBody = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
 
-    // 非表示にするCSVインデックス（元の3,7,8＋新たに追加した区分列15を非表示）
     const hideIndices = [3, 7, 8, 15];
     let stockCount = 0;
 
@@ -196,18 +195,15 @@ function renderTable(rows) {
         const columns = row.split(',');
         const tr = document.createElement('tr');
 
-        // ★ 区分列はindex 15に変更
         if(index !== 0) {
             if (columns[15] === "1") tr.classList.add('row-highlight');
         }
 
-        // No.列
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
         if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
 
-        // ★ index 0〜14まで表示（ボルト判定13・ボルト回数14を含む）
         for(let i = 0; i <= 14; i++) {
             if(hideIndices.includes(i)) continue;
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
@@ -225,12 +221,10 @@ function renderTable(rows) {
                     cell.textContent = isNaN(num) ? val : num.toLocaleString();
                 }
                 else if (i === 11) {
-                    // 買いサイン（L列・index 11）
                     cell.textContent = val;
                     if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
                 }
                 else if (i === 13) {
-                    // ★ ボルト判定（N列・index 13）
                     if(val === "BOLT!") {
                         cell.innerHTML = '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>';
                     } else {
@@ -238,7 +232,6 @@ function renderTable(rows) {
                     }
                 }
                 else if (i === 14) {
-                    // ★ ボルト回数（O列・index 14）
                     let count = parseInt(val);
                     if(!isNaN(count) && count > 0) {
                         cell.innerHTML = '<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>' + count + '回</span>';
@@ -265,11 +258,15 @@ function updateMikaSelection(rows) {
         if (c.length < 12) return null;
         const code = c[0].replace(/"/g,'').trim();
         const name = c[1].replace(/"/g,'').trim();
-        const judge = (c[11] || "").replace(/"/g,'').trim(); // 買いサイン（index 11）
-        const boltCount = (c[14] || "0").replace(/"/g,'').trim(); // ★ ボルト回数（index 14）
-        const a3 = parseFloat(c[16] || 0); // 補正A3スコア（index 16）
-        return { code, name, a3, judge, boltCount };
-    }).filter(d => d && d.code && d.code !== "コード" && (d.judge.includes("🔥") || d.judge.includes("買い")));
+        if (!code || code === "コード") return null;
+        // ★ 判定列(index11)の値を正規化してマッチ
+        const judge = (c[11] || "").replace(/"/g,'').trim();
+        const boltCount = (c[14] || "0").replace(/"/g,'').trim();
+        const a3 = parseFloat((c[16] || "0").replace(/,/g,''));
+        // ★ 空でも「—」でもなければ買いサインありとみなす
+        const hasBuySign = judge.length > 0 && judge !== "—" && judge !== "-";
+        return hasBuySign ? { code, name, a3, judge, boltCount } : null;
+    }).filter(d => d !== null);
 
     const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
     const container = document.getElementById('mikaCards');
@@ -289,7 +286,7 @@ function updateMikaSelection(rows) {
                 </div>
                 <div style="text-align:right;">
                     <div style="font-size:0.65rem; color:var(--text-sub);">AI SCORE</div>
-                    <div style="font-weight:800; color:var(--gold); font-size:1.3rem;">${p.a3.toFixed(1)}</div>
+                    <div style="font-weight:800; color:var(--gold); font-size:1.3rem;">${isNaN(p.a3) ? "—" : p.a3.toFixed(1)}</div>
                 </div>
             </div>
         `).join('');
