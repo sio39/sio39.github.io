@@ -71,12 +71,6 @@
         h1 { font-size: 2.2rem; font-weight: 900; margin: 0 0 10px 0; color: var(--text-main); letter-spacing: -0.5px; }
         #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
 
-        .mika-selection-area { width: 95%; max-width: 1100px; margin-bottom: 35px; margin-left: auto; margin-right: auto; }
-        .mika-header { display: flex; align-items: center; background: #fff; color: var(--text-main); padding: 15px 20px; border-radius: 16px 16px 0 0; font-size: 1rem; border: 1px solid var(--border-color); border-bottom: none; font-weight: 700; }
-        .mika-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; background: rgba(255, 255, 255, 0.5); padding: 20px; border-radius: 0 0 16px 16px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
-        .mika-card { background: #fff; border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .no-picks-msg { grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-sub); font-weight: 600; font-size: 0.95rem; background: #fff; border-radius: 12px; border: 1px dashed var(--border-color); }
-
         .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin: 0 auto 30px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .color-legend { width: 95%; max-width: 1100px; margin: 0 auto 15px; display: flex; align-items: center; gap: 12px; color: var(--text-sub); font-size: 0.85rem; }
         .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
@@ -131,13 +125,6 @@
     <div id="last-load" style="font-size:0.75rem; color:var(--text-sub); margin-top:5px;"></div>
 </div>
 
-<div class="mika-selection-area" id="mikaSelection">
-    <div class="mika-header">
-        <span>👩‍💼 <i class="fa-solid fa-crown" style="margin-right:8px; color:var(--gold);"></i><strong>AI MIKA 厳選銘柄</strong></span>
-    </div>
-    <div class="mika-cards" id="mikaCards"></div>
-</div>
-
 <div class="info-text">
     <div style="font-weight: 800; color: var(--primary-color); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size: 1.1rem;">
         <i class="fa-solid fa-robot"></i> AI MIKA's Strategy (勝ちかた)
@@ -163,6 +150,7 @@
 
 <script>
 function formatNum(val) {
+    // もともとのコードの処理を維持（カンマ入れなど）
     let n = parseFloat(val.replace(/,/g, ''));
     if (isNaN(n)) return val;
     return val.includes('.') ? val : n.toLocaleString();
@@ -174,7 +162,6 @@ async function loadCSV(){
         const data = await response.text();
         const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="");
         renderTable(rows);
-        updateMikaSelection(rows);
         document.getElementById('last-load').textContent = '取得: ' + new Date().toLocaleTimeString();
     } catch(e) { console.error(e) }
 }
@@ -184,7 +171,7 @@ function renderTable(rows) {
     const tableBody = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
 
-    // 非表示にするCSVインデックス（元の3,7,8＋新たに追加した区分列15を非表示）
+    // ★元のコードと同じ非表示設定
     const hideIndices = [3, 7, 8, 15];
     let stockCount = 0;
 
@@ -196,18 +183,17 @@ function renderTable(rows) {
         const columns = row.split(',');
         const tr = document.createElement('tr');
 
-        // ★ 区分列はindex 15に変更
+        // ★元のコードと同じ区分判定（index 15）
         if(index !== 0) {
             if (columns[15] === "1") tr.classList.add('row-highlight');
         }
 
-        // No.列
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
         if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
 
-        // ★ index 0〜14まで表示（ボルト判定13・ボルト回数14を含む）
+        // ★元のコードと同じ index 0〜14 までの表示ループ
         for(let i = 0; i <= 14; i++) {
             if(hideIndices.includes(i)) continue;
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
@@ -216,29 +202,26 @@ function renderTable(rows) {
             if(index === 0) {
                 cell.textContent = val;
             } else {
-                if (i === 4) {
+                if (i === 4) { // 前日比率
                     let num = parseFloat(val);
                     cell.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
                 }
-                else if (i === 5 || i === 2) {
+                else if (i === 5 || i === 2) { // 現在値、出来高
                     let num = parseFloat(val.replace(/,/g, ''));
                     cell.textContent = isNaN(num) ? val : num.toLocaleString();
                 }
-                else if (i === 11) {
-                    // 買いサイン（L列・index 11）
+                else if (i === 11) { // 判定
                     cell.textContent = val;
                     if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
                 }
-                else if (i === 13) {
-                    // ★ ボルト判定（N列・index 13）
+                else if (i === 13) { // ボルト判定
                     if(val === "BOLT!") {
                         cell.innerHTML = '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>';
                     } else {
                         cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
                     }
                 }
-                else if (i === 14) {
-                    // ★ ボルト回数（O列・index 14）
+                else if (i === 14) { // ボルト回数
                     let count = parseInt(val);
                     if(!isNaN(count) && count > 0) {
                         cell.innerHTML = '<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>' + count + '回</span>';
@@ -246,7 +229,7 @@ function renderTable(rows) {
                         cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
                     }
                 }
-                else if (i === 0) {
+                else if (i === 0) { // コード列（カンマ入れない）
                     cell.textContent = val;
                 }
                 else {
@@ -257,45 +240,6 @@ function renderTable(rows) {
         }
         if(index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
     });
-}
-
-function updateMikaSelection(rows) {
-    const allPicks = rows.slice(1).map(row => {
-        const c = row.split(',');
-        if (c.length < 12) return null;
-        const code = c[0].replace(/"/g,'').trim();
-        const name = c[1].replace(/"/g,'').trim();
-        const judge = (c[11] || "").replace(/"/g,'').trim(); // 買いサイン（index 11）
-        const boltCount = (c[14] || "0").replace(/"/g,'').trim(); // ★ ボルト回数（index 14）
-        const a3 = parseFloat(c[16] || 0); // 補正A3スコア（index 16）
-        return { code, name, a3, judge, boltCount };
-    }).filter(d => d && d.code && d.code !== "コード" && (d.judge.includes("🔥") || d.judge.includes("買い")));
-
-    const picks = allPicks.sort((a,b) => b.a3 - a.a3).slice(0, 3);
-    const container = document.getElementById('mikaCards');
-
-    if (picks.length > 0) {
-        container.innerHTML = picks.map((p, i) => `
-            <div class="mika-card">
-                <div style="display:flex; align-items:center;">
-                    <span style="font-weight:800; color:var(--gold); margin-right:12px; font-size:1.3rem;">${i+1}</span>
-                    <div>
-                        <div style="color:var(--primary-color); font-weight:700; font-size:0.75rem;">${p.code}</div>
-                        <div style="font-weight:700; font-size:1rem;">${p.name}</div>
-                        <div style="font-size:0.75rem; color:var(--bolt-color); font-weight:bold; margin-top:2px;">
-                            <i class="fa-solid fa-bolt"></i> ${p.boltCount}回
-                        </div>
-                    </div>
-                </div>
-                <div style="text-align:right;">
-                    <div style="font-size:0.65rem; color:var(--text-sub);">AI SCORE</div>
-                    <div style="font-weight:800; color:var(--gold); font-size:1.3rem;">${p.a3.toFixed(1)}</div>
-                </div>
-            </div>
-        `).join('');
-    } else {
-        container.innerHTML = `<div class="no-picks-msg"><i class="fa-solid fa-mug-hot" style="margin-right:8px;"></i>現在、厳選銘柄はありません。</div>`;
-    }
 }
 
 loadCSV();
