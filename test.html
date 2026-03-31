@@ -29,6 +29,7 @@
             --buy-bg: rgba(239, 68, 68, 0.06);
             --buy-text: #dc2626;
             --buy-border: #ef4444;
+            --gold: #b45309;
             --bolt-color: #ef4444;
         }
 
@@ -149,10 +150,10 @@
 
 <script>
 function formatNum(val) {
-    if (!val) return "—";
-    let n = parseFloat(val.toString().replace(/,/g, ''));
+    // もともとのコードの処理を維持（カンマ入れなど）
+    let n = parseFloat(val.replace(/,/g, ''));
     if (isNaN(n)) return val;
-    return val.toString().includes('.') ? val : n.toLocaleString();
+    return val.includes('.') ? val : n.toLocaleString();
 }
 
 async function loadCSV(){
@@ -170,9 +171,8 @@ function renderTable(rows) {
     const tableBody = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
 
-    // 画像に基づいて表示・非表示を制御
-    // 非表示にするインデックス: 7(列2), 8(20日平均), 14(区分), 15(A3)
-    const hideIndices = [7, 8, 14, 15]; 
+    // ★元のコードと同じ非表示設定
+    const hideIndices = [3, 7, 8, 15];
     let stockCount = 0;
 
     rows.forEach((row, index) => {
@@ -183,9 +183,9 @@ function renderTable(rows) {
         const columns = row.split(',');
         const tr = document.createElement('tr');
 
-        // 背景ハイライト判定 (15番目の「区分」列＝index 14 が1なら色を付ける)
+        // ★元のコードと同じ区分判定（index 15）
         if(index !== 0) {
-            if (columns[14] === "1") tr.classList.add('row-highlight');
+            if (columns[15] === "1") tr.classList.add('row-highlight');
         }
 
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
@@ -193,11 +193,9 @@ function renderTable(rows) {
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
 
-        for(let i = 0; i < columns.length; i++) {
+        // ★元のコードと同じ index 0〜14 までの表示ループ
+        for(let i = 0; i <= 14; i++) {
             if(hideIndices.includes(i)) continue;
-            // 配当(index 21)までを表示対象にする
-            if(i > 21) continue; 
-
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
             let val = (columns[i] || "").replace(/"/g,'').trim();
 
@@ -212,24 +210,27 @@ function renderTable(rows) {
                     let num = parseFloat(val.replace(/,/g, ''));
                     cell.textContent = isNaN(num) ? val : num.toLocaleString();
                 }
-                else if (i === 11) { // 判定 (12番目)
+                else if (i === 11) { // 判定
                     cell.textContent = val;
                     if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
                 }
-                else if (i === 12) { // ボルト判定 (13番目)
+                else if (i === 13) { // ボルト判定
                     if(val === "BOLT!") {
                         cell.innerHTML = '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>';
                     } else {
                         cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
                     }
                 }
-                else if (i === 13) { // ボルト回数 (14番目)
+                else if (i === 14) { // ボルト回数
                     let count = parseInt(val);
                     if(!isNaN(count) && count > 0) {
                         cell.innerHTML = '<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>' + count + '回</span>';
                     } else {
                         cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
                     }
+                }
+                else if (i === 0) { // コード列（カンマ入れない）
+                    cell.textContent = val;
                 }
                 else {
                     cell.textContent = formatNum(val);
