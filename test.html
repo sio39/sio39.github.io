@@ -3,256 +3,207 @@
 <head>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-5JCN1FB7ML');
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5JCN1FB7ML');
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>銘柄リアルタイムボード | AIスコア投資研究所</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>個別銘柄分析 | AIスコア投資研究所</title>
 
     <style>
+        /* --- 共通基本設定 --- */
         :root {
-            --primary-color: #3b82f6;
-            --primary-dark: #1d4ed8;
-            --text-main: #0f172a;
-            --text-sub: #475569;
-            --bg-color: #f1f5f9;
+            --primary-color: #4da3ff;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-sub: #64748b;
             --border-color: #e2e8f0;
-            --header-bg: rgba(255, 255, 255, 0.95);
-            --level1-bg: #f0f9ff;
-            --level1-border: #bae6fd;
-            --buy-bg: rgba(239, 68, 68, 0.06);
-            --buy-text: #dc2626;
-            --buy-border: #ef4444;
-            --gold: #b45309;
-            --bolt-color: #ef4444;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-            background-color: var(--bg-color); color: var(--text-main);
-            padding-top: 100px;
-            -webkit-font-smoothing: antialiased;
+            line-height: 1.7;
+            color: var(--text-main);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 20px 60px 20px;
+            background-color: var(--bg-color);
         }
 
+        /* --- ヘッダー (固定) --- */
         .header {
-            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-            background: var(--header-bg); backdrop-filter: blur(8px);
-            z-index: 9999; border-bottom: 1px solid var(--border-color);
-            display: flex; align-items: center;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            box-sizing: border-box;
         }
-        .header-container {
-            width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 24px;
-            display: flex; align-items: center; justify-content: space-between;
+
+        .logo {
+            font-size: 18px; font-weight: 800; color: var(--primary-color);
+            letter-spacing: -0.5px; text-decoration: none;
         }
-        .header-left { display: flex; align-items: center; gap: 40px; }
-        .logo { font-size: 22px; font-weight: 800; text-decoration: none; color: var(--text-main); letter-spacing: -0.5px; }
-        .logo span { color: var(--primary-color); }
 
-        nav { display: flex; gap: 5px; }
-        nav a { color: var(--text-sub); font-weight: 600; font-size: 15px; padding: 8px 16px; border-radius: 8px; text-decoration: none; transition: 0.2s; }
-        nav a:hover { background-color: #eff6ff; color: var(--primary-color); }
-        nav a.active { background-color: var(--primary-color); color: white; }
+        nav { display: flex; gap: 20px; }
+        nav a {
+            color: var(--text-sub); text-decoration: none;
+            font-weight: 600; font-size: 16px; transition: 0.2s;
+        }
+        nav a:hover { color: var(--primary-color); }
 
-        .header-sns { display: flex; align-items: center; gap: 10px; }
-        .sns-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; color: white !important; font-size: 18px; text-decoration: none; transition: 0.2s; }
-        .sns-icon.x { background: #14171a; }
-        .sns-icon.youtube { background: #ff0000; }
-        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
+        .twitter-button {
+            background: #000; color: white; padding: 6px 16px;
+            border-radius: 30px; font-size: 13px; font-weight: bold;
+            text-decoration: none; display: flex; align-items: center; gap: 6px;
+        }
 
-        .title-area { text-align: center; margin-bottom: 30px; width: 100%; }
-        h1 { font-size: 2.2rem; font-weight: 900; margin: 0 0 10px 0; color: var(--text-main); letter-spacing: -0.5px; }
-        #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
+        /* --- 個別銘柄分析 セクションデザイン --- */
+        h1 { font-size: 1.6rem; color: #1e293b; text-align: center; margin-bottom: 40px; }
 
-        .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin: 0 auto 30px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .color-legend { width: 95%; max-width: 1100px; margin: 0 auto 15px; display: flex; align-items: center; gap: 12px; color: var(--text-sub); font-size: 0.85rem; }
-        .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
+        .analysis-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-        .table-container { width: 95%; max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
-        thead th { position: sticky; top: 0; z-index: 10; background: #f8fafc; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
-        td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
+        .analysis-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-        tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
-        .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; border: 1px solid var(--buy-border); border-radius: 6px; padding: 3px 10px; font-size: 0.8rem; }
-        .bolt-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.10); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 2px 8px; }
-        .bolt-count-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.08); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.25); border-radius: 20px; padding: 2px 10px; }
+        .analysis-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
 
-        footer { margin-top: 80px; padding: 60px 20px; text-align: center; color: var(--text-sub); border-top: 1px solid var(--border-color); background: #fff; width: 100%; }
+        .stock-info {
+            display: flex;
+            flex-direction: column;
+        }
 
-        @media (max-width: 768px) {
-            body { padding-top: 140px; }
-            .header { height: auto; padding: 10px 0; }
-            .header-container { flex-direction: column; gap: 10px; padding: 0 15px; }
-            .header-left { flex-direction: column; gap: 5px; width: 100%; }
-            nav { width: 100%; justify-content: center; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
-            nav a { font-size: 14px; padding: 6px 12px; white-space: nowrap; }
-            h1 { font-size: 1.8rem; }
+        .stock-name {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .update-date {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        .arrow-icon {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* --- フッター --- */
+        .footer-note {
+            text-align: center; font-size: 0.8rem; color: #94a3b8;
+            margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border-color);
+        }
+
+        /* モバイル対応 */
+        @media (max-width: 600px) {
+            .header { justify-content: center; gap: 10px; padding: 10px; }
+            nav { order: 3; width: 100%; justify-content: center; gap: 12px; }
+            body { padding-top: 160px; }
+            .stock-name { font-size: 1rem; }
         }
     </style>
 </head>
+
 <body>
 
 <header class="header">
-    <div class="header-container">
-        <div class="header-left">
-            <a href="index.html" class="logo"><span>AI</span>スコア投資研究所</a>
-            <nav>
-                <a href="index.html">TOP</a>
-                <a href="scoresiki.html">スコア計算機</a>
-                <a href="tool.html">ツール</a>
-                <a href="realtime.html" class="active">リアルボード</a>
-            </nav>
-        </div>
-        <div class="header-sns">
-            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube"><i class="fa-brands fa-youtube"></i></a>
-            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note">n</a>
-        </div>
-    </div>
+    <a href="index.html" class="logo">AIスコア投資研究所</a>
+    <nav>
+        <a href="index.html">TOP</a>
+        <a href="scoresiki.html">スコア計算機</a>
+        <a href="tool.html">ツール</a>
+        <a href="realtime.html">リアルボード</a>
+        
+    </nav>
+    <a href="https://x.com/N0oZk" target="_blank" class="twitter-button">Follow𝕏</a>
 </header>
 
-<div class="title-area">
-    <h1>銘柄リアルタイムボード</h1>
-    <div id="csv-update-time">読み込み中...</div>
-    <div id="last-load" style="font-size:0.75rem; color:var(--text-sub); margin-top:5px;"></div>
-</div>
+<main>
+    <h1>個別銘柄分析</h1>
 
-<div class="info-text">
-    <div style="font-weight: 800; color: var(--primary-color); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size: 1.1rem;">
-        <i class="fa-solid fa-robot"></i> AI MIKA's Strategy (勝ちかた)
-    </div>
-    <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: var(--text-sub);">
-        <li><strong style="color: var(--text-main);">VWAPで拾う：</strong> 勢いのある株がVWAPまで押してきた反発タイミングを狙う。</li>
-        <li><strong style="color: var(--text-main);">出来高をチェック：</strong> 押し目で出来高が減っていれば、売り圧力が弱い優良な押し目！</li>
-        <li><strong style="color: var(--text-main);">判定2 (BOLT!)：</strong> <span style="color: #ef4444; font-weight: bold;">⚡️サイン</span>は「今、強い買いが入った」証拠。スコアが良い時の追撃チャンス！</li>
-        <li><strong style="color: var(--text-main);">リスク管理：</strong> VWAPを明確に割ったら、撤退して次のチャンスを待つ。</li>
-    </ul>
-</div>
-
-<div class="color-legend">
-    <span class="color-box"></span> <span>この色の背景は<strong>AIスコアクリア銘柄</strong>です。</span>
-</div>
-
-<div class="table-container">
-    <table id="csv-table">
-        <thead id="table-header"></thead>
-        <tbody id="table-body"></tbody>
-    </table>
-</div>
-
-<script>
-function formatNum(val) {
-    // もともとのコードの処理を維持（カンマ入れなど）
-    let n = parseFloat(val.replace(/,/g, ''));
-    if (isNaN(n)) return val;
-    return val.includes('.') ? val : n.toLocaleString();
-}
-
-async function loadCSV(){
-    try{
-        const response = await fetch('data_push.csv',{cache:"no-store"});
-        const data = await response.text();
-        const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="");
-        renderTable(rows);
-        document.getElementById('last-load').textContent = '取得: ' + new Date().toLocaleTimeString();
-    } catch(e) { console.error(e) }
-}
-
-function renderTable(rows) {
-    const tableHeader = document.getElementById('table-header');
-    const tableBody = document.getElementById('table-body');
-    tableHeader.innerHTML = ''; tableBody.innerHTML = '';
-
-    // ★元のコードと同じ非表示設定
-    const hideIndices = [3, 7, 8, 15];
-    let stockCount = 0;
-
-    rows.forEach((row, index) => {
-        if(row.includes("Update:")){
-            document.getElementById('csv-update-time').innerHTML = '<span style="font-size:0.85rem; color:var(--text-sub); font-weight:normal;">最終更新:</span> ' + row.split(',')[0].replace("Update:","").trim();
-            return;
-        }
-        const columns = row.split(',');
-        const tr = document.createElement('tr');
-
-        // ★元のコードと同じ区分判定（index 15）
-        if(index !== 0) {
-            if (columns[15] === "1") tr.classList.add('row-highlight');
-        }
-
-        const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
-        if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
-        else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
-        tr.appendChild(noCell);
-
-        // ★元のコードと同じ index 0〜14 までの表示ループ
-        for(let i = 0; i <= 14; i++) {
-            if(hideIndices.includes(i)) continue;
-            const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
-            let val = (columns[i] || "").replace(/"/g,'').trim();
-
-            if(index === 0) {
-                cell.textContent = val;
-            } else {
-                if (i === 4) { // 前日比率
-                    let num = parseFloat(val);
-                    cell.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
-                }
-                else if (i === 5 || i === 2) { // 現在値、出来高
-                    let num = parseFloat(val.replace(/,/g, ''));
-                    cell.textContent = isNaN(num) ? val : num.toLocaleString();
-                }
-                else if (i === 11) { // 判定
-                    cell.textContent = val;
-                    if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
-                }
-                else if (i === 13) { // ボルト判定
-                    if(val === "BOLT!") {
-                        cell.innerHTML = '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>';
-                    } else {
-                        cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
-                    }
-                }
-                else if (i === 14) { // ボルト回数
-                    let count = parseInt(val);
-                    if(!isNaN(count) && count > 0) {
-                        cell.innerHTML = '<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>' + count + '回</span>';
-                    } else {
-                        cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
-                    }
-                }
-                else if (i === 0) { // コード列（カンマ入れない）
-                    cell.textContent = val;
-                }
-                else {
-                    cell.textContent = formatNum(val);
-                }
-            }
-            tr.appendChild(cell);
-        }
-        if(index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
-    });
-}
-
-loadCSV();
-setInterval(loadCSV, 30000);
-</script>
-
-<footer>
-    © 2026 AIスコア投資研究所 / 負けてる人を救いたい💓<br>
-    <div class="footer-mura">
-        <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
-            <img src="https://b.blogmura.com/stock/88_31.gif" width="88" height="31" alt="ブログ村 株式投資ブログランキング">
+    <div class="analysis-list">
+        <a href="https://sio39.github.io/5032.html" class="analysis-item">
+            <div class="stock-info">
+                <span class="stock-name">5032 ANYCOLOR</span>
+                <span class="update-date">最終更新：26/03/11</span>
+            </div>
+            <div class="arrow-icon">▶</div>
         </a>
-    </div>
+
+        </div> 
+    
+    <div class="analysis-list">
+        <a href="https://sio39.github.io/3350.html" class="analysis-item">
+            <div class="stock-info">
+                <span class="stock-name">3350 メタプラネット</span>
+                <span class="update-date">最終更新：26/02/28</span>
+            </div>
+            <div class="arrow-icon">▶</div>
+        </a>
+
+        </div>
+
+   <div class="analysis-list">
+        <a href="https://sio39.github.io/4776.html" class="analysis-item">
+            <div class="stock-info">
+                <span class="stock-name">4776 サイボウズ</span>
+                <span class="update-date">最終更新：26/02/28</span>
+            </div>
+            <div class="arrow-icon">▶</div>
+        </a>
+
+        </div>
+
+  <!-- アフィリエイト -->
+  <div style="background:#fff7e6; border:2px solid #f59e0b; padding:20px; border-radius:12px; margin:30px 0; text-align:center;">
+    <p style="font-weight:bold;">📊 この銘柄を取引するなら</p>
+    <a href="https://account.rakuten-sec.co.jp/ApplicationTop/introduceFriend.do?introClientCd=u6mgoVV5MGk%3D&hash=0e1ba608f16b7ca713deb76f462d6924&introBranchCd=TiswAUMUGvU%3D&routeKey=SEC01001&urlSendDt=7zKD03nuwNQH9UBAaAOoYA%3D%3D&sendSnsKbn=1" rel="nofollow sponsored noopener" target="_blank"
+       style="background:#bf0000; color:#fff; padding:12px 28px; border-radius:8px; text-decoration:none; font-weight:bold;">
+      楽天証券で口座開設（紹介特典あり）
+    </a>
+  </div>        
+
+</main>
+
+<footer class="footer-note">
+    &copy; 2026 AIスコア投資研究所
+    <p>↓応援クリックお願いします</p>
+
+<a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
+<img src="https://b.blogmura.com/stock/88_31.gif">
+</a>
 </footer>
+
 </body>
 </html>
