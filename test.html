@@ -1,29 +1,255 @@
-<!-- 掲示板ヘッダー -->
-<div style="background:#f8fafc; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid #e5e7eb;">
-  <h2 style="margin:0 0 8px 0;">💬 投資掲示板</h2>
-  
-  <p style="margin:5px 0; font-weight:bold; color:#dc2626;">
-    🔥注目銘柄・買いシグナルの情報共有歓迎！
-  </p>
-  
-  <p style="margin:5px 0;">
-    気軽にコメントしてください。短文・初心者の方も大歓迎です。
-  </p>
-  
-  <p style="margin:5px 0; color:#555;">
-    「この銘柄どう思う？」「🔥買い出た」など何でもOKです。
-  </p>
-</div>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>投資掲示板 BBS | AIスコア投資研究所</title>
+<meta name="description" content="AIスコア投資研究所の投資掲示板。注目銘柄・買いシグナルの情報共有、質問・雑談など気軽にご参加ください。">
 
-<!-- Disqus掲示板 -->
-<div id="disqus_thread"></div>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-5JCN1FB7ML');
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+:root {
+  --primary-color: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --text-main: #0f172a;
+  --text-sub: #475569;
+  --bg-color: #f1f5f9;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --transition: all 0.2s ease-in-out;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  line-height: 1.8;
+  color: var(--text-main);
+  background-color: var(--bg-color);
+  -webkit-font-smoothing: antialiased;
+  padding-top: 80px;
+}
+
+a { text-decoration: none; color: inherit; transition: var(--transition); }
+
+/* --- ヘッダー --- */
+.header {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  background: var(--header-bg);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.header-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+}
+.logo span { color: var(--primary-color); }
+
+nav { display: flex; gap: 5px; }
+
+nav a {
+  color: var(--text-sub);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+nav a:hover {
+  background-color: #eff6ff;
+  color: var(--primary-color);
+}
+nav a.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.header-sns { display: flex; align-items: center; gap: 10px; }
+
+.sns-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  color: white;
+  font-size: 18px;
+}
+.sns-icon.x { background: #14171a; }
+.sns-icon.youtube { background: #ff0000; }
+.sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
+.sns-icon:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); opacity: 0.9; }
+
+/* --- メイン --- */
+main {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 40px 20px 80px 20px;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.page-subtitle {
+  color: var(--text-sub);
+  font-size: 1rem;
+  margin-bottom: 32px;
+}
+
+/* BBSヘッダーカード */
+.bbs-intro {
+  background: var(--card-bg);
+  padding: 24px 28px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 28px;
+}
+.bbs-intro h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bbs-intro p {
+  color: var(--text-sub);
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+.bbs-intro .highlight {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+/* Disqusラッパー */
+.disqus-wrap {
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  padding: 28px;
+}
+
+/* --- フッター --- */
+.footer {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-sub);
+  font-size: 0.95rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--card-bg);
+  margin-top: 80px;
+}
+.footer-copy { font-weight: 600; margin-bottom: 20px; }
+
+/* --- スマホ --- */
+@media (max-width: 768px) {
+  body { padding-top: 130px; }
+  .header { height: auto; padding: 10px 0; }
+  .header-container { flex-direction: column; gap: 10px; padding: 0 15px; }
+  .header-left { flex-direction: column; gap: 5px; width: 100%; }
+  .logo { font-size: 19px; }
+  nav {
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    -webkit-overflow-scrolling: touch;
+  }
+  nav a { font-size: 14px; padding: 6px 12px; white-space: nowrap; }
+  .header-sns { gap: 8px; }
+  .sns-icon { width: 32px; height: 32px; font-size: 16px; }
+  .page-title { font-size: 1.6rem; }
+  .bbs-intro { padding: 20px; }
+  .disqus-wrap { padding: 16px; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="header-container">
+    <div class="header-left">
+      <a href="index.html" class="logo"><span>AI</span>スコア投資研究所</a>
+      <nav>
+        <a href="index.html">TOP</a>
+        <a href="BBS.html" class="active">BBS</a>
+        <a href="tool.html">ツール</a>
+        <a href="realtime.html">リアルボード</a>
+      </nav>
+    </div>
+    <div class="header-sns">
+      <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x" title="𝕏 (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+      <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note" title="note">n</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page-title">💬 投資掲示板</h1>
+  <p class="page-subtitle">注目銘柄・買いシグナルの情報共有、質問・雑談など気軽にどうぞ</p>
+
+  <div class="bbs-intro">
+    <h2>📢 ご利用案内</h2>
+    <p class="highlight">🔥 注目銘柄・買いシグナルの情報共有歓迎！</p>
+    <p>気軽にコメントしてください。短文・初心者の方も大歓迎です。</p>
+    <p>「この銘柄どう思う？」「🔥買い出た」など何でもOKです。</p>
+  </div>
+
+  <div class="disqus-wrap">
+    <div id="disqus_thread"></div>
+  </div>
+</main>
 
 <script>
 var disqus_config = function () {
-  this.page.url = "https://あなたのサイトURL"; // ←必ず自分のURLに変更
-  this.page.identifier = "main-board"; // ←全ページ共通掲示板
+  this.page.url = "https://sio39.github.io/BBS.html";
+  this.page.identifier = "main-board";
 };
-
 (function() {
   var d = document, s = d.createElement('script');
   s.src = 'https://aisukoatou-zi-yan-jiu-suo.disqus.com/embed.js';
@@ -31,7 +257,16 @@ var disqus_config = function () {
   (d.head || d.body).appendChild(s);
 })();
 </script>
+<noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
 
-<noscript>
-Please enable JavaScript to view the comments powered by Disqus.
-</noscript>
+<footer class="footer">
+  <div class="footer-copy">© 2026 AIスコア投資研究所/負けてる人を救いたい💓</div>
+  <div class="footer-mura">
+    <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
+      <img src="https://b.blogmura.com/stock/88_31.gif" width="88" height="31" alt="ブログ村 株式投資ブログランキング">
+    </a>
+  </div>
+</footer>
+
+</body>
+</html>
