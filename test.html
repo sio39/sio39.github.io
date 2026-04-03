@@ -233,6 +233,42 @@
         .az-bd-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
         .az-bd-score    { font-size: 0.76rem; font-family: monospace; font-weight: 700; color: var(--text-main); width: 46px; text-align: right; flex-shrink: 0; }
 
+        /* ===== SNSシェアボタン ===== */
+        .az-share-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .az-share-label {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+        .az-share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.18s;
+            cursor: pointer;
+            border: none;
+        }
+        .az-share-btn.x-btn {
+            background: #14171a;
+            color: #fff;
+        }
+        .az-share-btn.x-btn:hover {
+            background: #272c30;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
         /* ===== AI MIKA 厳選銘柄セクション ===== */
         .mika-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
         .mika-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
@@ -449,6 +485,14 @@
         <div class="az-breakdown">
             <div class="az-breakdown-title">採点内訳</div>
             <div id="az-r-breakdown"></div>
+        </div>
+
+        <!-- SNSシェア -->
+        <div class="az-share-row">
+            <span class="az-share-label"><i class="fa-solid fa-share-nodes"></i> この結果をシェア</span>
+            <a id="az-share-x" class="az-share-btn x-btn" href="#" target="_blank" rel="noopener">
+                <i class="fa-brands fa-x-twitter"></i> Xに投稿する
+            </a>
         </div>
 
     </div>
@@ -728,6 +772,23 @@ function renderAnalyze(s) {
     setTimeout(() => {
         document.querySelectorAll('.az-bd-bar-fill').forEach(el => { el.style.width = el.dataset.w; });
     }, 100);
+
+    // Xシェアボタンのリンクを生成
+    const scoreLabel = total >= 75 ? '強い買い候補🟢' : total >= 50 ? '注目銘柄🔵' : total >= 25 ? '様子見🟡' : '見送り推奨🔴';
+    const rvolDisp   = rvolVal.toFixed(2);
+    const vwapDisp   = (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%';
+    const boltDisp   = s.boltCount > 0 ? `⚡BOLT ${s.boltCount}回` : '';
+    const tweetText  = [
+        `【AIスコア分析】 $${s.code} ${s.name}`,
+        `総合スコア: ${total}pt ／ ${scoreLabel}`,
+        `RVOL: ${rvolDisp}x　VWAP乖離: ${vwapDisp}　${boltDisp}`,
+        ``,
+        `📊 AIスコア投資研究所 リアルタイムボード`,
+        `https://sio39.github.io/realtime.html`,
+        `#デイトレ #株 #AIスコア`
+    ].join('\n');
+    const shareUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweetText);
+    document.getElementById('az-share-x').href = shareUrl;
 
     document.getElementById('az-result').classList.add('show');
 }
