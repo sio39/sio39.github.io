@@ -31,6 +31,11 @@
             --buy-border: #ef4444;
             --gold: #b45309;
             --bolt-color: #ef4444;
+            /* モードカラー */
+            --day-color: #ef4444;
+            --day-dark: #b91c1c;
+            --swing-color: #8b5cf6;
+            --swing-dark: #6d28d9;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,6 +47,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* ===== ヘッダー ===== */
         .header {
             position: fixed; top: 0; left: 0; width: 100%; height: 70px;
             background: var(--header-bg); backdrop-filter: blur(8px);
@@ -67,11 +73,92 @@
         .sns-icon.youtube { background: #ff0000; }
         .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
 
-        .title-area { text-align: center; margin-bottom: 30px; width: 100%; }
+        /* ===== タイトルエリア ===== */
+        .title-area { text-align: center; margin-bottom: 20px; width: 100%; }
         h1 { font-size: 2.2rem; font-weight: 900; margin: 0 0 10px 0; color: var(--text-main); letter-spacing: -0.5px; }
         #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
 
-        .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin: 0 auto 30px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        /* ===== モード切替スイッチ ===== */
+        .mode-switch-area {
+            width: 95%; max-width: 1100px; margin: 0 auto 24px;
+            display: flex; align-items: center; justify-content: center; gap: 16px;
+        }
+        .mode-switch-wrap {
+            display: flex; align-items: center; background: #fff;
+            border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 6px; gap: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .mode-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 24px; border-radius: 12px; border: none;
+            font-size: 0.95rem; font-weight: 800; cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+            letter-spacing: 0.5px;
+            background: transparent; color: var(--text-sub);
+        }
+        .mode-btn:hover { background: #f8fafc; }
+        .mode-btn.active-day {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(239,68,68,0.35);
+            transform: scale(1.03);
+        }
+        .mode-btn.active-swing {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(139,92,246,0.35);
+            transform: scale(1.03);
+        }
+        .mode-desc {
+            font-size: 0.78rem; color: var(--text-sub); text-align: center;
+            padding: 6px 14px; background: #f8fafc; border-radius: 10px;
+            border: 1px solid var(--border-color); line-height: 1.5;
+            max-width: 340px;
+        }
+        .mode-desc strong { color: var(--text-main); }
+
+        /* ===== スコア説明バッジ ===== */
+        .score-formula-bar {
+            width: 95%; max-width: 1100px; margin: 0 auto 20px;
+            background: #fff; border: 1px solid var(--border-color);
+            border-radius: 14px; padding: 14px 20px;
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+        }
+        .score-formula-label {
+            font-size: 0.72rem; font-weight: 800; letter-spacing: 2px;
+            color: var(--text-sub); white-space: nowrap;
+        }
+        .score-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.78rem; font-weight: 700; padding: 4px 12px;
+            border-radius: 20px; white-space: nowrap;
+        }
+        .sp-a3    { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .sp-rvol  { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .sp-bolt  { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+        .sp-gap   { background: #f3e8ff; color: #6b21a8; border: 1px solid #ddd6fe; }
+        .sp-price { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .sp-plus  { color: var(--text-sub); font-weight: 900; font-size: 1rem; }
+
+        /* ===== AIスコアランク凡例 ===== */
+        .rank-legend {
+            width: 95%; max-width: 1100px; margin: 0 auto 16px;
+            display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+        }
+        .rank-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.78rem; font-weight: 700; padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .rc-s { background: linear-gradient(135deg,#fef3c7,#fde68a); color: #78350f; border: 1px solid #fde68a; }
+        .rc-a { background: linear-gradient(135deg,#eff6ff,#bfdbfe); color: #1e3a8a; border: 1px solid #bfdbfe; }
+        .rc-b { background: linear-gradient(135deg,#f0fdf4,#bbf7d0); color: #14532d; border: 1px solid #bbf7d0; }
+        .rc-c { background: #f8fafc; color: var(--text-sub); border: 1px solid var(--border-color); }
+
+        .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin: 0 auto 24px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
 
         .color-legend {
             width: 95%; max-width: 1100px; margin: 0 auto 15px;
@@ -81,12 +168,78 @@
         .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
         .full-width { width: 100%; margin-top: 5px; }
 
-        /* ===== 個別銘柄分析セクション ===== */
-        .analyze-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
-
-        .analyze-section-header {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+        /* ===== AI MIKA 厳選銘柄 ===== */
+        .mika-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
+        .mika-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .mika-section-title {
+            font-size: 1.05rem; font-weight: 900; color: var(--text-main);
+            letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
         }
+        .mika-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
+            color: #fff; font-size: 0.75rem; font-weight: 800;
+            padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
+        }
+        .mika-picks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        @media (max-width: 768px) { .mika-picks-grid { grid-template-columns: 1fr; } }
+
+        .mika-pick-card {
+            background: #fff; border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 18px 20px; box-shadow: 0 4px 10px -2px rgba(0,0,0,0.08);
+            position: relative; overflow: hidden;
+            transition: box-shadow 0.2s, transform 0.2s;
+            animation: mikaSlideIn 0.4s ease forwards; opacity: 0; transform: translateY(10px);
+        }
+        .mika-pick-card:nth-child(1) { animation-delay: 0.05s; }
+        .mika-pick-card:nth-child(2) { animation-delay: 0.15s; }
+        .mika-pick-card:nth-child(3) { animation-delay: 0.25s; }
+        @keyframes mikaSlideIn { to { opacity: 1; transform: translateY(0); } }
+        .mika-pick-card:hover { box-shadow: 0 8px 20px -4px rgba(59,130,246,0.18); transform: translateY(-2px); }
+        .mika-pick-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+        .mika-pick-card.rank-1::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .mika-pick-card.rank-2::before { background: linear-gradient(90deg, #9ca3af, #d1d5db); }
+        .mika-pick-card.rank-3::before { background: linear-gradient(90deg, #92400e, #b45309); }
+
+        .mika-rank-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .mika-pick-card.rank-1 .mika-rank-label { color: #b45309; }
+        .mika-pick-card.rank-2 .mika-rank-label { color: #6b7280; }
+        .mika-pick-card.rank-3 .mika-rank-label { color: #78350f; }
+
+        .mika-code { font-size: 1.5rem; font-weight: 900; color: var(--primary-color); letter-spacing: 1px; line-height: 1; margin-bottom: 2px; }
+        .mika-name { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mika-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+        .mika-tag  { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+        .mika-tag-ai   { background: rgba(59,130,246,0.1); border: 1px solid #bfdbfe; color: #1d4ed8; }
+        .mika-tag-bolt { background: rgba(239,68,68,0.08); border: 1px solid #fecaca; color: #dc2626; }
+        .mika-tag-buy  { background: rgba(16,185,129,0.1); border: 1px solid #a7f3d0; color: #065f46; }
+
+        /* ミカカードのAIスコア表示 */
+        .mika-ai-score {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #f8fafc; border-radius: 10px; padding: 8px 12px; margin-bottom: 10px;
+        }
+        .mika-ai-score-label { font-size: 0.65rem; color: var(--text-sub); font-weight: 700; letter-spacing: 1px; }
+        .mika-ai-score-val   { font-size: 1.2rem; font-weight: 900; font-family: monospace; }
+        .mika-ai-score-bar-wrap { width: 100%; background: #e2e8f0; border-radius: 99px; height: 4px; margin-top: 4px; overflow: hidden; }
+        .mika-ai-score-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+
+        .mika-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .mika-metric  { background: #f8fafc; border-radius: 8px; padding: 7px 10px; }
+        .mika-metric-key { font-size: 0.65rem; color: var(--text-sub); letter-spacing: 1px; margin-bottom: 2px; font-weight: 600; }
+        .mika-metric-val { font-size: 1rem; font-weight: 800; color: var(--text-main); font-family: monospace; }
+        .mika-metric-val.up   { color: #059669; }
+        .mika-metric-val.dn   { color: #dc2626; }
+        .mika-metric-val.cyan { color: var(--primary-color); }
+
+        .mika-empty { grid-column: 1 / -1; background: #fff; border: 1px dashed var(--border-color); border-radius: 16px; padding: 32px; text-align: center; color: var(--text-sub); }
+        .mika-empty-icon { font-size: 2rem; margin-bottom: 10px; }
+        .mika-empty-text { font-size: 0.95rem; font-weight: 700; color: var(--text-sub); }
+        .mika-empty-sub  { font-size: 0.8rem; color: #94a3b8; margin-top: 6px; }
+
+        /* ===== 個別銘柄分析 ===== */
+        .analyze-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
+        .analyze-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
         .analyze-section-title {
             font-size: 1.05rem; font-weight: 900; color: var(--text-main);
             display: flex; align-items: center; gap: 8px;
@@ -97,7 +250,6 @@
             padding: 2px 10px; border-radius: 20px; border: 1px solid #fde68a; letter-spacing: 0.5px;
         }
 
-        /* 注意書きボックス */
         .analyze-notice {
             background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
             padding: 14px 18px; margin-bottom: 14px;
@@ -127,10 +279,7 @@
 
         .analyze-result { margin-top: 14px; display: none; animation: analyzeIn 0.35s ease; }
         .analyze-result.show { display: block; }
-        @keyframes analyzeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes analyzeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         .analyze-error {
             background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px;
@@ -153,6 +302,8 @@
         .az-tag-buy  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
         .az-tag-bolt { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
         .az-tag-none { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--text-sub); }
+        .az-tag-mode-day   { background: #fff1f2; border: 1px solid #fecdd3; color: #b91c1c; font-size: 0.65rem; }
+        .az-tag-mode-swing { background: #f3e8ff; border: 1px solid #ddd6fe; color: #6d28d9; font-size: 0.65rem; }
 
         .az-hero-right { text-align: right; }
         .az-price  { font-size: 2rem; font-weight: 900; font-family: monospace; color: var(--text-main); }
@@ -169,7 +320,15 @@
             background: #fff; border: 1px solid var(--border-color); border-radius: 16px;
             padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .az-score-label { font-size: 0.7rem; color: var(--text-sub); letter-spacing: 2px; font-weight: 600; margin-bottom: 10px; }
+        .az-score-label { font-size: 0.7rem; color: var(--text-sub); letter-spacing: 2px; font-weight: 600; margin-bottom: 4px; }
+        .az-score-mode-tag {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 0.65rem; font-weight: 800; padding: 2px 8px;
+            border-radius: 10px; margin-bottom: 10px;
+        }
+        .smt-day   { background: #fff1f2; color: #b91c1c; border: 1px solid #fecdd3; }
+        .smt-swing { background: #f3e8ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+
         .az-score-num   { font-size: 3rem; font-weight: 900; font-family: monospace; line-height: 1; margin-bottom: 10px; }
         .az-score-num.s-great { color: #059669; }
         .az-score-num.s-good  { color: var(--primary-color); }
@@ -233,101 +392,6 @@
         .az-bd-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
         .az-bd-score    { font-size: 0.76rem; font-family: monospace; font-weight: 700; color: var(--text-main); width: 46px; text-align: right; flex-shrink: 0; }
 
-        /* ===== SNSシェアボタン ===== */
-        .az-share-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        .az-share-label {
-            font-size: 0.75rem;
-            color: var(--text-sub);
-            font-weight: 600;
-        }
-        .az-share-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            padding: 9px 18px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-decoration: none;
-            transition: all 0.18s;
-            cursor: pointer;
-            border: none;
-        }
-        .az-share-btn.x-btn {
-            background: #14171a;
-            color: #fff;
-        }
-        .az-share-btn.x-btn:hover {
-            background: #272c30;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        /* ===== AI MIKA 厳選銘柄セクション ===== */
-        .mika-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
-        .mika-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .mika-section-title {
-            font-size: 1.05rem; font-weight: 900; color: var(--text-main);
-            letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
-        }
-        .mika-badge {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
-            color: #fff; font-size: 0.75rem; font-weight: 800;
-            padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
-        }
-        .mika-picks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-        @media (max-width: 768px) { .mika-picks-grid { grid-template-columns: 1fr; } }
-
-        .mika-pick-card {
-            background: #fff; border: 1px solid var(--border-color); border-radius: 16px;
-            padding: 18px 20px; box-shadow: 0 4px 10px -2px rgba(0,0,0,0.08);
-            position: relative; overflow: hidden;
-            transition: box-shadow 0.2s, transform 0.2s;
-            animation: mikaSlideIn 0.4s ease forwards; opacity: 0; transform: translateY(10px);
-        }
-        .mika-pick-card:nth-child(1) { animation-delay: 0.05s; }
-        .mika-pick-card:nth-child(2) { animation-delay: 0.15s; }
-        .mika-pick-card:nth-child(3) { animation-delay: 0.25s; }
-        @keyframes mikaSlideIn { to { opacity: 1; transform: translateY(0); } }
-        .mika-pick-card:hover { box-shadow: 0 8px 20px -4px rgba(59,130,246,0.18); transform: translateY(-2px); }
-        .mika-pick-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
-        .mika-pick-card.rank-1::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .mika-pick-card.rank-2::before { background: linear-gradient(90deg, #9ca3af, #d1d5db); }
-        .mika-pick-card.rank-3::before { background: linear-gradient(90deg, #92400e, #b45309); }
-
-        .mika-rank-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-        .mika-pick-card.rank-1 .mika-rank-label { color: #b45309; }
-        .mika-pick-card.rank-2 .mika-rank-label { color: #6b7280; }
-        .mika-pick-card.rank-3 .mika-rank-label { color: #78350f; }
-
-        .mika-code { font-size: 1.5rem; font-weight: 900; color: var(--primary-color); letter-spacing: 1px; line-height: 1; margin-bottom: 2px; }
-        .mika-name { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .mika-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
-        .mika-tag  { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px; }
-        .mika-tag-ai   { background: rgba(59,130,246,0.1); border: 1px solid #bfdbfe; color: #1d4ed8; }
-        .mika-tag-bolt { background: rgba(239,68,68,0.08); border: 1px solid #fecaca; color: #dc2626; }
-        .mika-tag-buy  { background: rgba(16,185,129,0.1); border: 1px solid #a7f3d0; color: #065f46; }
-
-        .mika-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-        .mika-metric  { background: #f8fafc; border-radius: 8px; padding: 7px 10px; }
-        .mika-metric-key { font-size: 0.65rem; color: var(--text-sub); letter-spacing: 1px; margin-bottom: 2px; font-weight: 600; }
-        .mika-metric-val { font-size: 1rem; font-weight: 800; color: var(--text-main); font-family: monospace; }
-        .mika-metric-val.up   { color: #059669; }
-        .mika-metric-val.dn   { color: #dc2626; }
-        .mika-metric-val.cyan { color: var(--primary-color); }
-
-        .mika-empty { grid-column: 1 / -1; background: #fff; border: 1px dashed var(--border-color); border-radius: 16px; padding: 32px; text-align: center; color: var(--text-sub); }
-        .mika-empty-icon { font-size: 2rem; margin-bottom: 10px; }
-        .mika-empty-text { font-size: 0.95rem; font-weight: 700; color: var(--text-sub); }
-        .mika-empty-sub  { font-size: 0.8rem; color: #94a3b8; margin-top: 6px; }
-
         /* ===== テーブル ===== */
         .table-container { width: 95%; max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
@@ -338,6 +402,17 @@
         .bolt-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.10); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 2px 8px; }
         .bolt-count-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.08); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.25); border-radius: 20px; padding: 2px 10px; }
 
+        /* AIスコアセル */
+        .ai-score-cell { display: inline-flex; align-items: center; gap: 5px; }
+        .ai-score-badge {
+            font-size: 0.82rem; font-weight: 900; font-family: monospace;
+            padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+        }
+        .asb-s { background: linear-gradient(135deg,#fef3c7,#fde68a); color: #78350f; border: 1px solid #fde68a; }
+        .asb-a { background: linear-gradient(135deg,#eff6ff,#bfdbfe); color: #1e3a8a; border: 1px solid #bfdbfe; }
+        .asb-b { background: linear-gradient(135deg,#f0fdf4,#bbf7d0); color: #14532d; border: 1px solid #bbf7d0; }
+        .asb-c { background: #f8fafc; color: var(--text-sub); border: 1px solid var(--border-color); font-size: 0.78rem; }
+
         @media (max-width: 768px) {
             body { padding-top: 140px; }
             .header { height: auto; padding: 10px 0; }
@@ -346,6 +421,7 @@
             nav { width: 100%; justify-content: center; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
             nav a { font-size: 14px; padding: 6px 12px; white-space: nowrap; }
             h1 { font-size: 1.8rem; }
+            .mode-switch-area { flex-direction: column; }
         }
     </style>
 </head>
@@ -374,6 +450,36 @@
     <h1>銘柄リアルタイムボード</h1>
     <div id="csv-update-time">読み込み中...</div>
     <div id="last-load" style="font-size:0.75rem; color:var(--text-sub); margin-top:5px;"></div>
+</div>
+
+<!-- ===== モード切替 ===== -->
+<div class="mode-switch-area">
+    <div class="mode-switch-wrap">
+        <button class="mode-btn active-day" id="btn-day" onclick="setMode('day')">
+            <i class="fa-solid fa-bolt"></i> デイトレ
+        </button>
+        <button class="mode-btn" id="btn-swing" onclick="setMode('swing')">
+            <i class="fa-solid fa-chart-line"></i> スイング
+        </button>
+    </div>
+    <div class="mode-desc" id="mode-desc">
+        <strong>デイトレモード：</strong>補正A3(45%) ＋ 補正RVOL(35%) ＋ BOLT回数(20%)
+    </div>
+</div>
+
+<!-- ===== スコア計算式バー ===== -->
+<div class="score-formula-bar" id="formula-bar">
+    <div class="score-formula-label">AIスコア計算式</div>
+    <div id="formula-pills"></div>
+</div>
+
+<!-- ===== ランク凡例 ===== -->
+<div class="rank-legend">
+    <span style="font-size:0.75rem; color:var(--text-sub); font-weight:700;">スコアランク：</span>
+    <span class="rank-chip rc-s">🏆 S級 80〜100点</span>
+    <span class="rank-chip rc-a">⭐ A級 60〜79点</span>
+    <span class="rank-chip rc-b">✅ B級 40〜59点</span>
+    <span class="rank-chip rc-c">C級 40点未満</span>
 </div>
 
 <div class="info-text">
@@ -415,7 +521,6 @@
         <span class="beta-badge">🧪 試験運転中</span>
     </div>
 
-    <!-- 注意書き -->
     <div class="analyze-notice">
         <strong><i class="fa-solid fa-triangle-exclamation"></i> ご利用前にお読みください</strong>
         <ul>
@@ -426,15 +531,8 @@
     </div>
 
     <div class="analyze-input-row">
-        <input
-            type="text"
-            id="az-code-input"
-            class="analyze-code-input"
-            placeholder="7203"
-            maxlength="5"
-            inputmode="numeric"
-            autocomplete="off"
-        >
+        <input type="text" id="az-code-input" class="analyze-code-input"
+            placeholder="7203" maxlength="5" inputmode="numeric" autocomplete="off">
         <button class="analyze-btn" onclick="doAnalyze()">
             <i class="fa-solid fa-bolt"></i> 分析する
         </button>
@@ -457,7 +555,8 @@
 
         <div class="az-body-grid">
             <div class="az-score-card">
-                <div class="az-score-label">総合スコア（100点満点）</div>
+                <div class="az-score-label">AIスコア（100点満点）</div>
+                <div class="az-score-mode-tag" id="az-r-mode-tag"></div>
                 <div class="az-score-num" id="az-r-score"></div>
                 <div class="az-bar-wrap"><div class="az-bar-fill" id="az-r-bar"></div></div>
                 <div class="az-verdict"   id="az-r-verdict"></div>
@@ -486,15 +585,6 @@
             <div class="az-breakdown-title">採点内訳</div>
             <div id="az-r-breakdown"></div>
         </div>
-
-        <!-- SNSシェア -->
-        <div class="az-share-row">
-            <span class="az-share-label"><i class="fa-solid fa-share-nodes"></i> この結果をシェア</span>
-            <a id="az-share-x" class="az-share-btn x-btn" href="#" target="_blank" rel="noopener">
-                <i class="fa-brands fa-x-twitter"></i> Xに投稿する
-            </a>
-        </div>
-
     </div>
 </div>
 
@@ -511,56 +601,155 @@
 </div>
 
 <script>
-function formatNum(val) {
-    let n = parseFloat(val.replace(/,/g, ''));
-    if (isNaN(n)) return val;
-    return val.includes('.') ? val : n.toLocaleString();
-}
+// ===== モード管理 =====
+let currentMode = 'day'; // 'day' or 'swing'
 
-function getMikaPicks(stocks) {
-    const isBuy  = s => s.sign === '🔥買い' || s.sign === '買いサイン' || s.sign === '🔥';
-    const rvolOk = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol) >= 1.5;
-    const picks  = stocks.filter(s => isBuy(s) && rvolOk(s));
-    picks.sort((a, b) => b.corrA3 - a.corrA3);
-    return picks.slice(0, 3);
-}
-
-const RANK_LABELS = ['🥇 BEST', '🥈 2ND', '🥉 3RD'];
-
-function renderMikaPicks(picks) {
-    const container = document.getElementById('mika-picks');
-    if (!picks || picks.length === 0) {
-        container.innerHTML = `
-            <div class="mika-empty">
-                <div class="mika-empty-icon">📭</div>
-                <div class="mika-empty-text">現在、厳選銘柄はありません</div>
-                <div class="mika-empty-sub">条件：補正RVOL≥1.5 ／ 買い判定あり</div>
-            </div>`;
-        return;
+const MODE_CONFIG = {
+    day: {
+        label: 'デイトレ',
+        desc: '<strong>デイトレモード：</strong>補正A3(45%) ＋ 補正RVOL(35%) ＋ BOLT回数(20%)',
+        pills: [
+            { cls: 'sp-a3',   text: '補正A3 × 45%' },
+            { cls: 'sp-plus', text: '+' },
+            { cls: 'sp-rvol', text: '補正RVOL × 35%' },
+            { cls: 'sp-plus', text: '+' },
+            { cls: 'sp-bolt', text: 'BOLT回数 × 20%' },
+        ],
+        tagCls: 'smt-day', tagIcon: '⚡', tagText: 'デイトレモード',
+    },
+    swing: {
+        label: 'スイング',
+        desc: '<strong>スイングモード：</strong>補正A3(30%) ＋ ギャップ比/A5(35%) ＋ 補正RVOL(20%) ＋ 前日比率(15%)',
+        pills: [
+            { cls: 'sp-a3',   text: '補正A3 × 30%' },
+            { cls: 'sp-plus', text: '+' },
+            { cls: 'sp-gap',  text: 'ギャップ比(A5) × 35%' },
+            { cls: 'sp-plus', text: '+' },
+            { cls: 'sp-rvol', text: '補正RVOL × 20%' },
+            { cls: 'sp-plus', text: '+' },
+            { cls: 'sp-price',text: '前日比率 × 15%' },
+        ],
+        tagCls: 'smt-swing', tagIcon: '📈', tagText: 'スイングモード',
     }
-    container.innerHTML = picks.map((s, i) => {
-        const rvolVal   = s.corrRvol > 0 ? s.corrRvol : s.rvol;
-        const isAi      = s.kubun === '区分１' || s.kubun === '区分1';
-        const tags      = [];
-        if (isAi) tags.push('<span class="mika-tag mika-tag-ai">★AIクリア</span>');
-        tags.push('<span class="mika-tag mika-tag-buy">🔥買い判定</span>');
-        if (s.bolt === 'BOLT!') tags.push(`<span class="mika-tag mika-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
-        const vwapClass   = s.vwapDiff >= 0 ? 'up' : 'dn';
-        const changeClass = s.changePct >= 0 ? 'up' : 'dn';
-        return `
-        <div class="mika-pick-card rank-${i+1}">
-            <div class="mika-rank-label">${RANK_LABELS[i]}</div>
-            <div class="mika-code">${s.code}</div>
-            <div class="mika-name">${s.name}</div>
-            <div class="mika-tags">${tags.join('')}</div>
-            <div class="mika-metrics">
-                <div class="mika-metric"><div class="mika-metric-key">補正A3</div><div class="mika-metric-val cyan">${s.corrA3 || '−'}</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">補正RVOL</div><div class="mika-metric-val up">${rvolVal.toFixed(2)}</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">VWAP乖離</div><div class="mika-metric-val ${vwapClass}">${s.vwapDiff >= 0 ? '+' : ''}${s.vwapDiff}%</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">変化率</div><div class="mika-metric-val ${changeClass}">${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%</div></div>
-            </div>
-        </div>`;
-    }).join('');
+};
+
+function setMode(mode) {
+    currentMode = mode;
+    const cfg = MODE_CONFIG[mode];
+
+    // ボタンの見た目
+    document.getElementById('btn-day').className   = 'mode-btn' + (mode === 'day'   ? ' active-day'   : '');
+    document.getElementById('btn-swing').className = 'mode-btn' + (mode === 'swing' ? ' active-swing' : '');
+
+    // 説明文
+    document.getElementById('mode-desc').innerHTML = cfg.desc;
+
+    // 計算式ピル
+    document.getElementById('formula-pills').innerHTML = cfg.pills.map(p =>
+        p.cls === 'sp-plus'
+            ? `<span class="sp-plus">${p.text}</span>`
+            : `<span class="score-pill ${p.cls}">${p.text}</span>`
+    ).join(' ');
+
+    // テーブル・MIKAカードの再描画
+    if (latestStocks.length > 0) {
+        renderMikaPicks(getMikaPicks(latestStocks));
+        renderTableBody(latestStocks);
+    }
+}
+
+// ===== AIスコア計算（デイトレ） =====
+function calcScoreDay(s) {
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const items   = [];
+
+    // 補正A3スコア → 0〜45点
+    let a3Pt = 0;
+    if      (s.corrA3 >= 500) a3Pt = 45;
+    else if (s.corrA3 >= 200) a3Pt = 36;
+    else if (s.corrA3 >= 100) a3Pt = 27;
+    else if (s.corrA3 >= 50)  a3Pt = 18;
+    else if (s.corrA3 >= 10)  a3Pt = 9;
+    items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 45, color: '#f59e0b' });
+
+    // 補正RVOL → 0〜35点
+    let rvolPt = 0;
+    if      (rvolVal >= 5.0) rvolPt = 35;
+    else if (rvolVal >= 3.0) rvolPt = 28;
+    else if (rvolVal >= 2.0) rvolPt = 21;
+    else if (rvolVal >= 1.5) rvolPt = 14;
+    else if (rvolVal >= 1.0) rvolPt = 7;
+    items.push({ label: '補正RVOL（出来高爆発力）', pt: rvolPt, max: 35, color: '#3b82f6' });
+
+    // BOLT回数 → 0〜20点
+    let boltPt = 0;
+    const bc = s.boltCount;
+    if      (bc >= 4) boltPt = 20;
+    else if (bc === 3) boltPt = 15;
+    else if (bc === 2) boltPt = 10;
+    else if (bc === 1) boltPt = 6;
+    items.push({ label: 'BOLT回数（継続的な勢い）', pt: boltPt, max: 20, color: '#ef4444' });
+
+    const total = Math.min(items.reduce((a, b) => a + b.pt, 0), 100);
+    return { items, total };
+}
+
+// ===== AIスコア計算（スイング） =====
+function calcScoreSwing(s) {
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const items   = [];
+
+    // 補正A3スコア → 0〜30点
+    let a3Pt = 0;
+    if      (s.corrA3 >= 500) a3Pt = 30;
+    else if (s.corrA3 >= 200) a3Pt = 24;
+    else if (s.corrA3 >= 100) a3Pt = 18;
+    else if (s.corrA3 >= 50)  a3Pt = 12;
+    else if (s.corrA3 >= 10)  a3Pt = 6;
+    items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 30, color: '#f59e0b' });
+
+    // ギャップ比（A5/A3）→ 0〜35点
+    let gapPt = 0;
+    const gr = s.gapRatio;
+    if      (gr >= 2.0) gapPt = 35;
+    else if (gr >= 1.5) gapPt = 28;
+    else if (gr >= 1.2) gapPt = 21;
+    else if (gr >= 1.0) gapPt = 14;
+    else if (gr > 0)    gapPt = 5;
+    items.push({ label: 'ギャップ比／A5（将来性）', pt: gapPt, max: 35, color: '#8b5cf6' });
+
+    // 補正RVOL → 0〜20点
+    let rvolPt = 0;
+    if      (rvolVal >= 5.0) rvolPt = 20;
+    else if (rvolVal >= 3.0) rvolPt = 16;
+    else if (rvolVal >= 2.0) rvolPt = 12;
+    else if (rvolVal >= 1.5) rvolPt = 8;
+    else if (rvolVal >= 1.0) rvolPt = 4;
+    items.push({ label: '補正RVOL（エントリータイミング）', pt: rvolPt, max: 20, color: '#3b82f6' });
+
+    // 前日比率 → 0〜15点
+    let pricePt = 0;
+    const cp = s.changePct;
+    if      (cp >= 5)  pricePt = 15;
+    else if (cp >= 3)  pricePt = 12;
+    else if (cp >= 1)  pricePt = 8;
+    else if (cp >= 0)  pricePt = 3;
+    items.push({ label: '前日比率（価格トレンド）', pt: pricePt, max: 15, color: '#10b981' });
+
+    const total = Math.min(items.reduce((a, b) => a + b.pt, 0), 100);
+    return { items, total };
+}
+
+function calcScore(s) {
+    return currentMode === 'day' ? calcScoreDay(s) : calcScoreSwing(s);
+}
+
+// スコアランク
+function getScoreRank(total) {
+    if (total >= 80) return { cls: 'asb-s', label: '🏆S', sClass: 's-great', fClass: 'fill-great', vClass: 'verdict-great', vText: '🟢 <strong>強い買い候補</strong>　複数シグナル点灯。VWAP付近での拾いや追撃を検討できます。' };
+    if (total >= 60) return { cls: 'asb-a', label: '⭐A', sClass: 's-good',  fClass: 'fill-good',  vClass: 'verdict-good',  vText: '🔵 <strong>注目銘柄</strong>　シグナルが出始めています。もう一押しで仕掛けどころになる可能性があります。' };
+    if (total >= 40) return { cls: 'asb-b', label: '✅B', sClass: 's-mid',   fClass: 'fill-mid',   vClass: 'verdict-mid',   vText: '🟡 <strong>様子見</strong>　出来高・判定ともに弱め。シグナルが揃うまで待つのが得策です。' };
+    return               { cls: 'asb-c', label: 'C',   sClass: 's-low',   fClass: 'fill-low',   vClass: 'verdict-low',   vText: '🔴 <strong>見送り推奨</strong>　現時点では積極的なエントリー根拠が少ない状態です。' };
 }
 
 // ===== CSV全カラムパース =====
@@ -606,6 +795,70 @@ function parseFullStocks(rows) {
 
 let latestStocks = [];
 
+// ===== MIKA厳選銘柄 =====
+function getMikaPicks(stocks) {
+    const isBuy  = s => s.sign === '🔥買い' || s.sign === '買いサイン' || s.sign === '🔥' || s.sign.includes('買い');
+    const rvolOk = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol) >= 1.5;
+    const picks  = stocks.filter(s => isBuy(s) && rvolOk(s));
+    // モードに応じたスコアでソート
+    picks.sort((a, b) => calcScore(b).total - calcScore(a).total);
+    return picks.slice(0, 3);
+}
+
+const RANK_LABELS = ['🥇 BEST', '🥈 2ND', '🥉 3RD'];
+
+function renderMikaPicks(picks) {
+    const container = document.getElementById('mika-picks');
+    if (!picks || picks.length === 0) {
+        container.innerHTML = `
+            <div class="mika-empty">
+                <div class="mika-empty-icon">📭</div>
+                <div class="mika-empty-text">現在、厳選銘柄はありません</div>
+                <div class="mika-empty-sub">条件：補正RVOL≥1.5 ／ 買い判定あり</div>
+            </div>`;
+        return;
+    }
+    container.innerHTML = picks.map((s, i) => {
+        const rvolVal   = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+        const isAi      = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
+        const { total } = calcScore(s);
+        const rank      = getScoreRank(total);
+        const tags      = [];
+        if (isAi) tags.push('<span class="mika-tag mika-tag-ai">★AIクリア</span>');
+        tags.push('<span class="mika-tag mika-tag-buy">🔥買い判定</span>');
+        if (s.bolt === 'BOLT!') tags.push(`<span class="mika-tag mika-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
+        const vwapClass   = s.vwapDiff >= 0 ? 'up' : 'dn';
+        const changeClass = s.changePct >= 0 ? 'up' : 'dn';
+
+        // スコアバーの色
+        const barColors = { 'fill-great': '#34d399', 'fill-good': '#3b82f6', 'fill-mid': '#f59e0b', 'fill-low': '#ef4444' };
+        const barColor  = barColors[rank.fClass] || '#3b82f6';
+
+        return `
+        <div class="mika-pick-card rank-${i+1}">
+            <div class="mika-rank-label">${RANK_LABELS[i]}</div>
+            <div class="mika-code">${s.code}</div>
+            <div class="mika-name">${s.name}</div>
+            <div class="mika-tags">${tags.join('')}</div>
+            <div class="mika-ai-score">
+                <div>
+                    <div class="mika-ai-score-label">AIスコア (${currentMode === 'day' ? 'デイ' : 'スイング'})</div>
+                    <div class="mika-ai-score-bar-wrap">
+                        <div class="mika-ai-score-bar-fill" style="width:${total}%;background:${barColor};"></div>
+                    </div>
+                </div>
+                <div class="mika-ai-score-val" style="color:${barColor};">${total}pt</div>
+            </div>
+            <div class="mika-metrics">
+                <div class="mika-metric"><div class="mika-metric-key">補正A3</div><div class="mika-metric-val cyan">${s.corrA3 || '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">補正RVOL</div><div class="mika-metric-val up">${rvolVal.toFixed(2)}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">ギャップ比</div><div class="mika-metric-val">${s.gapRatio > 0 ? s.gapRatio.toFixed(2) : '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">前日比率</div><div class="mika-metric-val ${changeClass}">${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%</div></div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
 // ===== 個別銘柄分析 =====
 function doAnalyze() {
     const raw = document.getElementById('az-code-input').value.trim();
@@ -627,47 +880,14 @@ function doAnalyze() {
 document.addEventListener('DOMContentLoaded', () => {
     const inp = document.getElementById('az-code-input');
     if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAnalyze(); });
+    // 初期の計算式表示
+    setMode('day');
 });
 
 function showAzError(msg) {
     const el = document.getElementById('az-error');
     el.textContent = '⚠ ' + msg;
     el.classList.add('show');
-}
-
-function azCalcScores(s) {
-    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
-    const isBuy   = s.sign.includes('買い') || s.sign.includes('🔥');
-    const items   = [];
-
-    let rvolPt = 0;
-    if (rvolVal >= 3.0)      rvolPt = 25;
-    else if (rvolVal >= 2.0) rvolPt = 18;
-    else if (rvolVal >= 1.5) rvolPt = 12;
-    else if (rvolVal >= 1.0) rvolPt = 6;
-    items.push({ label: '出来高勢い（RVOL）', pt: rvolPt, max: 25, color: '#3b82f6' });
-
-    items.push({ label: '買い判定', pt: isBuy ? 20 : 0, max: 20, color: '#10b981' });
-
-    let boltPt = Math.min((s.bolt === 'BOLT!' ? 8 : 0) + s.boltCount * 4, 20);
-    items.push({ label: 'BOLT回数・判定', pt: boltPt, max: 20, color: '#ef4444' });
-
-    let vwapPt = 0;
-    if (s.vwapDiff > 2)       vwapPt = 15;
-    else if (s.vwapDiff > 0)  vwapPt = 10;
-    else if (s.vwapDiff > -1) vwapPt = 4;
-    items.push({ label: 'VWAP位置', pt: vwapPt, max: 15, color: '#8b5cf6' });
-
-    let fundPt = 0;
-    if (s.corrA3 > 0) fundPt += Math.min(s.corrA3 * 0.4, 10);
-    if (s.eigyo > 5)  fundPt += Math.min(s.eigyo * 0.3, 4);
-    if (s.pbr > 0 && s.pbr < 1) fundPt += 4;
-    else if (s.pbr > 0 && s.pbr < 2) fundPt += 2;
-    if (s.shinyo > 0 && s.shinyo < 3) fundPt += 2;
-    items.push({ label: 'ファンダメンタルズ', pt: Math.min(Math.round(fundPt), 20), max: 20, color: '#f59e0b' });
-
-    const total = Math.min(items.reduce((a, b) => a + b.pt, 0), 100);
-    return { items, total };
 }
 
 function azMri(rows) {
@@ -689,7 +909,7 @@ function azVol(n) {
 function renderAnalyze(s) {
     const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
     const isBuy   = s.sign.includes('買い') || s.sign.includes('🔥');
-    const isAi    = s.kubun === '区分１' || s.kubun === '区分1';
+    const isAi    = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
     const isBolt  = s.bolt === 'BOLT!';
     const rvolOk  = rvolVal >= 1.5;
 
@@ -706,58 +926,52 @@ function renderAnalyze(s) {
     document.getElementById('az-r-vwap').textContent = `VWAP ${s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−'}  ${vSgn}${Math.abs(s.vwapDiff)}%`;
 
     const tags = [];
+    const cfg  = MODE_CONFIG[currentMode];
+    tags.push(`<span class="az-tag az-tag-mode-${currentMode}">${cfg.tagIcon} ${cfg.tagText}</span>`);
     if (isAi)   tags.push('<span class="az-tag az-tag-ai">★AIクリア</span>');
     if (isBuy)  tags.push('<span class="az-tag az-tag-buy">🔥買い判定</span>');
     if (isBolt) tags.push(`<span class="az-tag az-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
     if (!isBuy && !isBolt) tags.push('<span class="az-tag az-tag-none">待機中</span>');
     document.getElementById('az-r-tags').innerHTML = tags.join('');
 
-    const { items, total } = azCalcScores(s);
-    let sClass, fClass, vClass, vText;
-    if (total >= 75) {
-        sClass = 's-great'; fClass = 'fill-great'; vClass = 'verdict-great';
-        vText  = '🟢 <strong>強い買い候補</strong>　複数シグナル点灯。VWAP付近での拾いや追撃を検討できます。';
-    } else if (total >= 50) {
-        sClass = 's-good'; fClass = 'fill-good'; vClass = 'verdict-good';
-        vText  = '🔵 <strong>注目銘柄</strong>　シグナルが出始めています。もう一押しで仕掛けどころになる可能性があります。';
-    } else if (total >= 25) {
-        sClass = 's-mid'; fClass = 'fill-mid'; vClass = 'verdict-mid';
-        vText  = '🟡 <strong>様子見</strong>　出来高・判定ともに弱め。シグナルが揃うまで待つのが得策です。';
-    } else {
-        sClass = 's-low'; fClass = 'fill-low'; vClass = 'verdict-low';
-        vText  = '🔴 <strong>見送り推奨</strong>　現時点では積極的なエントリー根拠が少ない状態です。';
-    }
+    // モードタグ
+    const modeTag = document.getElementById('az-r-mode-tag');
+    modeTag.className   = 'az-score-mode-tag ' + cfg.tagCls;
+    modeTag.textContent = cfg.tagIcon + ' ' + cfg.tagText;
+
+    const { items, total } = calcScore(s);
+    const rank = getScoreRank(total);
 
     document.getElementById('az-r-score').textContent = total + 'pt';
-    document.getElementById('az-r-score').className   = 'az-score-num ' + sClass;
-    document.getElementById('az-r-verdict').innerHTML = vText;
-    document.getElementById('az-r-verdict').className = 'az-verdict ' + vClass;
+    document.getElementById('az-r-score').className   = 'az-score-num ' + rank.sClass;
+    document.getElementById('az-r-verdict').innerHTML = rank.vText;
+    document.getElementById('az-r-verdict').className = 'az-verdict ' + rank.vClass;
 
     setTimeout(() => {
         const bar = document.getElementById('az-r-bar');
-        bar.className   = 'az-bar-fill ' + fClass;
+        bar.className   = 'az-bar-fill ' + rank.fClass;
         bar.style.width = total + '%';
     }, 80);
 
     document.getElementById('az-m-vol').innerHTML = azMri([
-        { key: '当日出来高',     val: azVol(s.volume),   cls: '' },
-        { key: '20日平均出来高', val: azVol(s.avgVol20), cls: '' },
+        { key: '当日出来高',     val: azVol(s.volume) },
+        { key: '20日平均出来高', val: azVol(s.avgVol20) },
         { key: 'RVOL（補正）',   val: rvolVal.toFixed(2) + 'x', cls: rvolOk ? 'up' : 'warn', pip: rvolOk ? 'pip-green' : 'pip-yellow' },
     ]);
     document.getElementById('az-m-price').innerHTML = azMri([
-        { key: '現在値',    val: s.price.toLocaleString() + '円', cls: '' },
-        { key: 'VWAP',     val: s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−', cls: '' },
+        { key: '現在値',    val: s.price.toLocaleString() + '円' },
+        { key: 'VWAP',     val: s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−' },
         { key: 'VWAP乖離', val: (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%', cls: s.vwapDiff >= 0 ? 'up' : 'dn', pip: s.vwapDiff >= 0 ? 'pip-green' : 'pip-red' },
     ]);
     document.getElementById('az-m-bolt').innerHTML = azMri([
-        { key: 'BOLT判定', val: isBolt ? '⚡ BOLT!' : '−',                   cls: isBolt ? 'hi' : '',  pip: isBolt ? 'pip-green' : 'pip-gray' },
-        { key: 'BOLT回数', val: s.boltCount > 0 ? s.boltCount + '回' : '−',  cls: s.boltCount > 0 ? 'hi' : '' },
-        { key: '買い判定', val: isBuy ? s.sign : '−',                        cls: isBuy ? 'up' : '',   pip: isBuy ? 'pip-green' : 'pip-gray' },
+        { key: 'BOLT判定', val: isBolt ? '⚡ BOLT!' : '−', cls: isBolt ? 'hi' : '', pip: isBolt ? 'pip-green' : 'pip-gray' },
+        { key: 'BOLT回数', val: s.boltCount > 0 ? s.boltCount + '回' : '−', cls: s.boltCount > 0 ? 'hi' : '' },
+        { key: '買い判定', val: isBuy ? s.sign : '−', cls: isBuy ? 'up' : '', pip: isBuy ? 'pip-green' : 'pip-gray' },
     ]);
     document.getElementById('az-m-fund').innerHTML = azMri([
-        { key: '補正A3スコア', val: s.corrA3 || '−',                                         cls: s.corrA3 > 60 ? 'up' : '' },
-        { key: 'PBR',         val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−',              cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
-        { key: '信用倍率',    val: s.shinyo > 0 ? s.shinyo.toFixed(1) + '倍' : '−',        cls: s.shinyo > 0 && s.shinyo < 3 ? 'up' : s.shinyo > 5 ? 'dn' : '' },
+        { key: '補正A3スコア', val: s.corrA3 || '−', cls: s.corrA3 > 60 ? 'up' : '' },
+        { key: 'ギャップ比(A5)', val: s.gapRatio > 0 ? s.gapRatio.toFixed(2) : '−', cls: s.gapRatio >= 1.5 ? 'up' : s.gapRatio >= 1.0 ? '' : 'warn' },
+        { key: 'PBR', val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−', cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
     ]);
 
     document.getElementById('az-r-breakdown').innerHTML = items.map(it => `
@@ -773,45 +987,23 @@ function renderAnalyze(s) {
         document.querySelectorAll('.az-bd-bar-fill').forEach(el => { el.style.width = el.dataset.w; });
     }, 100);
 
-    // Xシェアボタンのリンクを生成
-    const scoreLabel = total >= 75 ? '強い買い候補🟢' : total >= 50 ? '注目銘柄🔵' : total >= 25 ? '様子見🟡' : '見送り推奨🔴';
-    const rvolDisp   = rvolVal.toFixed(2);
-    const vwapDisp   = (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%';
-    const boltDisp   = s.boltCount > 0 ? `⚡BOLT ${s.boltCount}回` : '';
-    const tweetText  = [
-        `【AIスコア分析】 $${s.code} ${s.name}`,
-        `総合スコア: ${total}pt ／ ${scoreLabel}`,
-        `RVOL: ${rvolDisp}x　VWAP乖離: ${vwapDisp}　${boltDisp}`,
-        ``,
-        `📊 AIスコア投資研究所 リアルタイムボード`,
-        `https://sio39.github.io/realtime.html`,
-        `#デイトレ #株 #AIスコア`
-    ].join('\n');
-    const shareUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweetText);
-    document.getElementById('az-share-x').href = shareUrl;
-
     document.getElementById('az-result').classList.add('show');
 }
 
-// ===== CSV読み込み & テーブル描画 =====
-async function loadCSV() {
-    try {
-        const response = await fetch('data_push.csv', { cache: "no-store" });
-        const data     = await response.text();
-        const rows     = data.split(/\r?\n/).filter(r => r.trim() !== "");
-        renderTable(rows);
-        latestStocks = parseFullStocks(rows);
-        renderMikaPicks(getMikaPicks(latestStocks));
-        document.getElementById('last-load').textContent = '取得: ' + new Date().toLocaleTimeString();
-    } catch(e) { console.error(e); }
+// ===== テーブル描画 =====
+function formatNum(val) {
+    let n = parseFloat(val.replace(/,/g, ''));
+    if (isNaN(n)) return val;
+    return val.includes('.') ? val : n.toLocaleString();
 }
+
+let cachedHeaderRow = null;
 
 function renderTable(rows) {
     const tableHeader = document.getElementById('table-header');
     const tableBody   = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
     const hideIndices = [3, 7, 8, 15];
-    let stockCount = 0;
 
     rows.forEach((row, index) => {
         if (row.includes("Update:")) {
@@ -820,60 +1012,114 @@ function renderTable(rows) {
                 row.split(',')[0].replace("Update:", "").trim();
             return;
         }
-        const columns = row.split(',');
-        const tr = document.createElement('tr');
-        if (index !== 0 && columns[15] === "1") tr.classList.add('row-highlight');
+        if (index === 0) {
+            cachedHeaderRow = row;
+            const tr = document.createElement('tr');
+            const noCell = document.createElement('th');
+            noCell.textContent = 'No.'; noCell.style.width = '45px';
+            tr.appendChild(noCell);
 
-        const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
-        if (index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
-        else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
+            // AIスコアヘッダー追加
+            const scoreTh = document.createElement('th');
+            scoreTh.textContent = 'AIスコア';
+            scoreTh.style.color = '#ef4444';
+            tr.appendChild(scoreTh);
+
+            const columns = row.split(',');
+            for (let i = 0; i <= 14; i++) {
+                if (hideIndices.includes(i)) continue;
+                const th = document.createElement('th');
+                th.textContent = (columns[i] || '').replace(/"/g, '').trim();
+                tr.appendChild(th);
+            }
+            tableHeader.appendChild(tr);
+        }
+    });
+
+    renderTableBody(latestStocks.length > 0 ? latestStocks : []);
+}
+
+function renderTableBody(stocks) {
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = '';
+    const hideIndices = [3, 7, 8, 15];
+
+    stocks.forEach((s, idx) => {
+        const tr = document.createElement('tr');
+        const isHighlight = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
+        if (isHighlight) tr.classList.add('row-highlight');
+
+        // No.
+        const noCell = document.createElement('td');
+        noCell.textContent = idx + 1;
+        noCell.style.color = 'var(--text-sub)';
+        noCell.style.fontSize = '0.75rem';
         tr.appendChild(noCell);
+
+        // AIスコアセル
+        const { total } = calcScore(s);
+        const rank = getScoreRank(total);
+        const scoreTd = document.createElement('td');
+        scoreTd.innerHTML = `<span class="ai-score-badge ${rank.cls}">${rank.label} ${total}pt</span>`;
+        tr.appendChild(scoreTd);
+
+        // 元のCSV列
+        const raw = [s.code, s.name, s.price, s.priceDiff, s.changePct, s.vwap,
+                     s.volume, s.vol5min, '', s.avgVol20, s.rvol, s.corrRvol,
+                     s.sign, s.bolt, s.boltCount];
 
         for (let i = 0; i <= 14; i++) {
             if (hideIndices.includes(i)) continue;
-            const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
-            let val = (columns[i] || "").replace(/"/g, '').trim();
+            const td = document.createElement('td');
+            let val = (raw[i] !== undefined && raw[i] !== null) ? String(raw[i]) : '';
 
-            if (index === 0) {
-                cell.textContent = val;
+            if (i === 4) {
+                let num = parseFloat(val);
+                td.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
+            } else if (i === 5 || i === 2) {
+                let num = parseFloat(val.replace(/,/g, ''));
+                td.textContent = isNaN(num) ? val : num.toLocaleString();
+            } else if (i === 12) {
+                td.textContent = val;
+                if (val.includes("買い") || val.includes("🔥")) td.classList.add("buy-highlight");
+            } else if (i === 13) {
+                td.innerHTML = val === "BOLT!"
+                    ? '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>'
+                    : '<span style="color:var(--text-sub)">—</span>';
+            } else if (i === 14) {
+                let count = parseInt(val);
+                td.innerHTML = (!isNaN(count) && count > 0)
+                    ? `<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>${count}回</span>`
+                    : '<span style="color:var(--text-sub)">—</span>';
             } else {
-                if (i === 4) {
-                    let num = parseFloat(val);
-                    cell.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
-                } else if (i === 5 || i === 2) {
-                    let num = parseFloat(val.replace(/,/g, ''));
-                    cell.textContent = isNaN(num) ? val : num.toLocaleString();
-                } else if (i === 11) {
-                    cell.textContent = val;
-                    if (val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
-                } else if (i === 13) {
-                    cell.innerHTML = val === "BOLT!"
-                        ? '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>'
-                        : '<span style="color:var(--text-sub)">—</span>';
-                } else if (i === 14) {
-                    let count = parseInt(val);
-                    cell.innerHTML = (!isNaN(count) && count > 0)
-                        ? `<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>${count}回</span>`
-                        : '<span style="color:var(--text-sub)">—</span>';
-                } else if (i === 0) {
-                    cell.textContent = val;
-                } else {
-                    cell.textContent = formatNum(val);
-                }
+                td.textContent = isNaN(parseFloat(val)) ? val : formatNum(val);
             }
-            tr.appendChild(cell);
+            tr.appendChild(td);
         }
-        if (index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
+        tableBody.appendChild(tr);
     });
+}
+
+// ===== CSV読み込み =====
+async function loadCSV() {
+    try {
+        const response = await fetch('data_push.csv', { cache: "no-store" });
+        const data     = await response.text();
+        const rows     = data.split(/\r?\n/).filter(r => r.trim() !== "");
+        latestStocks   = parseFullStocks(rows);
+        renderTable(rows);
+        renderMikaPicks(getMikaPicks(latestStocks));
+        document.getElementById('last-load').textContent = '取得: ' + new Date().toLocaleTimeString();
+    } catch(e) { console.error(e); }
 }
 
 loadCSV();
 setInterval(loadCSV, 30000);
 </script>
 
-<footer>
+<footer style="text-align:center; padding: 30px 20px; color: var(--text-sub); font-size: 0.85rem;">
     © 2026 AIスコア投資研究所 / 負けてる人を救いたい💓<br>
-    <div class="footer-mura">
+    <div style="margin-top: 10px;">
         <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
             <img src="https://b.blogmura.com/stock/88_31.gif" width="88" height="31" alt="ブログ村 株式投資ブログランキング">
         </a>
