@@ -1,120 +1,862 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-5JCN1FB7ML');
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIスコア投資研究所 — Mika's Selection</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0a0e1a; --card: #111827; --border: #1e2d4a;
-            --gold: #f0a500; --blue: #4da6ff; --text: #e8edf5;
-            --text2: #8a9bb8; --bolt: #ffeb3b;
-        }
-        body { font-family: 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
-        .main-container { max-width: 1000px; margin: auto; display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
-        @media (max-width: 768px) { .main-container { grid-template-columns: 1fr; } }
-        .mika-panel { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); height: fit-content; position: sticky; top: 20px; }
-        .picks-grid { display: grid; gap: 20px; }
-        .pick-card { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 20px; display: grid; grid-template-columns: 50px 1fr auto; gap: 15px; align-items: center; position: relative; transition: 0.3s; }
-        .pick-card.has-bolt { border-color: var(--bolt); box-shadow: 0 0 15px rgba(255, 235, 59, 0.2); }
-        .rank-badge { color: var(--gold); font-size: 20px; font-weight: 800; font-family: 'Playfair Display', serif; }
-        .code { color: var(--blue); font-family: 'DM Mono', monospace; font-weight: 500; }
-        .name { font-weight: bold; font-size: 16px; }
-        .metric-group { display: flex; gap: 20px; text-align: right; }
-        .metric-label { font-size: 10px; color: var(--text2); margin-bottom: 2px; }
-        .metric-val { font-family: 'DM Mono', monospace; font-weight: 500; }
-        .bolt-label { position: absolute; top: -12px; right: 15px; background: var(--bolt); color: #000; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .loading { text-align: center; color: var(--gold); padding: 50px; font-weight: bold; }
-        .update-time { font-size: 10px; color: var(--text2); margin-top: 20px; text-align: center; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Mika｜デイトレード銘柄スクリーナー</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #060810;
+  --surface: #0d1117;
+  --surface2: #111827;
+  --border: #1f2937;
+  --border2: #374151;
+  --cyan: #22d3ee;
+  --pink: #f472b6;
+  --yellow: #fbbf24;
+  --green: #34d399;
+  --red: #f87171;
+  --text: #e2e8f0;
+  --muted: #6b7280;
+  --gold: #f59e0b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* グリッド背景 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+
+/* ヘッダー */
+header {
+  text-align: center;
+  padding: 36px 0 28px;
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--cyan), var(--pink));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+h1 em { font-style: normal; color: var(--cyan); }
+
+.tagline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 3px;
+  margin-top: 6px;
+}
+
+/* カード共通 */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--cyan);
+  margin-bottom: 14px;
+}
+
+/* ファイル投入エリア */
+.drop-zone {
+  border: 2px dashed var(--border2);
+  border-radius: 10px;
+  padding: 36px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.drop-zone:hover, .drop-zone.over {
+  border-color: var(--cyan);
+  background: rgba(34,211,238,0.04);
+}
+
+.drop-zone input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;
+}
+
+.drop-icon { font-size: 36px; margin-bottom: 10px; }
+
+.drop-text {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.drop-text strong { color: var(--text); }
+
+.drop-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.file-status {
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--green);
+  display: none;
+}
+
+.file-status.active { display: block; }
+
+/* 設定グリッド */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.setting-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.setting-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.priority-num {
+  background: var(--border2);
+  color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+/* トグル */
+.toggle-wrap { display: flex; align-items: center; gap: 10px; }
+
+.toggle {
+  position: relative;
+  width: 44px; height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle input { opacity: 0; width: 0; height: 0; }
+
+.toggle-track {
+  position: absolute; inset: 0;
+  background: var(--border2);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  left: 3px; top: 3px;
+  background: var(--muted);
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.toggle input:checked + .toggle-track { background: rgba(34,211,238,0.25); }
+.toggle input:checked + .toggle-track::after {
+  transform: translateX(20px);
+  background: var(--cyan);
+}
+
+.toggle-label { font-size: 13px; color: var(--text); }
+
+/* セレクト・インプット */
+select, input[type="number"] {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+}
+
+select:focus, input[type="number"]:focus { border-color: var(--cyan); }
+
+.rvol-row { display: flex; align-items: center; gap: 8px; }
+.rvol-row input[type="number"] { width: 80px; }
+.rvol-row span { font-size: 13px; color: var(--muted); }
+
+/* ボタン */
+.run-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(34,211,238,0.15), rgba(244,114,182,0.15));
+  border: 1px solid var(--cyan);
+  border-radius: 10px;
+  color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.run-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(34,211,238,0.25), rgba(244,114,182,0.25));
+  box-shadow: 0 0 20px rgba(34,211,238,0.2);
+}
+
+.run-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* 結果 */
+#results { display: none; }
+#results.active { display: block; }
+
+.result-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.result-meta-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--pink);
+}
+
+.result-meta-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* 銘柄カード */
+.picks { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+
+.pick-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  animation: slideIn 0.35s ease forwards;
+  opacity: 0;
+  transform: translateY(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.pick-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+
+.pick-card.rank-1 { border-color: rgba(245,158,11,0.4); }
+.pick-card.rank-1::before { background: var(--gold); }
+.pick-card.rank-2 { border-color: rgba(156,163,175,0.3); }
+.pick-card.rank-2::before { background: #9ca3af; }
+.pick-card.rank-3::before { background: #92400e; }
+
+.pick-card:nth-child(1) { animation-delay: 0.05s; }
+.pick-card:nth-child(2) { animation-delay: 0.15s; }
+.pick-card:nth-child(3) { animation-delay: 0.25s; }
+
+@keyframes slideIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.rank-col { text-align: center; }
+
+.rank-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rank-1 .rank-num { color: var(--gold); }
+.rank-2 .rank-num { color: #9ca3af; }
+.rank-3 .rank-num { color: #92400e; }
+
+.rank-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.info-col {}
+
+.stock-code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cyan);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.stock-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.tag-bolt { background: rgba(244,114,182,0.15); border: 1px solid var(--pink); color: var(--pink); }
+.tag-rvol { background: rgba(52,211,153,0.1); border: 1px solid var(--green); color: var(--green); }
+.tag-sign { background: rgba(251,191,36,0.1); border: 1px solid var(--yellow); color: var(--yellow); }
+
+.metrics-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  min-width: 100px;
+}
+
+.metric-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.metric-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.metric-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.val-bolt { color: var(--pink); }
+.val-rvol { color: var(--green); }
+.val-score { color: var(--cyan); }
+.val-change-up { color: var(--green); }
+.val-change-dn { color: var(--red); }
+
+/* 全銘柄テーブル */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  padding: 8px 10px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+th:first-child, th:nth-child(2) { text-align: left; }
+th:hover { color: var(--cyan); }
+th.sorted { color: var(--cyan); }
+
+td {
+  padding: 9px 12px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+td:first-child { text-align: left; color: var(--cyan); }
+td:nth-child(2) { text-align: left; font-family: 'Noto Sans JP', sans-serif; color: var(--text); font-size: 14px; }
+
+tr:hover td { background: rgba(34,211,238,0.03); }
+
+.bolt-cell { color: var(--pink); font-weight: 700; }
+.up { color: var(--green); }
+.dn { color: var(--red); }
+
+/* エラー */
+.error {
+  background: rgba(248,113,113,0.1);
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--red);
+  font-size: 13px;
+  display: none;
+  margin-top: 12px;
+}
+.error.active { display: block; }
+
+/* 注記 */
+.disclaimer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 24px;
+  line-height: 1.8;
+}
+
+@media (max-width: 600px) {
+  .settings-grid { grid-template-columns: 1fr; }
+  .pick-card { grid-template-columns: auto 1fr; }
+  .metrics-col { grid-column: 1/-1; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; }
+}
+</style>
 </head>
 <body>
-<div id="loading" class="loading">MIKA ANALYSING...</div>
-<div class="main-container">
-    <div class="mika-panel">
-        <div style="font-weight:bold;color:var(--gold);font-size:18px;">AI Mika Analyser</div>
-        <div style="font-size:12px;margin-top:15px;color:var(--text2);line-height:1.6;">
-            Excelの「買い」判定の中からスコア上位3つを表示しています。
-        </div>
-    </div>
+<div class="wrap">
+
+<header>
+  <div class="logo-row">
+    <div class="logo-icon">⚡</div>
+    <h1>AI <em>Mika</em></h1>
+  </div>
+  <div class="tagline">DAYTRADE SCREENER ／ BOLT × RVOL × VWAP × GAP → TOP 3</div>
+</header>
+
+<!-- データ読み込み -->
+<div class="card">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
     <div>
-        <div id="pickCards" class="picks-grid"></div>
-        <div id="updateStamp" class="update-time"></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:4px;">DATA SOURCE（5分ごと自動更新）</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);">sio39.github.io/data_push.csv</div>
     </div>
+    <button onclick="loadRemote()" style="background:transparent;border:1px solid var(--cyan);color:var(--cyan);padding:8px 18px;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;letter-spacing:1px;white-space:nowrap;transition:all 0.2s;" onmouseover="this.style.background='rgba(34,211,238,0.1)'" onmouseout="this.style.background='transparent'">↺ 今すぐ更新</button>
+  </div>
+  <div class="file-status" id="fileStatus" style="margin-top:10px;"></div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px;" id="nextUpdateLabel"></div>
+  <div class="error" id="fileError"></div>
+</div>
+
+<!-- 分析ボタン -->
+<div class="card" style="padding:16px 20px;">
+  <button class="run-btn" id="runBtn" onclick="analyze()" disabled>
+    ⚡ AI Mika が分析する
+  </button>
+</div>
+
+<!-- 結果 -->
+<div id="results">
+
+  <div class="card">
+    <div class="result-meta">
+      <div class="result-meta-title">▸ MIKA 厳選ベスト 3</div>
+      <div class="result-meta-time" id="resultTime"></div>
+    </div>
+    <div class="picks" id="picks"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="margin-bottom:12px">▸ スコアリング全銘柄（クリックでソート）</div>
+    <div class="table-wrap">
+      <table id="allTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable('code')">コード</th>
+            <th onclick="sortTable('name')">銘柄名</th>
+            <th onclick="sortTable('bolt')" class="sorted">BOLT</th>
+            <th onclick="sortTable('boltCount')">回数</th>
+            <th onclick="sortTable('corrRvol')">補正RVOL</th>
+            <th onclick="sortTable('scoreA3')">補正A3</th>
+            <th onclick="sortTable('changePct')">変化率</th>
+            <th onclick="sortTable('vwapDiff')">VWAP乖離</th>
+            <th onclick="sortTable('gapRatio')">ギャップ比</th>
+            <th onclick="sortTable('shinyo')">信用倍率</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<div class="disclaimer">
+  ※ このツールは情報提供のみを目的としています。投資判断はご自身の責任でお願いします。
+</div>
+
 </div>
 
 <script>
-async function fetchData() {
-    try {
-        const res = await fetch('data_push.csv', { cache: "no-store" });
-        const text = await res.text();
-        const rows = text.split(/\r?\n/).filter(line => line.trim() !== "").map(l => l.split(','));
-        processData(rows);
-        document.getElementById('loading').style.display = 'none';
-    } catch (e) { console.error("Fetch error:", e); }
+const CSV_URL = 'https://sio39.github.io/data_push.csv';
+let stocks = [];
+let sortKey = 'corrA3';
+let sortAsc = false;
+let autoTimer = null;
+
+// 起動時自動読み込み＋5分ごと更新
+window.onload = () => {
+  loadRemote();
+  autoTimer = setInterval(loadRemote, 5 * 60 * 1000);
+};
+
+async function loadRemote() {
+  const status = document.getElementById('fileStatus');
+  status.textContent = '読み込み中...';
+  status.classList.add('active');
+  try {
+    const res = await fetch(CSV_URL + '?t=' + Date.now());
+    const text = await res.text();
+    const lines = text.split('\n').filter(l => l.trim());
+    stocks = parseCSV(lines);
+    const updateLine = lines.find(l => l.startsWith('Update:'));
+    const updateTime = updateLine ? updateLine.split(',')[0].replace('Update:', '').trim() : '';
+    status.textContent = `✓ ${stocks.length} 銘柄読み込み完了` + (updateTime ? ` ｜ データ更新: ${updateTime}` : '');
+    document.getElementById('nextUpdateLabel').textContent = '次回自動更新: ' + new Date(Date.now() + 5*60*1000).toLocaleTimeString('ja-JP');
+    document.getElementById('runBtn').disabled = false;
+    showFileError('');
+  } catch(e) {
+    status.textContent = '⚠ 自動読み込み失敗 → ローカルファイルをドロップしてください';
+    showFileError(e.message);
+  }
 }
 
-function processData(rows) {
-    const all = rows.map(r => {
-        // Mikaさんの教えてくれた列番号に基づき修正 (n列目ならインデックスは n-1)
-        return {
-            code: r[0],            // 1列目 (A)
-            name: r[1],            // 2列目 (B)
-            rvol: parseFloat(r[8] || 0),   // 9列目 (I)
-            judge: (r[10] || "").trim(),   // 11列目 (K): 買いサイン ★修正
-            boltSign: r[11] || "",         // 12列目 (L): BOLT! ★修正
-            boltCount: r[12] || "0",       // 13列目 (M): 回数 ★修正
-            a3: parseFloat(r[13] || 0)     // 14列目 (N): スコア ★修正
-        };
+
+
+// CSV列マッピング（0始まり）
+// 0:コード 1:銘柄名 2:現在値 3:前日差額 4:前日比率 5:VWAP
+// 6:当日出来高 7:5分前出来高 8:列2(空) 9:20日平均出来高
+// 10:RVOL 11:補正RVOL 12:判定 13:ボルト判定 14:ボルト回数
+// 15:区分 16:A3 17:補正A3 18:ギャップ比
+// 19:PER 20:PBR 21:営業利益率(予) 22:成長率 23:ネットキャッシュ率
+// 24:信用倍率 25:配当 26:配当率 27:ROE 28:メモ
+function parseCSV(lines) {
+  const result = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (line.startsWith('Update:')) continue;
+    const cols = line.split(',');
+    if (cols.length < 5 || !cols[0]?.trim()) continue;
+    const price  = parseFloat(cols[2]) || 0;
+    const vwap   = parseFloat(cols[5]) || 0;
+    result.push({
+      code:       cols[0]?.trim() || '',
+      name:       cols[1]?.trim() || '',
+      price,
+      vwap,
+      vwapDiff:   vwap > 0 ? parseFloat(((price - vwap) / vwap * 100).toFixed(2)) : 0,
+      changePct:  parseFloat(cols[4]) || 0,
+      volume:     parseFloat(cols[6]) || 0,
+      vol5min:    parseFloat(cols[7]) || 0,
+      avgVol:     parseFloat(cols[9]) || 0,   // 20日平均出来高
+      rvol:       parseFloat(cols[10]) || 0,  // RVOL
+      corrRvol:   parseFloat(cols[11]) || 0,  // 補正RVOL
+      sign:       cols[12]?.trim() || '',     // 判定
+      bolt:       cols[13]?.trim() || '',     // ボルト判定
+      boltCount:  parseInt(cols[14]) || 0,    // ボルト回数
+      kubun:      cols[15]?.trim() || '',     // 区分
+      scoreA3:    parseFloat(cols[16]) || 0,  // A3スコア
+      corrA3:     parseFloat(cols[17]) || 0,  // 補正A3スコア
+      gapRatio:   parseFloat(cols[18]) || 0,  // ギャップ比(=A5/A3)
+      per:        parseFloat(cols[19]) || 0,
+      pbr:        parseFloat(cols[20]) || 0,
+      eiGyoRitsu: parseFloat(cols[21]) || 0,
+      seichoRate: parseFloat(cols[22]) || 0,
+      netCash:    parseFloat(cols[23]) || 0,
+      shinyo:     parseFloat(cols[24]) || 0,
+      haitou:     parseFloat(cols[25]) || 0,
+      haitouRitsu:parseFloat(cols[26]) || 0,
+      roe:        parseFloat(cols[27]) || 0,
+      memo:       cols[28]?.trim() || '',
     });
-
-    // フィルター：Excelで「買い」か「🔥」がついているもの
-    const picks = all.filter(d => 
-        d.code && d.code !== "コード" && d.code !== "銘柄コード" &&
-        (d.judge.includes('🔥') || d.judge.includes('買い'))
-    )
-    .sort((a, b) => b.a3 - a.a3) // スコア順
-    .slice(0, 3); // 上位3つ
-
-    // 更新時刻の取得
-    const timeRow = rows.find(r => r[0] && r[0].includes("Update:"));
-    const timeStr = timeRow ? timeRow[0] : "";
-    render(picks, timeStr);
+  }
+  return result;
 }
 
-function render(picks, timeStr){
-    const el = document.getElementById('pickCards');
-    const stamp = document.getElementById('updateStamp');
-    if(picks.length === 0){
-        el.innerHTML = '<div style="color:var(--text2);text-align:center;padding:40px;background:var(--card);border-radius:15px;border:1px dashed var(--border);">現在、Excel側で「買い」サインが出ている銘柄はありません。</div>';
-        return;
-    }
-    el.innerHTML = picks.map((p, i) => {
-        const hasBolt = p.boltSign.includes("BOLT!");
-        return `
-        <div class="pick-card ${hasBolt ? 'has-bolt' : ''}">
-            ${hasBolt ? '<div class="bolt-label">⚡ BOLT DETECTED</div>' : ''}
-            <div class="rank-badge">#${i+1}</div>
-            <div><div class="code">${p.code}</div><div class="name">${p.name}</div></div>
-            <div class="metric-group">
-                <div><div class="metric-label">AI SCORE</div><div class="metric-val" style="color:var(--gold);font-weight:bold;">${p.a3.toFixed(0)}</div></div>
-                <div><div class="metric-label">RVOL</div><div class="metric-val">${p.rvol.toFixed(2)}</div></div>
-                <div><div class="metric-label">BOLT回数</div><div class="metric-val" style="color:var(--blue)">${p.boltCount}回</div></div>
+function isBuySignal(s) {
+  return s.bolt === 'BOLT!' || s.sign === '買いサイン' || s.sign === '🔥';
+}
+
+// ===== デイトレードスコアリング =====
+function calcScore(s, boltWeight, rvolMin, useVwap, useGap, useShinyo) {
+  let sc = 0;
+
+  // 優先1: 買いサイン（最優先）+150pt
+  if (s.sign === '買いサイン' || s.sign === '🔥') sc += 150;
+
+  // 優先2: BOLT回数（継続的大口買い）× 重み × 5
+  sc += s.boltCount * boltWeight * 5;
+
+  // 優先3: BOLT現在判定ボーナス +30pt
+  if (s.bolt === 'BOLT!') sc += 30;
+
+  // 優先4: 補正RVOL（1.5以上で加点・多いほど高得点）× 10
+  // 補正RVOLが取れていればそちらを優先、なければRVOLにフォールバック
+  const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+  if (rvolVal >= rvolMin) sc += rvolVal * 10;
+
+  // 優先5: 現在値 > VWAP（上抜け確認）+20pt
+  if (useVwap && s.vwapDiff > 0) sc += 20;
+
+  // 優先6: ギャップ比（= A5/A3）× 5
+  if (useGap && s.gapRatio > 0) sc += s.gapRatio * 5;
+
+  // 優先7: 前日比率プラス +15pt
+  if (s.changePct > 0) sc += 15;
+
+  // 優先8: 信用倍率 < 3（需給良好）+10pt
+  if (useShinyo && s.shinyo > 0 && s.shinyo < 3) sc += 10;
+
+  // A3/A5スコア評価（補正A3 = PER/PBR/営業利益率/成長率/ネットキャッシュ率の総合）
+  if (s.corrA3 > 0) sc += s.corrA3 * 0.3;
+  if (s.scoreA3 > 0) sc += s.scoreA3 * 0.1;
+
+  // ファンダメンタルズ個別加点
+  if (s.eiGyoRitsu > 5)  sc += Math.min(s.eiGyoRitsu * 0.5, 20);
+  if (s.seichoRate > 0)  sc += Math.min(s.seichoRate * 0.3, 15);
+  if (s.netCash > 0)     sc += Math.min(s.netCash * 0.2, 10);
+  if (s.pbr > 0 && s.pbr < 1) sc += 10;
+  else if (s.pbr > 0 && s.pbr < 2) sc += 5;
+  if (s.per > 5 && s.per < 30) sc += 5;
+
+  return Math.round(sc * 10) / 10;
+}
+
+function analyze() {
+  // 固定パラメータ（UI設定なし）
+  const boltWeight = 3;
+  const rvolMin    = 1.5;
+  const useVwap    = true;
+  const useGap     = true;
+  const useShinyo  = true;
+
+  const scored = stocks.map(s => ({
+    ...s,
+    totalScore: calcScore(s, boltWeight, rvolMin, useVwap, useGap, useShinyo)
+  }));
+
+  // ===== スクリーニング =====
+  // AIクリア銘柄：補正RVOL1.5以上 ＋ 買い判定
+  const isAiClear = s => s.kubun === '区分１' || s.kubun === '区分1';
+  const isBuy     = s => s.sign === '🔥買い' || s.sign === '買いサイン' || s.sign === '🔥';
+  const rvolOk    = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol) >= 1.5;
+  const hasBolt   = s => s.bolt === 'BOLT!';
+
+  const aiClearPicks = scored.filter(s =>
+    isAiClear(s) && isBuy(s) && rvolOk(s)
+  );
+
+  // AIクリア外：補正RVOL1.5以上 ＋ 買い判定 ＋ BOLT判定あり ＋ BOLT回数2回以上
+  const nonClearPicks = scored.filter(s =>
+    !isAiClear(s) && isBuy(s) && rvolOk(s) && hasBolt(s) && s.boltCount >= 2
+  );
+
+  // 合算して補正A3スコア順
+  const allPicks = [...aiClearPicks, ...nonClearPicks];
+  allPicks.sort((a, b) => b.corrA3 - a.corrA3);
+  const picks = allPicks.slice(0, 3);
+
+  const rankNums   = ['01', '02', '03'];
+  const rankLabels = ['BEST', '2ND', '3RD'];
+
+  let ranksHTML = '';
+  if (picks.length === 0) {
+    ranksHTML = `
+      <div style="text-align:center;padding:32px 20px;">
+        <div style="font-size:32px;margin-bottom:12px;">📭</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);letter-spacing:2px;">
+          現在、厳選銘柄はありません
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;">
+          条件：補正RVOL≥1.5 ／ 買い判定あり ／ AIクリア外はBOLT2回以上必須
+        </div>
+      </div>`;
+  } else {
+    ranksHTML = picks.map((s, i) => {
+      const aiClear = isAiClear(s);
+      const tags = [];
+
+      // AIクリア判定を最初に表示（色を変えて強調）
+      if (aiClear) {
+        tags.push('<span class="tag tag-sign" style="background:rgba(34,211,238,0.2);border-color:var(--cyan);color:var(--cyan);">★AIクリア</span>');
+      } else {
+        tags.push('<span class="tag" style="background:rgba(107,114,128,0.2);border:1px solid var(--muted);color:var(--muted);font-family:JetBrains Mono,monospace;font-size:10px;padding:2px 8px;border-radius:4px;">クリア外</span>');
+      }
+      tags.push('<span class="tag tag-bolt">🔥買い判定</span>');
+      if (hasBolt(s)) tags.push(`<span class="tag tag-rvol">⚡BOLT ${s.boltCount}回</span>`);
+      if (s.vwapDiff > 0) tags.push('<span class="tag tag-sign">VWAP上抜け</span>');
+      if (s.shinyo > 0 && s.shinyo < 3) tags.push('<span class="tag tag-rvol">需給◎</span>');
+
+      return `
+        <div class="pick-card rank-${i+1}" style="${aiClear ? 'border-color:rgba(34,211,238,0.4);' : ''}">
+          <div class="rank-col">
+            <div class="rank-num">${rankNums[i]}</div>
+            <div class="rank-label">${rankLabels[i]}</div>
+          </div>
+          <div class="info-col">
+            <div class="stock-code">${s.code}</div>
+            <div class="stock-name">${s.name}</div>
+            <div class="tags">${tags.join('')}</div>
+          </div>
+          <div class="metrics-col">
+            <div class="metric-row">
+              <span class="metric-key">補正A3</span>
+              <span class="metric-val val-score">${s.corrA3}</span>
             </div>
+            <div class="metric-row">
+              <span class="metric-key">補正RVOL</span>
+              <span class="metric-val val-rvol">${(s.corrRvol > 0 ? s.corrRvol : s.rvol).toFixed(2)}</span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-key">VWAP乖離</span>
+              <span class="metric-val ${s.vwapDiff >= 0 ? 'val-change-up' : 'val-change-dn'}">
+                ${s.vwapDiff >= 0 ? '+' : ''}${s.vwapDiff}%
+              </span>
+            </div>
+            <div class="metric-row">
+              <span class="metric-key">変化率</span>
+              <span class="metric-val ${s.changePct >= 0 ? 'val-change-up' : 'val-change-dn'}">
+                ${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%
+              </span>
+            </div>
+          </div>
         </div>`;
     }).join('');
-    stamp.innerText = timeStr;
+  }
+
+  document.getElementById('picks').innerHTML = ranksHTML;
+  document.getElementById('resultTime').textContent = new Date().toLocaleTimeString('ja-JP');
+
+  renderTable(scored, boltWeight, rvolMin, useVwap, useGap, useShinyo);
+
+  document.getElementById('results').classList.add('active');
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-fetchData();
-setInterval(fetchData, 30000);
+
+function renderTable(data, boltWeight, rvolMin, useVwap, useGap, useShinyo) {
+  const sorted = [...data].sort((a, b) => {
+    const av = a[sortKey], bv = b[sortKey];
+    if (typeof av === 'string') return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+    return sortAsc ? av - bv : bv - av;
+  });
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = sorted.map(s => {
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const isKubun1 = s.kubun === '区分１' || s.kubun === '区分1';
+    return `
+    <tr style="${isKubun1 ? 'background:rgba(34,211,238,0.06);' : ''}">
+      <td>${s.code}${isKubun1 ? '<span style="color:var(--cyan);font-size:10px;margin-left:3px;">★</span>' : ''}</td>
+      <td>${s.name}</td>
+      <td class="${s.bolt === 'BOLT!' ? 'bolt-cell' : ''}">${s.bolt || '−'}</td>
+      <td>${s.boltCount || '−'}</td>
+      <td class="${rvolVal >= 1.5 ? 'up' : ''}">${rvolVal.toFixed(2)}</td>
+      <td>${s.corrA3 || '−'}</td>
+      <td class="${s.changePct >= 0 ? 'up' : 'dn'}">${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%</td>
+      <td class="${s.vwapDiff >= 0 ? 'up' : 'dn'}">${s.vwapDiff >= 0 ? '+' : ''}${s.vwapDiff}%</td>
+      <td>${s.gapRatio.toFixed(2)}</td>
+      <td class="${s.shinyo > 0 && s.shinyo < 3 ? 'up' : ''}">${s.shinyo || '−'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function sortTable(key) {
+  if (sortKey === key) sortAsc = !sortAsc;
+  else { sortKey = key; sortAsc = false; }
+  document.querySelectorAll('th').forEach(th => th.classList.remove('sorted'));
+  event.target.classList.add('sorted');
+  const boltWeight = parseFloat(document.getElementById('boltWeight').value);
+  const rvolMin    = parseFloat(document.getElementById('rvolMin').value);
+  const useVwap    = document.getElementById('useVwap').checked;
+  const useGap     = document.getElementById('useGap').checked;
+  const useShinyo  = document.getElementById('useShinyo').checked;
+  const scored = stocks.map(s => ({ ...s, totalScore: calcScore(s, boltWeight, rvolMin, useVwap, useGap, useShinyo) }));
+  renderTable(scored, boltWeight, rvolMin, useVwap, useGap, useShinyo);
+}
+
+function showFileError(msg) {
+  const el = document.getElementById('fileError');
+  if (msg) { el.textContent = msg; el.classList.add('active'); }
+  else el.classList.remove('active');
+}
 </script>
 </body>
 </html>
