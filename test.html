@@ -72,28 +72,231 @@
         #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
 
         .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin: 0 auto 30px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        
-        /* 修正：flex-wrapを追加し、縦に並ぶように調整 */
-        .color-legend { 
-            width: 95%; 
-            max-width: 1100px; 
-            margin: 0 auto 15px; 
-            display: flex; 
-            flex-wrap: wrap; /* 折り返しを許可 */
-            align-items: center; 
-            gap: 12px; 
-            color: var(--text-sub); 
-            font-size: 0.85rem; 
+
+        .color-legend {
+            width: 95%; max-width: 1100px; margin: 0 auto 15px;
+            display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+            color: var(--text-sub); font-size: 0.85rem;
         }
         .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
-        /* 修正：2行目を強制的に新しい行にするためのスタイル */
         .full-width { width: 100%; margin-top: 5px; }
 
+        /* ===== 個別銘柄分析セクション ===== */
+        .analyze-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
+
+        .analyze-section-header {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+        }
+        .analyze-section-title {
+            font-size: 1.05rem; font-weight: 900; color: var(--text-main);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .beta-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: #fef3c7; color: #b45309; font-size: 0.7rem; font-weight: 800;
+            padding: 2px 10px; border-radius: 20px; border: 1px solid #fde68a; letter-spacing: 0.5px;
+        }
+
+        /* 注意書きボックス */
+        .analyze-notice {
+            background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
+            padding: 14px 18px; margin-bottom: 14px;
+            font-size: 0.82rem; color: #78350f; line-height: 1.8;
+        }
+        .analyze-notice strong { color: #92400e; }
+        .analyze-notice ul { padding-left: 18px; margin-top: 6px; }
+        .analyze-notice li { margin-bottom: 2px; }
+
+        .analyze-input-row { display: flex; gap: 10px; align-items: stretch; }
+
+        .analyze-code-input {
+            flex: 0 0 160px; background: #fff; border: 1.5px solid var(--border-color);
+            border-radius: 12px; padding: 12px 18px; color: var(--text-main);
+            font-size: 1.3rem; font-weight: 800; font-family: monospace; letter-spacing: 4px;
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .analyze-code-input::placeholder { color: #cbd5e1; letter-spacing: 2px; font-weight: 400; }
+        .analyze-code-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+
+        .analyze-btn {
+            background: var(--primary-color); border: none; border-radius: 12px;
+            color: #fff; font-size: 0.9rem; font-weight: 700; padding: 0 24px;
+            cursor: pointer; transition: background 0.2s; white-space: nowrap;
+        }
+        .analyze-btn:hover { background: var(--primary-dark); }
+
+        .analyze-result { margin-top: 14px; display: none; animation: analyzeIn 0.35s ease; }
+        .analyze-result.show { display: block; }
+        @keyframes analyzeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .analyze-error {
+            background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px;
+            padding: 14px 18px; color: #dc2626; font-size: 0.88rem; font-weight: 600;
+            display: none; margin-top: 10px;
+        }
+        .analyze-error.show { display: block; }
+
+        .az-hero {
+            background: #fff; border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 20px 24px; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .az-code  { font-size: 1.8rem; font-weight: 900; color: var(--primary-color); font-family: monospace; letter-spacing: 2px; line-height: 1; }
+        .az-name  { font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 2px 0 8px; }
+        .az-tags  { display: flex; flex-wrap: wrap; gap: 5px; }
+        .az-tag   { font-size: 0.7rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
+        .az-tag-ai   { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+        .az-tag-buy  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .az-tag-bolt { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
+        .az-tag-none { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--text-sub); }
+
+        .az-hero-right { text-align: right; }
+        .az-price  { font-size: 2rem; font-weight: 900; font-family: monospace; color: var(--text-main); }
+        .az-price span { font-size: 0.9rem; color: var(--text-sub); font-weight: 400; }
+        .az-change { font-size: 0.9rem; font-weight: 700; font-family: monospace; margin-top: 4px; }
+        .az-change.up { color: #059669; }
+        .az-change.dn { color: #dc2626; }
+        .az-vwap   { font-size: 0.72rem; color: var(--text-sub); margin-top: 3px; font-family: monospace; }
+
+        .az-body-grid { display: grid; grid-template-columns: 280px 1fr; gap: 12px; margin-bottom: 12px; }
+        @media (max-width: 768px) { .az-body-grid { grid-template-columns: 1fr; } }
+
+        .az-score-card {
+            background: #fff; border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .az-score-label { font-size: 0.7rem; color: var(--text-sub); letter-spacing: 2px; font-weight: 600; margin-bottom: 10px; }
+        .az-score-num   { font-size: 3rem; font-weight: 900; font-family: monospace; line-height: 1; margin-bottom: 10px; }
+        .az-score-num.s-great { color: #059669; }
+        .az-score-num.s-good  { color: var(--primary-color); }
+        .az-score-num.s-mid   { color: #d97706; }
+        .az-score-num.s-low   { color: #dc2626; }
+
+        .az-bar-wrap { background: #f1f5f9; border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 14px; }
+        .az-bar-fill { height: 100%; border-radius: 999px; transition: width 0.7s cubic-bezier(0.34,1.56,0.64,1); width: 0%; }
+        .fill-great { background: linear-gradient(90deg, #34d399, #6ee7b7); }
+        .fill-good  { background: linear-gradient(90deg, #3b82f6, #7dd3fc); }
+        .fill-mid   { background: linear-gradient(90deg, #f59e0b, #fde68a); }
+        .fill-low   { background: linear-gradient(90deg, #ef4444, #fca5a5); }
+
+        .az-verdict { font-size: 0.82rem; font-weight: 700; padding: 10px 14px; border-radius: 10px; line-height: 1.6; }
+        .verdict-great { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .verdict-good  { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+        .verdict-mid   { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+        .verdict-low   { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+
+        .az-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 480px) { .az-metrics-grid { grid-template-columns: 1fr; } }
+
+        .az-metric-card {
+            background: #fff; border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            position: relative; overflow: hidden;
+        }
+        .az-metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+        .mc-vol::before   { background: linear-gradient(90deg, #3b82f6, transparent); }
+        .mc-price::before { background: linear-gradient(90deg, #10b981, transparent); }
+        .mc-bolt::before  { background: linear-gradient(90deg, #ef4444, transparent); }
+        .mc-fund::before  { background: linear-gradient(90deg, #f59e0b, transparent); }
+
+        .az-metric-title {
+            font-size: 0.68rem; color: var(--text-sub); letter-spacing: 2px;
+            font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 5px;
+        }
+        .az-mri { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #f1f5f9; }
+        .az-mri:last-child { border-bottom: none; }
+        .az-mri-key { font-size: 0.76rem; color: var(--text-sub); }
+        .az-mri-val { font-size: 0.88rem; font-weight: 700; font-family: monospace; color: var(--text-main); display: flex; align-items: center; gap: 4px; }
+        .az-mri-val.up   { color: #059669; }
+        .az-mri-val.dn   { color: #dc2626; }
+        .az-mri-val.hi   { color: var(--primary-color); }
+        .az-mri-val.warn { color: #d97706; }
+        .az-pip { display: inline-block; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .pip-green  { background: #10b981; box-shadow: 0 0 4px #10b981; }
+        .pip-red    { background: #ef4444; }
+        .pip-yellow { background: #f59e0b; }
+        .pip-gray   { background: #cbd5e1; }
+
+        .az-breakdown {
+            background: #fff; border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 18px 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+        .az-breakdown-title { font-size: 0.7rem; color: var(--text-sub); letter-spacing: 3px; font-weight: 700; margin-bottom: 12px; }
+        .az-bd-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .az-bd-item:last-child { margin-bottom: 0; }
+        .az-bd-label    { font-size: 0.76rem; color: var(--text-sub); flex: 1; min-width: 0; }
+        .az-bd-bar-wrap { flex: 2; background: #f1f5f9; border-radius: 999px; height: 5px; overflow: hidden; }
+        .az-bd-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
+        .az-bd-score    { font-size: 0.76rem; font-family: monospace; font-weight: 700; color: var(--text-main); width: 46px; text-align: right; flex-shrink: 0; }
+
+        /* ===== AI MIKA 厳選銘柄セクション ===== */
+        .mika-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
+        .mika-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .mika-section-title {
+            font-size: 1.05rem; font-weight: 900; color: var(--text-main);
+            letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
+        }
+        .mika-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: linear-gradient(135deg, #1e3a5f, #1d4ed8);
+            color: #fff; font-size: 0.75rem; font-weight: 800;
+            padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
+        }
+        .mika-picks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        @media (max-width: 768px) { .mika-picks-grid { grid-template-columns: 1fr; } }
+
+        .mika-pick-card {
+            background: #fff; border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 18px 20px; box-shadow: 0 4px 10px -2px rgba(0,0,0,0.08);
+            position: relative; overflow: hidden;
+            transition: box-shadow 0.2s, transform 0.2s;
+            animation: mikaSlideIn 0.4s ease forwards; opacity: 0; transform: translateY(10px);
+        }
+        .mika-pick-card:nth-child(1) { animation-delay: 0.05s; }
+        .mika-pick-card:nth-child(2) { animation-delay: 0.15s; }
+        .mika-pick-card:nth-child(3) { animation-delay: 0.25s; }
+        @keyframes mikaSlideIn { to { opacity: 1; transform: translateY(0); } }
+        .mika-pick-card:hover { box-shadow: 0 8px 20px -4px rgba(59,130,246,0.18); transform: translateY(-2px); }
+        .mika-pick-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+        .mika-pick-card.rank-1::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .mika-pick-card.rank-2::before { background: linear-gradient(90deg, #9ca3af, #d1d5db); }
+        .mika-pick-card.rank-3::before { background: linear-gradient(90deg, #92400e, #b45309); }
+
+        .mika-rank-label { font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .mika-pick-card.rank-1 .mika-rank-label { color: #b45309; }
+        .mika-pick-card.rank-2 .mika-rank-label { color: #6b7280; }
+        .mika-pick-card.rank-3 .mika-rank-label { color: #78350f; }
+
+        .mika-code { font-size: 1.5rem; font-weight: 900; color: var(--primary-color); letter-spacing: 1px; line-height: 1; margin-bottom: 2px; }
+        .mika-name { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mika-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+        .mika-tag  { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+        .mika-tag-ai   { background: rgba(59,130,246,0.1); border: 1px solid #bfdbfe; color: #1d4ed8; }
+        .mika-tag-bolt { background: rgba(239,68,68,0.08); border: 1px solid #fecaca; color: #dc2626; }
+        .mika-tag-buy  { background: rgba(16,185,129,0.1); border: 1px solid #a7f3d0; color: #065f46; }
+
+        .mika-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .mika-metric  { background: #f8fafc; border-radius: 8px; padding: 7px 10px; }
+        .mika-metric-key { font-size: 0.65rem; color: var(--text-sub); letter-spacing: 1px; margin-bottom: 2px; font-weight: 600; }
+        .mika-metric-val { font-size: 1rem; font-weight: 800; color: var(--text-main); font-family: monospace; }
+        .mika-metric-val.up   { color: #059669; }
+        .mika-metric-val.dn   { color: #dc2626; }
+        .mika-metric-val.cyan { color: var(--primary-color); }
+
+        .mika-empty { grid-column: 1 / -1; background: #fff; border: 1px dashed var(--border-color); border-radius: 16px; padding: 32px; text-align: center; color: var(--text-sub); }
+        .mika-empty-icon { font-size: 2rem; margin-bottom: 10px; }
+        .mika-empty-text { font-size: 0.95rem; font-weight: 700; color: var(--text-sub); }
+        .mika-empty-sub  { font-size: 0.8rem; color: #94a3b8; margin-top: 6px; }
+
+        /* ===== テーブル ===== */
         .table-container { width: 95%; max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
         thead th { position: sticky; top: 0; z-index: 10; background: #f8fafc; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
         td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
-
         tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
         .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; border: 1px solid var(--buy-border); border-radius: 6px; padding: 3px 10px; font-size: 0.8rem; }
         .bolt-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.10); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 2px 8px; }
@@ -149,6 +352,108 @@
     </ul>
 </div>
 
+<!-- ===== AI MIKA 厳選銘柄 ===== -->
+<div class="mika-section">
+    <div class="mika-section-header">
+        <div class="mika-section-title">
+            <i class="fa-solid fa-robot" style="color:var(--primary-color);"></i>
+            AI MIKA 厳選銘柄
+            <span class="mika-badge"><i class="fa-solid fa-bolt"></i> TOP 3</span>
+        </div>
+    </div>
+    <div class="mika-picks-grid" id="mika-picks">
+        <div class="mika-empty">
+            <div class="mika-empty-icon">📡</div>
+            <div class="mika-empty-text">データ読み込み中...</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 個別銘柄分析 ===== -->
+<div class="analyze-section">
+    <div class="analyze-section-header">
+        <div class="analyze-section-title">
+            <i class="fa-solid fa-magnifying-glass-chart" style="color:var(--primary-color);"></i>
+            個別銘柄 クイック分析
+        </div>
+        <span class="beta-badge">🧪 試験運転中</span>
+    </div>
+
+    <!-- 注意書き -->
+    <div class="analyze-notice">
+        <strong><i class="fa-solid fa-triangle-exclamation"></i> ご利用前にお読みください</strong>
+        <ul>
+            <li><strong>当サイトの監視リストに登録された銘柄のみ</strong>対応しています。リスト外の銘柄コードを入力しても結果は表示されません。</li>
+            <li>データは<strong>約5分ごとに更新</strong>されます。取引時間外（夜間・休日）はデータが古い状態のため、スコアは参考程度にとどめてください。</li>
+            <li>スコアはあらかじめ決めたルールによる自動計算です。<strong>投資の最終判断はご自身の責任</strong>でお願いします。</li>
+        </ul>
+    </div>
+
+    <div class="analyze-input-row">
+        <input
+            type="text"
+            id="az-code-input"
+            class="analyze-code-input"
+            placeholder="7203"
+            maxlength="5"
+            inputmode="numeric"
+            autocomplete="off"
+        >
+        <button class="analyze-btn" onclick="doAnalyze()">
+            <i class="fa-solid fa-bolt"></i> 分析する
+        </button>
+    </div>
+    <div class="analyze-error" id="az-error"></div>
+    <div class="analyze-result" id="az-result">
+
+        <div class="az-hero">
+            <div class="az-hero-left">
+                <div class="az-code" id="az-r-code"></div>
+                <div class="az-name"  id="az-r-name"></div>
+                <div class="az-tags"  id="az-r-tags"></div>
+            </div>
+            <div class="az-hero-right">
+                <div class="az-price"  id="az-r-price"></div>
+                <div class="az-change" id="az-r-change"></div>
+                <div class="az-vwap"   id="az-r-vwap"></div>
+            </div>
+        </div>
+
+        <div class="az-body-grid">
+            <div class="az-score-card">
+                <div class="az-score-label">総合スコア（100点満点）</div>
+                <div class="az-score-num" id="az-r-score"></div>
+                <div class="az-bar-wrap"><div class="az-bar-fill" id="az-r-bar"></div></div>
+                <div class="az-verdict"   id="az-r-verdict"></div>
+            </div>
+            <div class="az-metrics-grid">
+                <div class="az-metric-card mc-vol">
+                    <div class="az-metric-title"><i class="fa-solid fa-chart-bar"></i> 出来高・RVOL</div>
+                    <div id="az-m-vol"></div>
+                </div>
+                <div class="az-metric-card mc-price">
+                    <div class="az-metric-title"><i class="fa-solid fa-arrow-trend-up"></i> 価格・VWAP</div>
+                    <div id="az-m-price"></div>
+                </div>
+                <div class="az-metric-card mc-bolt">
+                    <div class="az-metric-title"><i class="fa-solid fa-bolt"></i> BOLT判定</div>
+                    <div id="az-m-bolt"></div>
+                </div>
+                <div class="az-metric-card mc-fund">
+                    <div class="az-metric-title"><i class="fa-solid fa-building-columns"></i> ファンダ概要</div>
+                    <div id="az-m-fund"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="az-breakdown">
+            <div class="az-breakdown-title">採点内訳</div>
+            <div id="az-r-breakdown"></div>
+        </div>
+
+    </div>
+</div>
+
 <div class="color-legend">
     <span class="color-box"></span> <span>この色の背景は<strong>AIスコアクリア銘柄</strong>です。</span>
     <div class="full-width">※判定は<strong>9：15以降</strong>です</div>
@@ -168,86 +473,336 @@ function formatNum(val) {
     return val.includes('.') ? val : n.toLocaleString();
 }
 
-async function loadCSV(){
-    try{
-        const response = await fetch('data_push.csv',{cache:"no-store"});
-        const data = await response.text();
-        const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="");
+function getMikaPicks(stocks) {
+    const isBuy  = s => s.sign === '🔥買い' || s.sign === '買いサイン' || s.sign === '🔥';
+    const rvolOk = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol) >= 1.5;
+    const picks  = stocks.filter(s => isBuy(s) && rvolOk(s));
+    picks.sort((a, b) => b.corrA3 - a.corrA3);
+    return picks.slice(0, 3);
+}
+
+const RANK_LABELS = ['🥇 BEST', '🥈 2ND', '🥉 3RD'];
+
+function renderMikaPicks(picks) {
+    const container = document.getElementById('mika-picks');
+    if (!picks || picks.length === 0) {
+        container.innerHTML = `
+            <div class="mika-empty">
+                <div class="mika-empty-icon">📭</div>
+                <div class="mika-empty-text">現在、厳選銘柄はありません</div>
+                <div class="mika-empty-sub">条件：補正RVOL≥1.5 ／ 買い判定あり</div>
+            </div>`;
+        return;
+    }
+    container.innerHTML = picks.map((s, i) => {
+        const rvolVal   = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+        const isAi      = s.kubun === '区分１' || s.kubun === '区分1';
+        const tags      = [];
+        if (isAi) tags.push('<span class="mika-tag mika-tag-ai">★AIクリア</span>');
+        tags.push('<span class="mika-tag mika-tag-buy">🔥買い判定</span>');
+        if (s.bolt === 'BOLT!') tags.push(`<span class="mika-tag mika-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
+        const vwapClass   = s.vwapDiff >= 0 ? 'up' : 'dn';
+        const changeClass = s.changePct >= 0 ? 'up' : 'dn';
+        return `
+        <div class="mika-pick-card rank-${i+1}">
+            <div class="mika-rank-label">${RANK_LABELS[i]}</div>
+            <div class="mika-code">${s.code}</div>
+            <div class="mika-name">${s.name}</div>
+            <div class="mika-tags">${tags.join('')}</div>
+            <div class="mika-metrics">
+                <div class="mika-metric"><div class="mika-metric-key">補正A3</div><div class="mika-metric-val cyan">${s.corrA3 || '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">補正RVOL</div><div class="mika-metric-val up">${rvolVal.toFixed(2)}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">VWAP乖離</div><div class="mika-metric-val ${vwapClass}">${s.vwapDiff >= 0 ? '+' : ''}${s.vwapDiff}%</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">変化率</div><div class="mika-metric-val ${changeClass}">${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%</div></div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ===== CSV全カラムパース =====
+function parseFullStocks(rows) {
+    const result = [];
+    for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.startsWith('Update:')) continue;
+        const c = row.split(',').map(v => v.replace(/"/g, '').trim());
+        if (!c[0]) continue;
+        const price = parseFloat(c[2]) || 0;
+        const vwap  = parseFloat(c[5]) || 0;
+        result.push({
+            code:      c[0],
+            name:      c[1] || '−',
+            price,
+            vwap,
+            vwapDiff:  vwap > 0 ? +((price - vwap) / vwap * 100).toFixed(2) : 0,
+            priceDiff: parseFloat(c[3]) || 0,
+            changePct: parseFloat(c[4]) || 0,
+            volume:    parseFloat(c[6]) || 0,
+            vol5min:   parseFloat(c[7]) || 0,
+            avgVol20:  parseFloat(c[9]) || 0,
+            rvol:      parseFloat(c[10]) || 0,
+            corrRvol:  parseFloat(c[11]) || 0,
+            sign:      c[12] || '',
+            bolt:      c[13] || '',
+            boltCount: parseInt(c[14]) || 0,
+            kubun:     c[15] || '',
+            scoreA3:   parseFloat(c[16]) || 0,
+            corrA3:    parseFloat(c[17]) || 0,
+            gapRatio:  parseFloat(c[18]) || 0,
+            per:       parseFloat(c[19]) || 0,
+            pbr:       parseFloat(c[20]) || 0,
+            eigyo:     parseFloat(c[21]) || 0,
+            growth:    parseFloat(c[22]) || 0,
+            netCash:   parseFloat(c[23]) || 0,
+            shinyo:    parseFloat(c[24]) || 0,
+        });
+    }
+    return result;
+}
+
+let latestStocks = [];
+
+// ===== 個別銘柄分析 =====
+function doAnalyze() {
+    const raw = document.getElementById('az-code-input').value.trim();
+    document.getElementById('az-error').classList.remove('show');
+    document.getElementById('az-result').classList.remove('show');
+
+    if (!raw) { showAzError('銘柄コードを入力してください'); return; }
+    if (latestStocks.length === 0) { showAzError('CSVデータがまだ読み込まれていません。しばらくお待ちください。'); return; }
+
+    const stock = latestStocks.find(s => s.code === raw);
+    if (!stock) {
+        showAzError(`「${raw}」は監視リストに含まれていません。当サイト掲載銘柄のみ分析できます。`);
+        return;
+    }
+    renderAnalyze(stock);
+    document.getElementById('az-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const inp = document.getElementById('az-code-input');
+    if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAnalyze(); });
+});
+
+function showAzError(msg) {
+    const el = document.getElementById('az-error');
+    el.textContent = '⚠ ' + msg;
+    el.classList.add('show');
+}
+
+function azCalcScores(s) {
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const isBuy   = s.sign.includes('買い') || s.sign.includes('🔥');
+    const items   = [];
+
+    let rvolPt = 0;
+    if (rvolVal >= 3.0)      rvolPt = 25;
+    else if (rvolVal >= 2.0) rvolPt = 18;
+    else if (rvolVal >= 1.5) rvolPt = 12;
+    else if (rvolVal >= 1.0) rvolPt = 6;
+    items.push({ label: '出来高勢い（RVOL）', pt: rvolPt, max: 25, color: '#3b82f6' });
+
+    items.push({ label: '買い判定', pt: isBuy ? 20 : 0, max: 20, color: '#10b981' });
+
+    let boltPt = Math.min((s.bolt === 'BOLT!' ? 8 : 0) + s.boltCount * 4, 20);
+    items.push({ label: 'BOLT回数・判定', pt: boltPt, max: 20, color: '#ef4444' });
+
+    let vwapPt = 0;
+    if (s.vwapDiff > 2)       vwapPt = 15;
+    else if (s.vwapDiff > 0)  vwapPt = 10;
+    else if (s.vwapDiff > -1) vwapPt = 4;
+    items.push({ label: 'VWAP位置', pt: vwapPt, max: 15, color: '#8b5cf6' });
+
+    let fundPt = 0;
+    if (s.corrA3 > 0) fundPt += Math.min(s.corrA3 * 0.4, 10);
+    if (s.eigyo > 5)  fundPt += Math.min(s.eigyo * 0.3, 4);
+    if (s.pbr > 0 && s.pbr < 1) fundPt += 4;
+    else if (s.pbr > 0 && s.pbr < 2) fundPt += 2;
+    if (s.shinyo > 0 && s.shinyo < 3) fundPt += 2;
+    items.push({ label: 'ファンダメンタルズ', pt: Math.min(Math.round(fundPt), 20), max: 20, color: '#f59e0b' });
+
+    const total = Math.min(items.reduce((a, b) => a + b.pt, 0), 100);
+    return { items, total };
+}
+
+function azMri(rows) {
+    return rows.map(r => `
+        <div class="az-mri">
+            <div class="az-mri-key">${r.key}</div>
+            <div class="az-mri-val ${r.cls || ''}">
+                ${r.pip ? `<span class="az-pip ${r.pip}"></span>` : ''}${r.val}
+            </div>
+        </div>`).join('');
+}
+
+function azVol(n) {
+    if (!n) return '−';
+    if (n >= 10000) return (n / 10000).toFixed(1) + '万株';
+    return n.toLocaleString() + '株';
+}
+
+function renderAnalyze(s) {
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const isBuy   = s.sign.includes('買い') || s.sign.includes('🔥');
+    const isAi    = s.kubun === '区分１' || s.kubun === '区分1';
+    const isBolt  = s.bolt === 'BOLT!';
+    const rvolOk  = rvolVal >= 1.5;
+
+    document.getElementById('az-r-code').textContent = s.code;
+    document.getElementById('az-r-name').textContent = s.name;
+    document.getElementById('az-r-price').innerHTML  = s.price.toLocaleString() + '<span style="font-size:0.9rem;color:var(--text-sub);margin-left:4px;">円</span>';
+
+    const chSign = s.changePct >= 0 ? '+' : '';
+    const chEl   = document.getElementById('az-r-change');
+    chEl.textContent = `${chSign}${s.priceDiff.toLocaleString()}円 (${chSign}${s.changePct.toFixed(2)}%)`;
+    chEl.className   = 'az-change ' + (s.changePct >= 0 ? 'up' : 'dn');
+
+    const vSgn = s.vwapDiff >= 0 ? '▲' : '▼';
+    document.getElementById('az-r-vwap').textContent = `VWAP ${s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−'}  ${vSgn}${Math.abs(s.vwapDiff)}%`;
+
+    const tags = [];
+    if (isAi)   tags.push('<span class="az-tag az-tag-ai">★AIクリア</span>');
+    if (isBuy)  tags.push('<span class="az-tag az-tag-buy">🔥買い判定</span>');
+    if (isBolt) tags.push(`<span class="az-tag az-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
+    if (!isBuy && !isBolt) tags.push('<span class="az-tag az-tag-none">待機中</span>');
+    document.getElementById('az-r-tags').innerHTML = tags.join('');
+
+    const { items, total } = azCalcScores(s);
+    let sClass, fClass, vClass, vText;
+    if (total >= 75) {
+        sClass = 's-great'; fClass = 'fill-great'; vClass = 'verdict-great';
+        vText  = '🟢 <strong>強い買い候補</strong>　複数シグナル点灯。VWAP付近での拾いや追撃を検討できます。';
+    } else if (total >= 50) {
+        sClass = 's-good'; fClass = 'fill-good'; vClass = 'verdict-good';
+        vText  = '🔵 <strong>注目銘柄</strong>　シグナルが出始めています。もう一押しで仕掛けどころになる可能性があります。';
+    } else if (total >= 25) {
+        sClass = 's-mid'; fClass = 'fill-mid'; vClass = 'verdict-mid';
+        vText  = '🟡 <strong>様子見</strong>　出来高・判定ともに弱め。シグナルが揃うまで待つのが得策です。';
+    } else {
+        sClass = 's-low'; fClass = 'fill-low'; vClass = 'verdict-low';
+        vText  = '🔴 <strong>見送り推奨</strong>　現時点では積極的なエントリー根拠が少ない状態です。';
+    }
+
+    document.getElementById('az-r-score').textContent = total + 'pt';
+    document.getElementById('az-r-score').className   = 'az-score-num ' + sClass;
+    document.getElementById('az-r-verdict').innerHTML = vText;
+    document.getElementById('az-r-verdict').className = 'az-verdict ' + vClass;
+
+    setTimeout(() => {
+        const bar = document.getElementById('az-r-bar');
+        bar.className   = 'az-bar-fill ' + fClass;
+        bar.style.width = total + '%';
+    }, 80);
+
+    document.getElementById('az-m-vol').innerHTML = azMri([
+        { key: '当日出来高',     val: azVol(s.volume),   cls: '' },
+        { key: '20日平均出来高', val: azVol(s.avgVol20), cls: '' },
+        { key: 'RVOL（補正）',   val: rvolVal.toFixed(2) + 'x', cls: rvolOk ? 'up' : 'warn', pip: rvolOk ? 'pip-green' : 'pip-yellow' },
+    ]);
+    document.getElementById('az-m-price').innerHTML = azMri([
+        { key: '現在値',    val: s.price.toLocaleString() + '円', cls: '' },
+        { key: 'VWAP',     val: s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−', cls: '' },
+        { key: 'VWAP乖離', val: (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%', cls: s.vwapDiff >= 0 ? 'up' : 'dn', pip: s.vwapDiff >= 0 ? 'pip-green' : 'pip-red' },
+    ]);
+    document.getElementById('az-m-bolt').innerHTML = azMri([
+        { key: 'BOLT判定', val: isBolt ? '⚡ BOLT!' : '−',                   cls: isBolt ? 'hi' : '',  pip: isBolt ? 'pip-green' : 'pip-gray' },
+        { key: 'BOLT回数', val: s.boltCount > 0 ? s.boltCount + '回' : '−',  cls: s.boltCount > 0 ? 'hi' : '' },
+        { key: '買い判定', val: isBuy ? s.sign : '−',                        cls: isBuy ? 'up' : '',   pip: isBuy ? 'pip-green' : 'pip-gray' },
+    ]);
+    document.getElementById('az-m-fund').innerHTML = azMri([
+        { key: '補正A3スコア', val: s.corrA3 || '−',                                         cls: s.corrA3 > 60 ? 'up' : '' },
+        { key: 'PBR',         val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−',              cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
+        { key: '信用倍率',    val: s.shinyo > 0 ? s.shinyo.toFixed(1) + '倍' : '−',        cls: s.shinyo > 0 && s.shinyo < 3 ? 'up' : s.shinyo > 5 ? 'dn' : '' },
+    ]);
+
+    document.getElementById('az-r-breakdown').innerHTML = items.map(it => `
+        <div class="az-bd-item">
+            <div class="az-bd-label">${it.label}</div>
+            <div class="az-bd-bar-wrap">
+                <div class="az-bd-bar-fill" style="background:${it.color};width:0%;" data-w="${(it.pt/it.max*100).toFixed(0)}%"></div>
+            </div>
+            <div class="az-bd-score">${it.pt}/${it.max}</div>
+        </div>`).join('');
+
+    setTimeout(() => {
+        document.querySelectorAll('.az-bd-bar-fill').forEach(el => { el.style.width = el.dataset.w; });
+    }, 100);
+
+    document.getElementById('az-result').classList.add('show');
+}
+
+// ===== CSV読み込み & テーブル描画 =====
+async function loadCSV() {
+    try {
+        const response = await fetch('data_push.csv', { cache: "no-store" });
+        const data     = await response.text();
+        const rows     = data.split(/\r?\n/).filter(r => r.trim() !== "");
         renderTable(rows);
+        latestStocks = parseFullStocks(rows);
+        renderMikaPicks(getMikaPicks(latestStocks));
         document.getElementById('last-load').textContent = '取得: ' + new Date().toLocaleTimeString();
-    } catch(e) { console.error(e) }
+    } catch(e) { console.error(e); }
 }
 
 function renderTable(rows) {
     const tableHeader = document.getElementById('table-header');
-    const tableBody = document.getElementById('table-body');
+    const tableBody   = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
-
     const hideIndices = [3, 7, 8, 15];
     let stockCount = 0;
 
     rows.forEach((row, index) => {
-        if(row.includes("Update:")){
-            document.getElementById('csv-update-time').innerHTML = '<span style="font-size:0.85rem; color:var(--text-sub); font-weight:normal;">最終更新:</span> ' + row.split(',')[0].replace("Update:","").trim();
+        if (row.includes("Update:")) {
+            document.getElementById('csv-update-time').innerHTML =
+                '<span style="font-size:0.85rem; color:var(--text-sub); font-weight:normal;">最終更新:</span> ' +
+                row.split(',')[0].replace("Update:", "").trim();
             return;
         }
         const columns = row.split(',');
         const tr = document.createElement('tr');
-
-        if(index !== 0) {
-            if (columns[15] === "1") tr.classList.add('row-highlight');
-        }
+        if (index !== 0 && columns[15] === "1") tr.classList.add('row-highlight');
 
         const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
-        if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
+        if (index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
         else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
         tr.appendChild(noCell);
 
-        for(let i = 0; i <= 14; i++) {
-            if(hideIndices.includes(i)) continue;
+        for (let i = 0; i <= 14; i++) {
+            if (hideIndices.includes(i)) continue;
             const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
-            let val = (columns[i] || "").replace(/"/g,'').trim();
+            let val = (columns[i] || "").replace(/"/g, '').trim();
 
-            if(index === 0) {
+            if (index === 0) {
                 cell.textContent = val;
             } else {
-                if (i === 4) { // 前日比率
+                if (i === 4) {
                     let num = parseFloat(val);
                     cell.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
-                }
-                else if (i === 5 || i === 2) { // 現在値、出来高
+                } else if (i === 5 || i === 2) {
                     let num = parseFloat(val.replace(/,/g, ''));
                     cell.textContent = isNaN(num) ? val : num.toLocaleString();
-                }
-                else if (i === 11) { // 判定
+                } else if (i === 11) {
                     cell.textContent = val;
-                    if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
-                }
-                else if (i === 13) { // ボルト判定
-                    if(val === "BOLT!") {
-                        cell.innerHTML = '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>';
-                    } else {
-                        cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
-                    }
-                }
-                else if (i === 14) { // ボルト回数
+                    if (val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
+                } else if (i === 13) {
+                    cell.innerHTML = val === "BOLT!"
+                        ? '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>'
+                        : '<span style="color:var(--text-sub)">—</span>';
+                } else if (i === 14) {
                     let count = parseInt(val);
-                    if(!isNaN(count) && count > 0) {
-                        cell.innerHTML = '<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>' + count + '回</span>';
-                    } else {
-                        cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
-                    }
-                }
-                else if (i === 0) { // コード列
+                    cell.innerHTML = (!isNaN(count) && count > 0)
+                        ? `<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>${count}回</span>`
+                        : '<span style="color:var(--text-sub)">—</span>';
+                } else if (i === 0) {
                     cell.textContent = val;
-                }
-                else {
+                } else {
                     cell.textContent = formatNum(val);
                 }
             }
             tr.appendChild(cell);
         }
-        if(index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
+        if (index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
     });
 }
 
