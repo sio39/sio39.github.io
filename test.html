@@ -1,838 +1,267 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI MIKA 銘柄分析ツール</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Share+Tech+Mono&display=swap');
-
-  :root {
-    --bg: #0a0a0f;
-    --panel: #0f0f1a;
-    --border: #1a1a2e;
-    --accent: #00ffe0;
-    --accent2: #ff3fa4;
-    --accent3: #ffe03f;
-    --text: #e0e0f0;
-    --dim: #555577;
-    --gold: #ffd700;
-    --red: #ff4444;
-    --green: #00ff88;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    min-height: 100vh;
-    padding: 20px;
-    background-image: 
-      radial-gradient(ellipse at 10% 20%, rgba(0,255,224,0.04) 0%, transparent 50%),
-      radial-gradient(ellipse at 90% 80%, rgba(255,63,164,0.04) 0%, transparent 50%);
-  }
-
-  header {
-    text-align: center;
-    padding: 30px 0 20px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
-  }
-
-  .logo {
-    font-size: 11px;
-    letter-spacing: 6px;
-    color: var(--accent);
-    font-family: 'Share Tech Mono', monospace;
-    margin-bottom: 8px;
-  }
-
-  h1 {
-    font-size: 28px;
-    font-weight: 900;
-    color: #fff;
-    letter-spacing: 2px;
-  }
-
-  h1 span { color: var(--accent); }
-
-  .subtitle {
-    font-size: 12px;
-    color: var(--dim);
-    margin-top: 6px;
-    font-family: 'Share Tech Mono', monospace;
-  }
-
-  /* CSV入力エリア */
-  .input-section {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--accent);
-    font-family: 'Share Tech Mono', monospace;
-    margin-bottom: 12px;
-  }
-
-  .csv-url-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-
-  input[type="text"] {
-    flex: 1;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    color: var(--text);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  input[type="text"]:focus { border-color: var(--accent); }
-
-  .btn {
-    background: transparent;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    letter-spacing: 1px;
-  }
-
-  .btn:hover {
-    background: var(--accent);
-    color: var(--bg);
-  }
-
-  .btn-primary {
-    border-color: var(--accent2);
-    color: var(--accent2);
-    font-size: 14px;
-    padding: 14px 32px;
-  }
-
-  .btn-primary:hover {
-    background: var(--accent2);
-    color: #fff;
-  }
-
-  .btn-primary:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  /* 選定基準設定 */
-  .criteria-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .criteria-item {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-  }
-
-  .criteria-item label {
-    font-size: 11px;
-    color: var(--dim);
-    letter-spacing: 2px;
-    display: block;
-    margin-bottom: 6px;
-  }
-
-  .priority-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-  }
-
-  .priority-badge {
-    background: var(--border);
-    color: var(--accent);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-
-  select, input[type="number"] {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 10px;
-    color: var(--text);
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: 12px;
-    outline: none;
-    width: 100%;
-  }
-
-  input[type="number"] { width: 80px; }
-
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-  }
-
-  .toggle {
-    position: relative;
-    width: 40px;
-    height: 22px;
-  }
-
-  .toggle input { opacity: 0; width: 0; height: 0; }
-
-  .slider {
-    position: absolute;
-    inset: 0;
-    background: var(--border);
-    border-radius: 22px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .slider:before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    left: 3px;
-    top: 3px;
-    background: var(--dim);
-    border-radius: 50%;
-    transition: 0.2s;
-  }
-
-  input:checked + .slider { background: rgba(0,255,224,0.2); }
-  input:checked + .slider:before {
-    transform: translateX(18px);
-    background: var(--accent);
-  }
-
-  /* 実行ボタンエリア */
-  .run-section {
-    text-align: center;
-    margin: 20px 0;
-  }
-
-  /* ローディング */
-  .loading {
-    display: none;
-    text-align: center;
-    padding: 40px;
-  }
-
-  .loading.active { display: block; }
-
-  .loading-text {
-    font-family: 'Share Tech Mono', monospace;
-    color: var(--accent);
-    font-size: 13px;
-    animation: blink 1s infinite;
-  }
-
-  @keyframes blink { 50% { opacity: 0.3; } }
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 16px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* 結果エリア */
-  .results { display: none; }
-  .results.active { display: block; }
-
-  .result-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .result-title {
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--accent2);
-    font-family: 'Share Tech Mono', monospace;
-  }
-
-  .timestamp {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--dim);
-  }
-
-  /* 銘柄カード */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    animation: fadeIn 0.4s ease forwards;
-    opacity: 0;
-  }
-
-  .card:nth-child(1) { animation-delay: 0.1s; border-color: rgba(255,215,0,0.3); }
-  .card:nth-child(2) { animation-delay: 0.2s; border-color: rgba(192,192,192,0.2); }
-  .card:nth-child(3) { animation-delay: 0.3s; }
-
-  @keyframes fadeIn {
-    to { opacity: 1; transform: translateY(0); }
-    from { opacity: 0; transform: translateY(12px); }
-  }
-
-  .card-rank {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 32px;
-    font-weight: 900;
-    opacity: 0.08;
-    color: #fff;
-  }
-
-  .rank-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    letter-spacing: 3px;
-    font-family: 'Share Tech Mono', monospace;
-    margin-bottom: 12px;
-  }
-
-  .card:nth-child(1) .rank-badge { color: var(--gold); }
-  .card:nth-child(2) .rank-badge { color: #c0c0c0; }
-  .card:nth-child(3) .rank-badge { color: #cd7f32; }
-
-  .card-code {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-
-  .card-name {
-    font-size: 16px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 16px;
-  }
-
-  .metrics {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 14px;
-  }
-
-  .metric {
-    background: var(--bg);
-    border-radius: 6px;
-    padding: 8px 10px;
-  }
-
-  .metric-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--dim);
-    margin-bottom: 3px;
-  }
-
-  .metric-value {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 15px;
-    font-weight: 700;
-  }
-
-  .bolt-on { color: var(--accent2); }
-  .bolt-count { color: var(--accent3); }
-  .rvol-val { color: var(--green); }
-  .score-val { color: var(--accent); }
-
-  .bolt-badge {
-    display: inline-block;
-    background: rgba(255,63,164,0.15);
-    border: 1px solid var(--accent2);
-    color: var(--accent2);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-  }
-
-  .reason {
-    font-size: 12px;
-    color: var(--dim);
-    line-height: 1.6;
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
-  }
-
-  /* AI分析テキスト */
-  .ai-analysis {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 12px 12px 0;
-    padding: 20px;
-    margin-top: 16px;
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--text);
-    white-space: pre-wrap;
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-  }
-
-  .ai-label {
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--accent);
-    font-family: 'Share Tech Mono', monospace;
-    margin-bottom: 10px;
-  }
-
-  /* エラー */
-  .error-box {
-    background: rgba(255,68,68,0.1);
-    border: 1px solid var(--red);
-    border-radius: 8px;
-    padding: 16px;
-    color: var(--red);
-    font-size: 13px;
-    display: none;
-    margin-top: 16px;
-  }
-
-  .error-box.active { display: block; }
-
-  /* データプレビュー */
-  .data-preview {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--dim);
-    margin-top: 8px;
-    padding: 8px 12px;
-    background: var(--bg);
-    border-radius: 6px;
-    display: none;
-  }
-
-  .data-preview.active { display: block; }
-
-  @media (max-width: 600px) {
-    .criteria-grid { grid-template-columns: 1fr; }
-    .cards { grid-template-columns: 1fr; }
-    .csv-url-row { flex-direction: column; }
-  }
-</style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5JCN1FB7ML');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>銘柄リアルタイムボード | AIスコア投資研究所</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --level1-bg: #f0f9ff;
+            --level1-border: #bae6fd;
+            --buy-bg: rgba(239, 68, 68, 0.06);
+            --buy-text: #dc2626;
+            --buy-border: #ef4444;
+            --gold: #b45309;
+            --bolt-color: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: var(--bg-color); color: var(--text-main);
+            padding-top: 100px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            background: var(--header-bg); backdrop-filter: blur(8px);
+            z-index: 9999; border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center;
+        }
+        .header-container {
+            width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header-left { display: flex; align-items: center; gap: 40px; }
+        .logo { font-size: 22px; font-weight: 800; text-decoration: none; color: var(--text-main); letter-spacing: -0.5px; }
+        .logo span { color: var(--primary-color); }
+
+        nav { display: flex; gap: 5px; }
+        nav a { color: var(--text-sub); font-weight: 600; font-size: 15px; padding: 8px 16px; border-radius: 8px; text-decoration: none; transition: 0.2s; }
+        nav a:hover { background-color: #eff6ff; color: var(--primary-color); }
+        nav a.active { background-color: var(--primary-color); color: white; }
+
+        .header-sns { display: flex; align-items: center; gap: 10px; }
+        .sns-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; color: white !important; font-size: 18px; text-decoration: none; transition: 0.2s; }
+        .sns-icon.x { background: #14171a; }
+        .sns-icon.youtube { background: #ff0000; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
+
+        .title-area { text-align: center; margin-bottom: 30px; width: 100%; }
+        h1 { font-size: 2.2rem; font-weight: 900; margin: 0 0 10px 0; color: var(--text-main); letter-spacing: -0.5px; }
+        #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
+
+        .info-text { font-size: 0.9rem; width: 95%; max-width: 1100px; margin: 0 auto 30px; background: #fff; padding: 25px; border-radius: 16px; border-left: 6px solid var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        
+        /* 修正：flex-wrapを追加し、縦に並ぶように調整 */
+        .color-legend { 
+            width: 95%; 
+            max-width: 1100px; 
+            margin: 0 auto 15px; 
+            display: flex; 
+            flex-wrap: wrap; /* 折り返しを許可 */
+            align-items: center; 
+            gap: 12px; 
+            color: var(--text-sub); 
+            font-size: 0.85rem; 
+        }
+        .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
+        /* 修正：2行目を強制的に新しい行にするためのスタイル */
+        .full-width { width: 100%; margin-top: 5px; }
+
+        .table-container { width: 95%; max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
+        thead th { position: sticky; top: 0; z-index: 10; background: #f8fafc; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
+        td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
+
+        tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
+        .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; border: 1px solid var(--buy-border); border-radius: 6px; padding: 3px 10px; font-size: 0.8rem; }
+        .bolt-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.10); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 2px 8px; }
+        .bolt-count-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.08); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.25); border-radius: 20px; padding: 2px 10px; }
+
+        @media (max-width: 768px) {
+            body { padding-top: 140px; }
+            .header { height: auto; padding: 10px 0; }
+            .header-container { flex-direction: column; gap: 10px; padding: 0 15px; }
+            .header-left { flex-direction: column; gap: 5px; width: 100%; }
+            nav { width: 100%; justify-content: center; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
+            nav a { font-size: 14px; padding: 6px 12px; white-space: nowrap; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">◆ AI MIKA SYSTEM ◆</div>
-  <h1>銘柄<span>分析</span>ツール</h1>
-  <div class="subtitle">BOLT × RVOL × A3SCORE → TOP 3 PICKS</div>
+<header class="header">
+    <div class="header-container">
+        <div class="header-left">
+            <a href="index.html" class="logo"><span>AI</span>スコア投資研究所</a>
+            <nav>
+                <a href="index.html">TOP</a>
+                <a href="BBS.html">BBS</a>
+                <a href="tool.html">ツール</a>
+                <a href="realtime.html" class="active">リアルボード</a>
+            </nav>
+        </div>
+        <div class="header-sns">
+            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note">n</a>
+        </div>
+    </div>
 </header>
 
-<!-- CSV設定 -->
-<div class="input-section">
-  <div class="section-label">▸ DATA SOURCE</div>
-  <div class="csv-url-row">
-    <input type="text" id="csvUrl" 
-      value="https://sio39.github.io/data_push.csv" 
-      placeholder="CSV URL を入力">
-    <button class="btn" onclick="loadCSV()">読み込む</button>
-  </div>
-  <div class="data-preview" id="dataPreview"></div>
+<div class="title-area">
+    <h1>銘柄リアルタイムボード</h1>
+    <div id="csv-update-time">読み込み中...</div>
+    <div id="last-load" style="font-size:0.75rem; color:var(--text-sub); margin-top:5px;"></div>
 </div>
 
-<!-- 選定基準 -->
-<div class="input-section">
-  <div class="section-label">▸ 選定基準（変更可能）</div>
-  <div class="criteria-grid">
-
-    <div class="criteria-item">
-      <div class="priority-row">
-        <span class="priority-badge">優先1</span>
-        <label style="margin:0">買いサイン・BOLT判定</label>
-      </div>
-      <div class="toggle-row">
-        <label class="toggle">
-          <input type="checkbox" id="boltRequired" checked>
-          <span class="slider"></span>
-        </label>
-        <span style="font-size:12px;color:var(--dim)">BOLT必須</span>
-      </div>
+<div class="info-text">
+    <div style="font-weight: 800; color: var(--primary-color); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size: 1.1rem;">
+        <i class="fa-solid fa-robot"></i> AI MIKA's Strategy (勝ちかた)
     </div>
-
-    <div class="criteria-item">
-      <div class="priority-row">
-        <span class="priority-badge">優先2</span>
-        <label style="margin:0">BOLT回数</label>
-      </div>
-      <select id="boltWeight">
-        <option value="high" selected>重視する（大口資金優先）</option>
-        <option value="medium">普通</option>
-        <option value="low">あまり重視しない</option>
-      </select>
-    </div>
-
-    <div class="criteria-item">
-      <div class="priority-row">
-        <span class="priority-badge">優先3</span>
-        <label style="margin:0">RVOL 最低ライン</label>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <input type="number" id="rvolMin" value="1.5" min="1" max="5" step="0.1">
-        <span style="font-size:12px;color:var(--dim)">以上</span>
-      </div>
-    </div>
-
-    <div class="criteria-item">
-      <div class="priority-row">
-        <span class="priority-badge">優先4</span>
-        <label style="margin:0">補正A3スコア</label>
-      </div>
-      <select id="scoreWeight">
-        <option value="high" selected>重視する</option>
-        <option value="medium">普通</option>
-        <option value="low">あまり重視しない</option>
-      </select>
-    </div>
-
-  </div>
-
-  <div class="criteria-item" style="margin-top:4px">
-    <label>📝 追加指示（任意）</label>
-    <input type="text" id="extraPrompt" placeholder="例：値上がり率がプラスのものだけ選んで" style="margin-top:8px">
-  </div>
+    <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: var(--text-sub);">
+        <li><strong style="color: var(--text-main);">VWAPで拾う：</strong> 勢いのある株がVWAPまで押してきた反発タイミングを狙う。</li>
+        <li><strong style="color: var(--text-main);">出来高をチェック：</strong> 押し目で出来高が減っていれば、売り圧力が弱い優良な押し目！</li>
+        <li><strong style="color: var(--text-main);">判定2 (BOLT!)：</strong> <span style="color: #ef4444; font-weight: bold;">⚡️サイン</span>は「今、強い買いが入った」証拠。スコアが良い時の追撃チャンス！</li>
+        <li><strong style="color: var(--text-main);">リスク管理：</strong> VWAPを明確に割ったら、撤退して次のチャンスを待つ。</li>
+    </ul>
 </div>
 
-<!-- 実行 -->
-<div class="run-section">
-  <button class="btn btn-primary" id="analyzeBtn" onclick="analyze()" disabled>
-    ⚡ AI MIKAが分析する
-  </button>
+<div class="color-legend">
+    <span class="color-box"></span> <span>この色の背景は<strong>AIスコアクリア銘柄</strong>です。</span>
+    <div class="full-width">※判定は<strong>9：15以降</strong>です</div>
 </div>
 
-<!-- ローディング -->
-<div class="loading" id="loading">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">MIKA分析中...</div>
-</div>
-
-<!-- エラー -->
-<div class="error-box" id="errorBox"></div>
-
-<!-- 結果 -->
-<div class="results" id="results">
-  <div class="result-header">
-    <div class="result-title">▸ AI MIKA 厳選ベスト3</div>
-    <div class="timestamp" id="timestamp"></div>
-  </div>
-
-  <div class="cards" id="cards"></div>
-
-  <div class="ai-label">▸ MIKA COMMENT</div>
-  <div class="ai-analysis" id="aiAnalysis"></div>
+<div class="table-container">
+    <table id="csv-table">
+        <thead id="table-header"></thead>
+        <tbody id="table-body"></tbody>
+    </table>
 </div>
 
 <script>
-let csvData = null;
-let parsedStocks = [];
-
-// CSV読み込み
-async function loadCSV() {
-  const url = document.getElementById('csvUrl').value.trim();
-  const preview = document.getElementById('dataPreview');
-  
-  try {
-    preview.className = 'data-preview';
-    preview.textContent = '読み込み中...';
-    preview.classList.add('active');
-
-    const res = await fetch(url + '?t=' + Date.now());
-    const text = await res.text();
-    csvData = text;
-    
-    const lines = text.split('\n').filter(l => l.trim());
-    parsedStocks = parseCSV(lines);
-    
-    preview.textContent = `✓ ${parsedStocks.length} 銘柄読み込み完了 | 最終更新: ${getUpdateTime(lines)}`;
-    document.getElementById('analyzeBtn').disabled = false;
-    showError('');
-  } catch(e) {
-    preview.textContent = '✗ 読み込み失敗: ' + e.message;
-    showError('CSVの読み込みに失敗しました。URLを確認してください。\n' + e.message);
-  }
+function formatNum(val) {
+    let n = parseFloat(val.replace(/,/g, ''));
+    if (isNaN(n)) return val;
+    return val.includes('.') ? val : n.toLocaleString();
 }
 
-function parseCSV(lines) {
-  const stocks = [];
-  const header = lines[0].split(',');
-  
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.startsWith('Update:')) continue;
-    const cols = line.split(',');
-    if (cols.length < 5 || !cols[0]) continue;
-    
-    const stock = {
-      code: cols[0]?.trim(),
-      name: cols[1]?.trim(),
-      price: parseFloat(cols[2]) || 0,
-      change: cols[3]?.trim(),
-      changePct: parseFloat(cols[4]) || 0,
-      volume: parseFloat(cols[6]) || 0,
-      rvol: parseFloat(cols[10]) || 0,
-      bolt: cols[13]?.trim(),
-      boltCount: parseInt(cols[14]) || 0,
-      scoreA3: parseFloat(cols[15]) || 0,
-      sign: cols[17]?.trim() || '',
-    };
-    
-    if (stock.code && stock.name) stocks.push(stock);
-  }
-  return stocks;
+async function loadCSV(){
+    try{
+        const response = await fetch('data_push.csv',{cache:"no-store"});
+        const data = await response.text();
+        const rows = data.split(/\r?\n/).filter(r=>r.trim()!=="");
+        renderTable(rows);
+        document.getElementById('last-load').textContent = '取得: ' + new Date().toLocaleTimeString();
+    } catch(e) { console.error(e) }
 }
 
-function getUpdateTime(lines) {
-  const updateLine = lines.find(l => l.startsWith('Update:'));
-  return updateLine ? updateLine.split(',')[0].replace('Update:', '').trim() : '不明';
-}
+function renderTable(rows) {
+    const tableHeader = document.getElementById('table-header');
+    const tableBody = document.getElementById('table-body');
+    tableHeader.innerHTML = ''; tableBody.innerHTML = '';
 
-// 分析実行
-async function analyze() {
-  if (!parsedStocks.length) {
-    showError('先にCSVを読み込んでください');
-    return;
-  }
+    const hideIndices = [3, 7, 8, 15];
+    let stockCount = 0;
 
-  const boltRequired = document.getElementById('boltRequired').checked;
-  const boltWeight = document.getElementById('boltWeight').value;
-  const rvolMin = parseFloat(document.getElementById('rvolMin').value);
-  const scoreWeight = document.getElementById('scoreWeight').value;
-  const extraPrompt = document.getElementById('extraPrompt').value;
+    rows.forEach((row, index) => {
+        if(row.includes("Update:")){
+            document.getElementById('csv-update-time').innerHTML = '<span style="font-size:0.85rem; color:var(--text-sub); font-weight:normal;">最終更新:</span> ' + row.split(',')[0].replace("Update:","").trim();
+            return;
+        }
+        const columns = row.split(',');
+        const tr = document.createElement('tr');
 
-  // UI切り替え
-  document.getElementById('loading').classList.add('active');
-  document.getElementById('results').classList.remove('active');
-  document.getElementById('analyzeBtn').disabled = true;
-  showError('');
+        if(index !== 0) {
+            if (columns[15] === "1") tr.classList.add('row-highlight');
+        }
 
-  const loadingTexts = [
-    'データ解析中...',
-    'BOLT判定スキャン中...',
-    'RVOL計算中...',
-    'MIKAが厳選中...'
-  ];
-  let li = 0;
-  const lt = setInterval(() => {
-    document.getElementById('loadingText').textContent = loadingTexts[li % loadingTexts.length];
-    li++;
-  }, 800);
+        const noCell = (index === 0) ? document.createElement('th') : document.createElement('td');
+        if(index === 0) { noCell.textContent = 'No.'; noCell.style.width = '45px'; }
+        else { stockCount++; noCell.textContent = stockCount; noCell.style.color = 'var(--text-sub)'; noCell.style.fontSize = '0.75rem'; }
+        tr.appendChild(noCell);
 
-  try {
-    // スコアリング
-    const scored = parsedStocks.map(s => {
-      let score = 0;
-      
-      // BOLT判定
-      if (s.bolt === 'BOLT!' || s.sign === '買いサイン' || s.sign === '🔥') score += 100;
-      
-      // BOLT回数
-      const bw = boltWeight === 'high' ? 3 : boltWeight === 'medium' ? 2 : 1;
-      score += s.boltCount * bw;
-      
-      // RVOL
-      if (s.rvol >= rvolMin) score += s.rvol * 5;
-      
-      // A3スコア
-      const sw = scoreWeight === 'high' ? 0.3 : scoreWeight === 'medium' ? 0.2 : 0.1;
-      score += s.scoreA3 * sw;
-      
-      return { ...s, totalScore: score };
+        for(let i = 0; i <= 14; i++) {
+            if(hideIndices.includes(i)) continue;
+            const cell = (index === 0) ? document.createElement('th') : document.createElement('td');
+            let val = (columns[i] || "").replace(/"/g,'').trim();
+
+            if(index === 0) {
+                cell.textContent = val;
+            } else {
+                if (i === 4) { // 前日比率
+                    let num = parseFloat(val);
+                    cell.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
+                }
+                else if (i === 5 || i === 2) { // 現在値、出来高
+                    let num = parseFloat(val.replace(/,/g, ''));
+                    cell.textContent = isNaN(num) ? val : num.toLocaleString();
+                }
+                else if (i === 11) { // 判定
+                    cell.textContent = val;
+                    if(val.includes("買い") || val.includes("🔥")) cell.classList.add("buy-highlight");
+                }
+                else if (i === 13) { // ボルト判定
+                    if(val === "BOLT!") {
+                        cell.innerHTML = '<span class="bolt-badge"><i class="fa-solid fa-bolt"></i> BOLT!</span>';
+                    } else {
+                        cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
+                    }
+                }
+                else if (i === 14) { // ボルト回数
+                    let count = parseInt(val);
+                    if(!isNaN(count) && count > 0) {
+                        cell.innerHTML = '<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>' + count + '回</span>';
+                    } else {
+                        cell.innerHTML = '<span style="color:var(--text-sub)">—</span>';
+                    }
+                }
+                else if (i === 0) { // コード列
+                    cell.textContent = val;
+                }
+                else {
+                    cell.textContent = formatNum(val);
+                }
+            }
+            tr.appendChild(cell);
+        }
+        if(index === 0) tableHeader.appendChild(tr); else tableBody.appendChild(tr);
     });
-
-    // フィルタ＆ソート
-    let filtered = scored;
-    if (boltRequired) {
-      filtered = filtered.filter(s => 
-        s.bolt === 'BOLT!' || s.sign === '買いサイン' || s.sign === '🔥'
-      );
-    }
-    filtered = filtered.filter(s => s.rvol >= rvolMin);
-    filtered.sort((a, b) => b.totalScore - a.totalScore);
-
-    const top3 = filtered.slice(0, 3);
-    
-    // 上位20件のサマリをAIに渡す
-    const top20summary = scored
-      .sort((a, b) => b.totalScore - a.totalScore)
-      .slice(0, 20)
-      .map(s => `${s.code} ${s.name} BOLT:${s.bolt||'なし'} BOLT回数:${s.boltCount} RVOL:${s.rvol} A3:${s.scoreA3} 変化率:${s.changePct}%`)
-      .join('\n');
-
-    const criteriaText = `
-選定基準：
-- BOLT必須: ${boltRequired ? 'はい' : 'いいえ'}
-- BOLT回数の重み: ${boltWeight}
-- RVOL最低ライン: ${rvolMin}以上
-- 補正A3スコアの重み: ${scoreWeight}
-- 追加指示: ${extraPrompt || 'なし'}
-`;
-
-    const top3text = top3.map((s, i) => 
-      `${i+1}位: ${s.code} ${s.name} (BOLT:${s.bolt||'なし'}, 回数:${s.boltCount}, RVOL:${s.rvol}, A3:${s.scoreA3}, 変化率:${s.changePct}%)`
-    ).join('\n');
-
-    // AI API呼び出し
-    const prompt = `あなたは日本株のデイトレード・スウィングトレードの専門家AIアシスタント「MIKA」です。
-以下のデータをもとに、上位3銘柄の推薦理由と注意点を簡潔に日本語で説明してください。
-
-${criteriaText}
-
-【選定された上位3銘柄】
-${top3text}
-
-【参考：スコア上位20銘柄の生データ】
-${top20summary}
-
-各銘柄について2〜3文で推薦理由を述べ、最後に全体的な市場コメントを1〜2文で追加してください。
-投資は自己責任である旨も一言添えてください。`;
-
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    const data = await res.json();
-    const aiText = data.content?.[0]?.text || '（コメントを取得できませんでした）';
-
-    clearInterval(lt);
-    document.getElementById('loading').classList.remove('active');
-
-    renderResults(top3, aiText);
-
-  } catch(e) {
-    clearInterval(lt);
-    document.getElementById('loading').classList.remove('active');
-    document.getElementById('analyzeBtn').disabled = false;
-    showError('分析中にエラーが発生しました：' + e.message);
-  }
 }
 
-function renderResults(top3, aiText) {
-  const rankLabels = ['🥇 1位', '🥈 2位', '🥉 3位'];
-  const rankNums = ['01', '02', '03'];
-
-  const cardsHTML = top3.map((s, i) => `
-    <div class="card">
-      <div class="card-rank">${rankNums[i]}</div>
-      <div class="rank-badge">${rankLabels[i]}</div>
-      ${(s.bolt === 'BOLT!' || s.sign === '買いサイン' || s.sign === '🔥') 
-        ? '<div class="bolt-badge">⚡ BOLT / 買いサイン</div>' : ''}
-      <div class="card-code">${s.code}</div>
-      <div class="card-name">${s.name}</div>
-      <div class="metrics">
-        <div class="metric">
-          <div class="metric-label">BOLT回数</div>
-          <div class="metric-value bolt-count">${s.boltCount}回</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">RVOL</div>
-          <div class="metric-value rvol-val">${s.rvol.toFixed(2)}</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">補正A3</div>
-          <div class="metric-value score-val">${s.scoreA3}</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">変化率</div>
-          <div class="metric-value" style="color:${s.changePct >= 0 ? 'var(--green)' : 'var(--red)'}">
-            ${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%
-          </div>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  document.getElementById('cards').innerHTML = cardsHTML;
-  document.getElementById('aiAnalysis').textContent = aiText;
-  document.getElementById('timestamp').textContent = 
-    '分析時刻: ' + new Date().toLocaleTimeString('ja-JP');
-  
-  document.getElementById('results').classList.add('active');
-  document.getElementById('analyzeBtn').disabled = false;
-  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-}
-
-function showError(msg) {
-  const box = document.getElementById('errorBox');
-  if (msg) {
-    box.textContent = msg;
-    box.classList.add('active');
-  } else {
-    box.classList.remove('active');
-  }
-}
-
-// 初回自動読み込み
-window.onload = () => loadCSV();
+loadCSV();
+setInterval(loadCSV, 30000);
 </script>
+
+<footer>
+    © 2026 AIスコア投資研究所 / 負けてる人を救いたい💓<br>
+    <div class="footer-mura">
+        <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
+            <img src="https://b.blogmura.com/stock/88_31.gif" width="88" height="31" alt="ブログ村 株式投資ブログランキング">
+        </a>
+    </div>
+</footer>
 </body>
 </html>
