@@ -264,8 +264,8 @@ select:focus, input[type="number"]:focus { border-color: var(--cyan); }
 .run-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* 結果 */
-#results { display: none; }
-#results.active { display: block; }
+#results { display: block; }
+
 
 .result-meta {
   display: flex;
@@ -515,12 +515,7 @@ tr:hover td { background: rgba(34,211,238,0.03); }
   <div class="error" id="fileError"></div>
 </div>
 
-<!-- 分析ボタン -->
-<div class="card" style="padding:16px 20px;">
-  <button class="run-btn" id="runBtn" onclick="analyze()" disabled>
-    ⚡ AI Mika が分析する
-  </button>
-</div>
+
 
 <!-- 結果 -->
 <div id="results">
@@ -574,7 +569,7 @@ let autoTimer = null;
 // 起動時自動読み込み＋5分ごと更新
 window.onload = () => {
   loadRemote();
-  autoTimer = setInterval(loadRemote, 5 * 60 * 1000);
+  autoTimer = setInterval(loadRemote, 5 * 60 * 1000); // loadRemote完了後にanalyze()が自動実行される
 };
 
 async function loadRemote() {
@@ -590,8 +585,8 @@ async function loadRemote() {
     const updateTime = updateLine ? updateLine.split(',')[0].replace('Update:', '').trim() : '';
     status.textContent = `✓ ${stocks.length} 銘柄読み込み完了` + (updateTime ? ` ｜ データ更新: ${updateTime}` : '');
     document.getElementById('nextUpdateLabel').textContent = '次回自動更新: ' + new Date(Date.now() + 5*60*1000).toLocaleTimeString('ja-JP');
-    document.getElementById('runBtn').disabled = false;
     showFileError('');
+    analyze();
   } catch(e) {
     status.textContent = '⚠ 自動読み込み失敗 → ローカルファイルをドロップしてください';
     showFileError(e.message);
@@ -723,9 +718,9 @@ function analyze() {
     isAiClear(s) && isBuy(s) && rvolOk(s)
   );
 
-  // AIクリア外：補正RVOL1.5以上 ＋ 買い判定 ＋ BOLT判定あり ＋ BOLT回数2回以上
+  // AIクリア外：補正RVOL1.5以上 ＋ 買い判定
   const nonClearPicks = scored.filter(s =>
-    !isAiClear(s) && isBuy(s) && rvolOk(s) && hasBolt(s) && s.boltCount >= 2
+    !isAiClear(s) && isBuy(s) && rvolOk(s)
   );
 
   // 合算して補正A3スコア順
