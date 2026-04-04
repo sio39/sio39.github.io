@@ -392,7 +392,30 @@
         .az-bd-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
         .az-bd-score    { font-size: 0.76rem; font-family: monospace; font-weight: 700; color: var(--text-main); width: 46px; text-align: right; flex-shrink: 0; }
 
-        /* ===== テーブル ===== */
+        /* ===== スイングモード注意書き ===== */
+        .swing-notice {
+            width: 95%; max-width: 1100px; margin: 0 auto 16px;
+            animation: swingNoticeIn 0.3s ease;
+        }
+        @keyframes swingNoticeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .swing-notice-inner {
+            background: #f5f3ff; border: 1px solid #ddd6fe;
+            border-left: 5px solid #8b5cf6;
+            border-radius: 12px; padding: 16px 20px;
+            font-size: 0.83rem; color: #4c1d95; line-height: 1.8;
+        }
+        .swing-notice-title {
+            font-weight: 800; color: #6d28d9; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 7px; font-size: 0.9rem;
+        }
+        .swing-notice-inner ul { padding-left: 18px; }
+        .swing-notice-inner li { margin-bottom: 3px; }
+        .swing-notice-inner strong { color: #5b21b6; }
+
+        
         .table-container { width: 95%; max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
         thead th { position: sticky; top: 0; z-index: 10; background: #f8fafc; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
@@ -471,6 +494,20 @@
 <div class="score-formula-bar" id="formula-bar">
     <div class="score-formula-label">AIスコア計算式</div>
     <div id="formula-pills"></div>
+</div>
+
+<!-- ===== スイングモード注意書き ===== -->
+<div class="swing-notice" id="swing-notice" style="display:none;">
+    <div class="swing-notice-inner">
+        <div class="swing-notice-title">
+            <i class="fa-solid fa-triangle-exclamation"></i> スイングモードをご利用の前に
+        </div>
+        <ul>
+            <li><strong>ギャップ比（A5/A3）は手動入力のため、未入力の銘柄はギャップ比＝1として計算</strong>されます。該当銘柄のスイングスコアは実態より低く出る場合があります。</li>
+            <li>デイトレモードで上位に来た銘柄を目安にデータ確認していますが、<strong>一部の銘柄はデータが古いまたは未入力の可能性</strong>があります。</li>
+            <li>スイングスコアは<strong>参考程度</strong>にとどめ、個別にギャップ比・成長率・ネットキャッシュ率をご確認ください。</li>
+        </ul>
+    </div>
 </div>
 
 <!-- ===== ランク凡例 ===== -->
@@ -602,18 +639,18 @@
 
 <script>
 // ===== モード管理 =====
-let currentMode = 'day'; // 'day' or 'swing'
+let currentMode = 'day';
 
 const MODE_CONFIG = {
     day: {
         label: 'デイトレ',
-        desc: '<strong>デイトレモード：</strong>補正A3(45%) ＋ 補正RVOL(35%) ＋ BOLT回数(20%)',
+        desc: '<strong>デイトレモード：</strong>補正A3(35%) ＋ 補正RVOL(35%) ＋ BOLT回数(30%)',
         pills: [
-            { cls: 'sp-a3',   text: '補正A3 × 45%' },
+            { cls: 'sp-a3',   text: '補正A3 × 35%' },
             { cls: 'sp-plus', text: '+' },
             { cls: 'sp-rvol', text: '補正RVOL × 35%' },
             { cls: 'sp-plus', text: '+' },
-            { cls: 'sp-bolt', text: 'BOLT回数 × 20%' },
+            { cls: 'sp-bolt', text: 'BOLT回数 × 30%' },
         ],
         tagCls: 'smt-day', tagIcon: '⚡', tagText: 'デイトレモード',
     },
@@ -637,25 +674,50 @@ function setMode(mode) {
     currentMode = mode;
     const cfg = MODE_CONFIG[mode];
 
-    // ボタンの見た目
     document.getElementById('btn-day').className   = 'mode-btn' + (mode === 'day'   ? ' active-day'   : '');
     document.getElementById('btn-swing').className = 'mode-btn' + (mode === 'swing' ? ' active-swing' : '');
-
-    // 説明文
     document.getElementById('mode-desc').innerHTML = cfg.desc;
 
-    // 計算式ピル
     document.getElementById('formula-pills').innerHTML = cfg.pills.map(p =>
         p.cls === 'sp-plus'
             ? `<span class="sp-plus">${p.text}</span>`
             : `<span class="score-pill ${p.cls}">${p.text}</span>`
     ).join(' ');
 
-    // テーブル・MIKAカードの再描画
+    document.getElementById('swing-notice').style.display = mode === 'swing' ? 'block' : 'none';
+
     if (latestStocks.length > 0) {
         renderMikaPicks(getMikaPicks(latestStocks));
         renderTableBody(latestStocks);
     }
+}
+
+// ===== 状態係数を計算 =====
+function calcStateMultiplier(s) {
+    const isBuy  = s.sign.includes('買い') || s.sign.includes('🔥');
+    const isBolt = s.bolt === 'BOLT!';
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const rvolOk  = rvolVal >= 1.5;
+    const isDn    = s.changePct < 0;
+
+    let multiplier, stateLabel, stateColor;
+
+    if (isBuy && isBolt) {
+        multiplier = 1.0; stateLabel = '🔥買い判定＋BOLT　フル評価'; stateColor = '#059669';
+    } else if (isBuy) {
+        multiplier = 0.85; stateLabel = '🔥買い判定あり　良好'; stateColor = '#3b82f6';
+    } else if (rvolOk) {
+        multiplier = 0.60; stateLabel = '⚠ 判定待ち（RVOL高）'; stateColor = '#d97706';
+    } else {
+        multiplier = 0.35; stateLabel = '🔴 判定なし・低RVOL'; stateColor = '#dc2626';
+    }
+
+    if (isDn) {
+        multiplier = +(multiplier * 0.8).toFixed(2);
+        stateLabel += '　／　前日比マイナス(-20%)';
+    }
+
+    return { multiplier, stateLabel, stateColor };
 }
 
 // ===== AIスコア計算（デイトレ） =====
@@ -663,16 +725,14 @@ function calcScoreDay(s) {
     const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
     const items   = [];
 
-    // 補正A3スコア → 0〜45点
     let a3Pt = 0;
-    if      (s.corrA3 >= 500) a3Pt = 45;
-    else if (s.corrA3 >= 200) a3Pt = 36;
-    else if (s.corrA3 >= 100) a3Pt = 27;
-    else if (s.corrA3 >= 50)  a3Pt = 18;
-    else if (s.corrA3 >= 10)  a3Pt = 9;
-    items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 45, color: '#f59e0b' });
+    if      (s.corrA3 >= 500) a3Pt = 35;
+    else if (s.corrA3 >= 200) a3Pt = 28;
+    else if (s.corrA3 >= 100) a3Pt = 21;
+    else if (s.corrA3 >= 50)  a3Pt = 14;
+    else if (s.corrA3 >= 10)  a3Pt = 7;
+    items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 35, color: '#f59e0b' });
 
-    // 補正RVOL → 0〜35点
     let rvolPt = 0;
     if      (rvolVal >= 5.0) rvolPt = 35;
     else if (rvolVal >= 3.0) rvolPt = 28;
@@ -681,17 +741,21 @@ function calcScoreDay(s) {
     else if (rvolVal >= 1.0) rvolPt = 7;
     items.push({ label: '補正RVOL（出来高爆発力）', pt: rvolPt, max: 35, color: '#3b82f6' });
 
-    // BOLT回数 → 0〜20点
     let boltPt = 0;
     const bc = s.boltCount;
-    if      (bc >= 4) boltPt = 20;
-    else if (bc === 3) boltPt = 15;
-    else if (bc === 2) boltPt = 10;
-    else if (bc === 1) boltPt = 6;
-    items.push({ label: 'BOLT回数（継続的な勢い）', pt: boltPt, max: 20, color: '#ef4444' });
+    if      (bc >= 30) boltPt = 30;
+    else if (bc >= 20) boltPt = 26;
+    else if (bc >= 10) boltPt = 22;
+    else if (bc >= 5)  boltPt = 18;
+    else if (bc >= 3)  boltPt = 14;
+    else if (bc >= 2)  boltPt = 10;
+    else if (bc >= 1)  boltPt = 5;
+    items.push({ label: 'BOLT回数（継続的な勢い）', pt: boltPt, max: 30, color: '#ef4444' });
 
-    const total = Math.min(items.reduce((a, b) => a + b.pt, 0), 100);
-    return { items, total };
+    const rawTotal = items.reduce((a, b) => a + b.pt, 0);
+    const { multiplier, stateLabel, stateColor } = calcStateMultiplier(s);
+    const total = Math.min(Math.round(rawTotal * multiplier), 100);
+    return { items, total, multiplier, stateLabel, stateColor };
 }
 
 // ===== AIスコア計算（スイング） =====
@@ -699,7 +763,6 @@ function calcScoreSwing(s) {
     const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
     const items   = [];
 
-    // 補正A3スコア → 0〜30点
     let a3Pt = 0;
     if      (s.corrA3 >= 500) a3Pt = 30;
     else if (s.corrA3 >= 200) a3Pt = 24;
@@ -708,7 +771,6 @@ function calcScoreSwing(s) {
     else if (s.corrA3 >= 10)  a3Pt = 6;
     items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 30, color: '#f59e0b' });
 
-    // ギャップ比（A5/A3）→ 0〜35点
     let gapPt = 0;
     const gr = s.gapRatio;
     if      (gr >= 2.0) gapPt = 35;
@@ -718,7 +780,6 @@ function calcScoreSwing(s) {
     else if (gr > 0)    gapPt = 5;
     items.push({ label: 'ギャップ比／A5（将来性）', pt: gapPt, max: 35, color: '#8b5cf6' });
 
-    // 補正RVOL → 0〜20点
     let rvolPt = 0;
     if      (rvolVal >= 5.0) rvolPt = 20;
     else if (rvolVal >= 3.0) rvolPt = 16;
@@ -727,7 +788,6 @@ function calcScoreSwing(s) {
     else if (rvolVal >= 1.0) rvolPt = 4;
     items.push({ label: '補正RVOL（エントリータイミング）', pt: rvolPt, max: 20, color: '#3b82f6' });
 
-    // 前日比率 → 0〜15点
     let pricePt = 0;
     const cp = s.changePct;
     if      (cp >= 5)  pricePt = 15;
@@ -736,20 +796,78 @@ function calcScoreSwing(s) {
     else if (cp >= 0)  pricePt = 3;
     items.push({ label: '前日比率（価格トレンド）', pt: pricePt, max: 15, color: '#10b981' });
 
-    const total = Math.min(items.reduce((a, b) => a + b.pt, 0), 100);
-    return { items, total };
+    const rawTotal = items.reduce((a, b) => a + b.pt, 0);
+    const { multiplier, stateLabel, stateColor } = calcStateMultiplier(s);
+    const total = Math.min(Math.round(rawTotal * multiplier), 100);
+    return { items, total, multiplier, stateLabel, stateColor };
 }
 
 function calcScore(s) {
     return currentMode === 'day' ? calcScoreDay(s) : calcScoreSwing(s);
 }
 
-// スコアランク
+// ===== スコアランク（vTextはnullにして動的生成に任せる） =====
 function getScoreRank(total) {
-    if (total >= 80) return { cls: 'asb-s', label: '🏆S', sClass: 's-great', fClass: 'fill-great', vClass: 'verdict-great', vText: '🟢 <strong>強い買い候補</strong>　複数シグナル点灯。VWAP付近での拾いや追撃を検討できます。' };
-    if (total >= 60) return { cls: 'asb-a', label: '⭐A', sClass: 's-good',  fClass: 'fill-good',  vClass: 'verdict-good',  vText: '🔵 <strong>注目銘柄</strong>　シグナルが出始めています。もう一押しで仕掛けどころになる可能性があります。' };
-    if (total >= 40) return { cls: 'asb-b', label: '✅B', sClass: 's-mid',   fClass: 'fill-mid',   vClass: 'verdict-mid',   vText: '🟡 <strong>様子見</strong>　出来高・判定ともに弱め。シグナルが揃うまで待つのが得策です。' };
-    return               { cls: 'asb-c', label: 'C',   sClass: 's-low',   fClass: 'fill-low',   vClass: 'verdict-low',   vText: '🔴 <strong>見送り推奨</strong>　現時点では積極的なエントリー根拠が少ない状態です。' };
+    if (total >= 80) return { cls: 'asb-s', label: '🏆S', sClass: 's-great', fClass: 'fill-great', vClass: 'verdict-great' };
+    if (total >= 60) return { cls: 'asb-a', label: '⭐A', sClass: 's-good',  fClass: 'fill-good',  vClass: 'verdict-good'  };
+    if (total >= 40) return { cls: 'asb-b', label: '✅B', sClass: 's-mid',   fClass: 'fill-mid',   vClass: 'verdict-mid'   };
+    return               { cls: 'asb-c', label: 'C',   sClass: 's-low',   fClass: 'fill-low',   vClass: 'verdict-low'   };
+}
+
+// ===== 動的解説文を生成（各指標・状態係数を正確に反映） =====
+function buildVerdictText(s, total, stateLabel, stateColor) {
+    const rvolVal    = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const isBuy      = s.sign.includes('買い') || s.sign.includes('🔥');
+    const isBolt     = s.bolt === 'BOLT!';
+    const rvolOk     = rvolVal >= 1.5;
+    const rvolStrong = rvolVal >= 5.0;
+    const isDn       = s.changePct < 0;
+
+    const isBoltWait = stateLabel.includes('判定待ち');
+    const isNoSignal = stateLabel.includes('判定なし');
+    const isDnPenalty = stateLabel.includes('前日比マイナス');
+
+    // 出来高コメント
+    let rvolComment = '';
+    if (rvolStrong)    rvolComment = `出来高・RVOLは<strong>非常に強く（${rvolVal.toFixed(1)}x）</strong>爆発力あり。`;
+    else if (rvolOk)   rvolComment = `出来高・RVOLは<strong>良好（${rvolVal.toFixed(1)}x）</strong>。`;
+    else               rvolComment = `出来高・RVOLは低め（${rvolVal.toFixed(1)}x）。`;
+
+    // 前日比コメント
+    const dnComment = isDnPenalty
+        ? `前日比<strong>${s.changePct.toFixed(1)}%</strong>のマイナスが評価を下げています。`
+        : '';
+
+    // 状態別メッセージ
+    let emoji, strength, advice;
+
+    if (isBuy && isBolt) {
+        emoji    = '🟢';
+        strength = '強い買い候補';
+        advice   = `${rvolComment}BOLT＋買い判定が揃っています。VWAP付近での拾いや追撃を検討できます。${dnComment}`;
+    } else if (isBuy) {
+        emoji    = '🔵';
+        strength = '注目銘柄';
+        advice   = `${rvolComment}買い判定が出ています。BOLTが加われば強力なエントリー根拠になります。${dnComment}`;
+    } else if (isBoltWait && rvolStrong) {
+        emoji    = '🟡';
+        strength = '判定待ち（RVOL極めて強）';
+        advice   = `${rvolComment}BOLT・買い判定の成立を待てば有力なエントリー候補になります。${dnComment}`;
+    } else if (isBoltWait && rvolOk) {
+        emoji    = '🟡';
+        strength = '判定待ち';
+        advice   = `${rvolComment}BOLT・買い判定の成立を待てばエントリー候補になります。${dnComment}`;
+    } else if (isNoSignal && rvolOk) {
+        emoji    = '🟡';
+        strength = '様子見';
+        advice   = `${rvolComment}シグナルがまだ揃っていません。判定出現を待つのが得策です。${dnComment}`;
+    } else {
+        emoji    = '🔴';
+        strength = '見送り推奨';
+        advice   = `出来高・シグナルともに現時点では積極的なエントリー根拠が少ない状態です。${dnComment}`;
+    }
+
+    return `${emoji} <strong>${strength}</strong>　${advice}`;
 }
 
 // ===== CSV全カラムパース =====
@@ -800,7 +918,6 @@ function getMikaPicks(stocks) {
     const isBuy  = s => s.sign === '🔥買い' || s.sign === '買いサイン' || s.sign === '🔥' || s.sign.includes('買い');
     const rvolOk = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol) >= 1.5;
     const picks  = stocks.filter(s => isBuy(s) && rvolOk(s));
-    // モードに応じたスコアでソート
     picks.sort((a, b) => calcScore(b).total - calcScore(a).total);
     return picks.slice(0, 3);
 }
@@ -830,7 +947,6 @@ function renderMikaPicks(picks) {
         const vwapClass   = s.vwapDiff >= 0 ? 'up' : 'dn';
         const changeClass = s.changePct >= 0 ? 'up' : 'dn';
 
-        // スコアバーの色
         const barColors = { 'fill-great': '#34d399', 'fill-good': '#3b82f6', 'fill-mid': '#f59e0b', 'fill-low': '#ef4444' };
         const barColor  = barColors[rank.fClass] || '#3b82f6';
 
@@ -880,7 +996,6 @@ function doAnalyze() {
 document.addEventListener('DOMContentLoaded', () => {
     const inp = document.getElementById('az-code-input');
     if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAnalyze(); });
-    // 初期の計算式表示
     setMode('day');
 });
 
@@ -934,17 +1049,19 @@ function renderAnalyze(s) {
     if (!isBuy && !isBolt) tags.push('<span class="az-tag az-tag-none">待機中</span>');
     document.getElementById('az-r-tags').innerHTML = tags.join('');
 
-    // モードタグ
     const modeTag = document.getElementById('az-r-mode-tag');
     modeTag.className   = 'az-score-mode-tag ' + cfg.tagCls;
     modeTag.textContent = cfg.tagIcon + ' ' + cfg.tagText;
 
-    const { items, total } = calcScore(s);
+    const { items, total, multiplier, stateLabel, stateColor } = calcScore(s);
     const rank = getScoreRank(total);
 
     document.getElementById('az-r-score').textContent = total + 'pt';
     document.getElementById('az-r-score').className   = 'az-score-num ' + rank.sClass;
-    document.getElementById('az-r-verdict').innerHTML = rank.vText;
+
+    // ===== 修正箇所：動的解説文を生成して表示 =====
+    const verdictText = buildVerdictText(s, total, stateLabel, stateColor);
+    document.getElementById('az-r-verdict').innerHTML = verdictText;
     document.getElementById('az-r-verdict').className = 'az-verdict ' + rank.vClass;
 
     setTimeout(() => {
@@ -974,14 +1091,26 @@ function renderAnalyze(s) {
         { key: 'PBR', val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−', cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
     ]);
 
-    document.getElementById('az-r-breakdown').innerHTML = items.map(it => `
+    const rawPts = items.reduce((a, b) => a + b.pt, 0);
+    document.getElementById('az-r-breakdown').innerHTML =
+        items.map(it => `
         <div class="az-bd-item">
             <div class="az-bd-label">${it.label}</div>
             <div class="az-bd-bar-wrap">
                 <div class="az-bd-bar-fill" style="background:${it.color};width:0%;" data-w="${(it.pt/it.max*100).toFixed(0)}%"></div>
             </div>
             <div class="az-bd-score">${it.pt}/${it.max}</div>
-        </div>`).join('');
+        </div>`).join('')
+        + `<div style="margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;">
+            <div class="az-bd-item">
+                <div class="az-bd-label" style="color:${stateColor}; font-weight:700;">状態係数：${stateLabel}</div>
+                <div class="az-bd-score" style="color:${stateColor}; width:auto;">× ${multiplier}</div>
+            </div>
+            <div class="az-bd-item" style="margin-top:4px;">
+                <div class="az-bd-label" style="color:var(--text-sub);">素質点 ${rawPts}pt × ${multiplier} ＝</div>
+                <div class="az-bd-score" style="color:${stateColor}; font-size:0.9rem; width:auto;">${total}pt</div>
+            </div>
+           </div>`;
 
     setTimeout(() => {
         document.querySelectorAll('.az-bd-bar-fill').forEach(el => { el.style.width = el.dataset.w; });
@@ -994,7 +1123,9 @@ function renderAnalyze(s) {
 function formatNum(val) {
     let n = parseFloat(val.replace(/,/g, ''));
     if (isNaN(n)) return val;
-    return val.includes('.') ? val : n.toLocaleString();
+    if (val.includes('.')) return val;
+    if (n < 1000) return String(n);
+    return n.toLocaleString();
 }
 
 let cachedHeaderRow = null;
@@ -1019,7 +1150,6 @@ function renderTable(rows) {
             noCell.textContent = 'No.'; noCell.style.width = '45px';
             tr.appendChild(noCell);
 
-            // AIスコアヘッダー追加
             const scoreTh = document.createElement('th');
             scoreTh.textContent = 'AIスコア';
             scoreTh.style.color = '#ef4444';
@@ -1049,21 +1179,18 @@ function renderTableBody(stocks) {
         const isHighlight = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
         if (isHighlight) tr.classList.add('row-highlight');
 
-        // No.
         const noCell = document.createElement('td');
         noCell.textContent = idx + 1;
         noCell.style.color = 'var(--text-sub)';
         noCell.style.fontSize = '0.75rem';
         tr.appendChild(noCell);
 
-        // AIスコアセル
         const { total } = calcScore(s);
         const rank = getScoreRank(total);
         const scoreTd = document.createElement('td');
         scoreTd.innerHTML = `<span class="ai-score-badge ${rank.cls}">${rank.label} ${total}pt</span>`;
         tr.appendChild(scoreTd);
 
-        // 元のCSV列
         const raw = [s.code, s.name, s.price, s.priceDiff, s.changePct, s.vwap,
                      s.volume, s.vol5min, '', s.avgVol20, s.rvol, s.corrRvol,
                      s.sign, s.bolt, s.boltCount];
@@ -1073,7 +1200,9 @@ function renderTableBody(stocks) {
             const td = document.createElement('td');
             let val = (raw[i] !== undefined && raw[i] !== null) ? String(raw[i]) : '';
 
-            if (i === 4) {
+            if (i === 0) {
+                td.textContent = val;
+            } else if (i === 4) {
                 let num = parseFloat(val);
                 td.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
             } else if (i === 5 || i === 2) {
