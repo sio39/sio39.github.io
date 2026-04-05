@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5JCN1FB7ML"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5JCN1FB7ML');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>銘柄クイック分析 | AIスコア投資研究所</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --level1-bg: #f0f9ff;
+            --level1-border: #bae6fd;
+            --buy-bg: rgba(239, 68, 68, 0.06);
+            --buy-text: #dc2626;
+            --buy-border: #ef4444;
+            --bolt-color: #ef4444;
+            --day-color: #ef4444;
+            --swing-color: #8b5cf6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Zen Kaku Gothic New", "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-top: 70px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ヘッダー */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            background: var(--header-bg); backdrop-filter: blur(8px);
+            z-index: 9999; border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center;
+        }
+        .header-container {
+            width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .header-left { display: flex; align-items: center; gap: 40px; }
+        .logo { font-size: 22px; font-weight: 900; text-decoration: none; color: var(--text-main); letter-spacing: -0.5px; }
+        .logo span { color: var(--primary-color); }
+        nav { display: flex; gap: 5px; }
+        nav a { color: var(--text-sub); font-weight: 700; font-size: 15px; padding: 8px 16px; border-radius: 8px; text-decoration: none; transition: 0.2s; }
+        nav a:hover { background-color: #eff6ff; color: var(--primary-color); }
+        nav a.active { background-color: var(--primary-color); color: white; }
+        .header-sns { display: flex; align-items: center; gap: 10px; }
+        .sns-icon { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; color: white !important; font-size: 18px; text-decoration: none; transition: 0.2s; }
+        .sns-icon.x { background: #14171a; }
+        .sns-icon.youtube { background: #ff0000; }
+        .sns-icon.note { background: #2cb696; font-weight: 800; font-size: 15px; }
+
+        /* ===== メインコンテナ ===== */
+        .main-container {
+            max-width: 760px; margin: 0 auto; padding: 32px 20px 60px;
+        }
+
+        /* ===== ページタイトル ===== */
+        .page-title-area {
+            text-align: center; margin-bottom: 28px;
+        }
+        .page-title {
+            font-size: 1.8rem; font-weight: 900; color: var(--text-main);
+            letter-spacing: -0.5px; margin-bottom: 6px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .page-title .icon-wrap {
+            width: 44px; height: 44px; border-radius: 14px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 20px;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.35);
+        }
+        .page-subtitle {
+            font-size: 0.85rem; color: var(--text-sub); font-weight: 500;
+        }
+
+        /* ===== モード切替 ===== */
+        .mode-switch-wrap {
+            display: flex; align-items: center; justify-content: center;
+            background: #fff; border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 6px; gap: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
+        .mode-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 28px; border-radius: 12px; border: none;
+            font-size: 0.9rem; font-weight: 900; cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+            background: transparent; color: var(--text-sub);
+            font-family: inherit;
+        }
+        .mode-btn:hover { background: #f8fafc; }
+        .mode-btn.active-day {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff; box-shadow: 0 4px 12px rgba(239,68,68,0.35);
+            transform: scale(1.03);
+        }
+        .mode-btn.active-swing {
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: #fff; box-shadow: 0 4px 12px rgba(139,92,246,0.35);
+            transform: scale(1.03);
+        }
+
+        /* ===== 入力エリア ===== */
+        .input-card {
+            background: #fff; border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
+        .input-label {
+            font-size: 0.72rem; font-weight: 800; letter-spacing: 2px;
+            color: var(--text-sub); margin-bottom: 10px; display: block;
+        }
+        .input-row { display: flex; gap: 10px; }
+        .code-input {
+            flex: 1; background: #f8fafc; border: 2px solid var(--border-color);
+            border-radius: 14px; padding: 16px 20px; color: var(--text-main);
+            font-size: 1.8rem; font-weight: 800;
+            font-family: "JetBrains Mono", monospace;
+            letter-spacing: 6px; outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .code-input::placeholder { color: #cbd5e1; letter-spacing: 3px; font-weight: 400; font-size: 1.4rem; }
+        .code-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+            background: #fff;
+        }
+        .analyze-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none; border-radius: 14px;
+            color: #fff; font-size: 0.95rem; font-weight: 800;
+            padding: 0 28px; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap;
+            font-family: inherit;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        .analyze-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(59,130,246,0.4);
+        }
+        .analyze-btn:active { transform: translateY(0); }
+
+        .notice-box {
+            background: #fffbeb; border: 1px solid #fde68a;
+            border-radius: 12px; padding: 14px 18px; margin-top: 14px;
+            font-size: 0.8rem; color: #78350f; line-height: 1.7;
+        }
+        .notice-box ul { padding-left: 18px; margin-top: 4px; }
+        .notice-box li { margin-bottom: 2px; }
+
+        /* ===== エラー ===== */
+        .error-box {
+            background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px;
+            padding: 14px 18px; color: #dc2626; font-size: 0.88rem; font-weight: 600;
+            display: none; margin-bottom: 16px; animation: fadeIn 0.3s ease;
+        }
+        .error-box.show { display: block; }
+
+        /* ===== 結果エリア ===== */
+        .result-area { display: none; animation: slideUp 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        .result-area.show { display: block; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+
+        /* ===== ヒーローカード ===== */
+        .hero-card {
+            background: #fff; border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            margin-bottom: 14px;
+            display: flex; align-items: flex-start; justify-content: space-between;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .hero-code {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 2rem; font-weight: 800; color: var(--primary-color);
+            letter-spacing: 2px; line-height: 1;
+        }
+        .hero-name { font-size: 1rem; font-weight: 700; margin: 4px 0 10px; color: var(--text-main); }
+        .hero-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .h-tag { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .ht-ai    { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+        .ht-buy   { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .ht-bolt  { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
+        .ht-none  { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--text-sub); }
+        .ht-day   { background: #fff1f2; border: 1px solid #fecdd3; color: #b91c1c; font-size: 0.65rem; }
+        .ht-swing { background: #f3e8ff; border: 1px solid #ddd6fe; color: #6d28d9; font-size: 0.65rem; }
+
+        .hero-right { text-align: right; }
+        .hero-price {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 2.2rem; font-weight: 800; color: var(--text-main);
+            line-height: 1;
+        }
+        .hero-price span { font-size: 0.9rem; color: var(--text-sub); font-weight: 400; margin-left: 4px; }
+        .hero-change {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.9rem; font-weight: 700; margin-top: 6px;
+        }
+        .hero-change.up { color: #059669; }
+        .hero-change.dn { color: #dc2626; }
+        .hero-vwap { font-size: 0.72rem; color: var(--text-sub); margin-top: 4px; font-family: "JetBrains Mono", monospace; }
+
+        /* ===== スコアカード ===== */
+        .score-card {
+            background: #fff; border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            margin-bottom: 14px;
+        }
+        .score-header {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .score-label { font-size: 0.7rem; color: var(--text-sub); letter-spacing: 2px; font-weight: 700; margin-bottom: 6px; }
+        .score-mode-tag {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 0.65rem; font-weight: 800; padding: 2px 10px;
+            border-radius: 10px; margin-bottom: 10px;
+        }
+        .smt-day   { background: #fff1f2; color: #b91c1c; border: 1px solid #fecdd3; }
+        .smt-swing { background: #f3e8ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+
+        .score-num {
+            font-family: "JetBrains Mono", monospace;
+            font-size: 4rem; font-weight: 800; line-height: 1;
+        }
+        .score-num.s-great { color: #059669; }
+        .score-num.s-good  { color: #3b82f6; }
+        .score-num.s-mid   { color: #d97706; }
+        .score-num.s-low   { color: #dc2626; }
+        .score-pt { font-size: 1rem; font-weight: 400; color: var(--text-sub); margin-left: 4px; }
+
+        .score-rank-badge {
+            padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 800;
+            align-self: flex-start;
+        }
+        .rb-s { background: linear-gradient(135deg,#fef3c7,#fde68a); color: #78350f; border: 1px solid #fde68a; }
+        .rb-a { background: linear-gradient(135deg,#eff6ff,#bfdbfe); color: #1e3a8a; border: 1px solid #bfdbfe; }
+        .rb-b { background: linear-gradient(135deg,#f0fdf4,#bbf7d0); color: #14532d; border: 1px solid #bbf7d0; }
+        .rb-c { background: #f8fafc; color: var(--text-sub); border: 1px solid var(--border-color); }
+
+        .bar-wrap { background: #f1f5f9; border-radius: 999px; height: 10px; overflow: hidden; margin: 14px 0; }
+        .bar-fill { height: 100%; border-radius: 999px; transition: width 0.7s cubic-bezier(0.34,1.56,0.64,1); width: 0%; }
+        .fill-great { background: linear-gradient(90deg, #34d399, #6ee7b7); }
+        .fill-good  { background: linear-gradient(90deg, #3b82f6, #7dd3fc); }
+        .fill-mid   { background: linear-gradient(90deg, #f59e0b, #fde68a); }
+        .fill-low   { background: linear-gradient(90deg, #ef4444, #fca5a5); }
+
+        .verdict {
+            font-size: 0.84rem; font-weight: 600; padding: 12px 16px;
+            border-radius: 12px; line-height: 1.7;
+        }
+        .verdict-great { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .verdict-good  { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+        .verdict-mid   { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+        .verdict-low   { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+
+        /* ===== メトリクスグリッド ===== */
+        .metrics-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; margin-bottom: 14px;
+        }
+        @media (max-width: 500px) { .metrics-grid { grid-template-columns: 1fr; } }
+
+        .metric-card {
+            background: #fff; border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 18px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            position: relative; overflow: hidden;
+        }
+        .metric-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        }
+        .mc-vol::before   { background: linear-gradient(90deg, #3b82f6, transparent); }
+        .mc-price::before { background: linear-gradient(90deg, #10b981, transparent); }
+        .mc-bolt::before  { background: linear-gradient(90deg, #ef4444, transparent); }
+        .mc-fund::before  { background: linear-gradient(90deg, #f59e0b, transparent); }
+
+        .metric-title {
+            font-size: 0.68rem; color: var(--text-sub); letter-spacing: 2px;
+            font-weight: 700; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .mri { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #f1f5f9; }
+        .mri:last-child { border-bottom: none; }
+        .mri-key { font-size: 0.76rem; color: var(--text-sub); }
+        .mri-val {
+            font-size: 0.88rem; font-weight: 700;
+            font-family: "JetBrains Mono", monospace;
+            color: var(--text-main); display: flex; align-items: center; gap: 4px;
+        }
+        .mri-val.up   { color: #059669; }
+        .mri-val.dn   { color: #dc2626; }
+        .mri-val.hi   { color: #3b82f6; }
+        .mri-val.warn { color: #d97706; }
+        .az-pip { display: inline-block; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .pip-green  { background: #10b981; box-shadow: 0 0 4px #10b981; }
+        .pip-red    { background: #ef4444; }
+        .pip-yellow { background: #f59e0b; }
+        .pip-gray   { background: #cbd5e1; }
+
+        /* ===== 採点内訳カード ===== */
+        .breakdown-card {
+            background: #fff; border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .breakdown-title {
+            font-size: 0.7rem; color: var(--text-sub); letter-spacing: 3px;
+            font-weight: 700; margin-bottom: 16px;
+        }
+        .bd-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .bd-item:last-child { margin-bottom: 0; }
+        .bd-label    { font-size: 0.78rem; color: var(--text-sub); flex: 1; min-width: 0; }
+        .bd-bar-wrap { flex: 2; background: #f1f5f9; border-radius: 999px; height: 6px; overflow: hidden; }
+        .bd-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
+        .bd-score    { font-size: 0.76rem; font-family: "JetBrains Mono", monospace; font-weight: 700; color: var(--text-main); width: 46px; text-align: right; flex-shrink: 0; }
+
+        .breakdown-state {
+            margin-top: 14px; padding-top: 14px; border-top: 1px solid #e2e8f0;
+        }
+        .state-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 5px 0; font-size: 0.8rem;
+        }
+        .state-label { color: var(--text-sub); }
+        .state-val   { font-family: "JetBrains Mono", monospace; font-weight: 800; }
+
+        /* ===== データ更新時間 ===== */
+        .update-info {
+            text-align: center; font-size: 0.75rem; color: #94a3b8; margin-bottom: 24px;
+        }
+        .update-info strong { color: #ef4444; font-family: "JetBrains Mono", monospace; }
+
+        /* ===== ローディング ===== */
+        .loading-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px); z-index: 100;
+            align-items: center; justify-content: center; flex-direction: column; gap: 12px;
+        }
+        .loading-overlay.show { display: flex; }
+        .loading-spinner {
+            width: 40px; height: 40px; border: 3px solid #e2e8f0;
+            border-top-color: #3b82f6; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: 0.85rem; color: var(--text-sub); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            body { padding-top: 130px; }
+            .header { height: auto; padding: 10px 0; }
+            .header-container { flex-direction: column; gap: 8px; padding: 0 15px; }
+            .header-left { flex-direction: column; gap: 5px; width: 100%; }
+            nav { width: 100%; justify-content: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            nav a { font-size: 14px; padding: 6px 12px; white-space: nowrap; }
+            .code-input { font-size: 1.4rem; letter-spacing: 4px; }
+            .hero-price { font-size: 1.6rem; }
+            .score-num { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-container">
+        <div class="header-left">
+            <a href="index.html" class="logo"><span>AI</span>スコア投資研究所</a>
+            <nav>
+                <a href="index.html">TOP</a>
+                <a href="BBS.html">BBS</a>
+                <a href="tool.html">ツール</a>
+                <a href="realtime.html">リアルボード</a>
+                <a href="analyze.html" class="active">銘柄分析</a>
+            </nav>
+        </div>
+        <div class="header-sns">
+            <a href="https://x.com/N0oZk" target="_blank" class="sns-icon x"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/channel/UCwoSz21qfRrlqd1K6kT2kZQ" target="_blank" class="sns-icon youtube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://note.com/gifted_holly654" target="_blank" class="sns-icon note">n</a>
+        </div>
+    </div>
+</header>
+
+<div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">データ取得中...</div>
+</div>
+
+<div class="main-container">
+
+    <!-- タイトル -->
+    <div class="page-title-area">
+        <div class="page-title">
+            <div class="icon-wrap"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+            銘柄クイック分析
+        </div>
+        <div class="page-subtitle">銘柄コードを入力してAIスコアと各指標を確認</div>
+    </div>
+
+    <!-- モード切替 -->
+    <div class="mode-switch-wrap">
+        <button class="mode-btn active-day" id="btn-day" onclick="setMode('day')">
+            <i class="fa-solid fa-bolt"></i> デイトレ
+        </button>
+        <button class="mode-btn" id="btn-swing" onclick="setMode('swing')">
+            <i class="fa-solid fa-chart-line"></i> スイング
+        </button>
+    </div>
+
+    <!-- データ更新時間 -->
+    <div class="update-info" id="update-info">データ読み込み中...</div>
+
+    <!-- 入力カード -->
+    <div class="input-card">
+        <span class="input-label">STOCK CODE / 銘柄コード</span>
+        <div class="input-row">
+            <input type="text" id="code-input" class="code-input"
+                placeholder="7203" maxlength="5"
+                inputmode="numeric" autocomplete="off">
+            <button class="analyze-btn" onclick="doAnalyze()">
+                <i class="fa-solid fa-bolt"></i> 分析する
+            </button>
+        </div>
+        <div class="notice-box">
+            <strong><i class="fa-solid fa-triangle-exclamation"></i> ご利用前に</strong>
+            <ul>
+                <li><strong>当サイトの監視リストに登録された銘柄のみ</strong>対応しています。</li>
+                <li>データは<strong>約5分ごとに自動更新</strong>されます。</li>
+                <li>スコアはルールベースの自動計算です。<strong>投資判断はご自身の責任</strong>でどうぞ。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- エラー -->
+    <div class="error-box" id="error-box"></div>
+
+    <!-- 結果 -->
+    <div class="result-area" id="result-area">
+
+        <!-- ヒーロー -->
+        <div class="hero-card">
+            <div>
+                <div class="hero-code" id="r-code"></div>
+                <div class="hero-name"  id="r-name"></div>
+                <div class="hero-tags"  id="r-tags"></div>
+            </div>
+            <div class="hero-right">
+                <div class="hero-price"  id="r-price"></div>
+                <div class="hero-change" id="r-change"></div>
+                <div class="hero-vwap"   id="r-vwap"></div>
+            </div>
+        </div>
+
+        <!-- スコアカード -->
+        <div class="score-card">
+            <div class="score-header">
+                <div>
+                    <div class="score-label">AIスコア（100点満点）</div>
+                    <div class="score-mode-tag" id="r-mode-tag"></div>
+                    <div class="score-num" id="r-score-num">
+                        <span id="r-score-val"></span><span class="score-pt">pt</span>
+                    </div>
+                </div>
+                <div class="score-rank-badge" id="r-rank-badge"></div>
+            </div>
+            <div class="bar-wrap"><div class="bar-fill" id="r-bar"></div></div>
+            <div class="verdict" id="r-verdict"></div>
+        </div>
+
+        <!-- メトリクス -->
+        <div class="metrics-grid">
+            <div class="metric-card mc-vol">
+                <div class="metric-title"><i class="fa-solid fa-chart-bar"></i> 出来高・RVOL</div>
+                <div id="m-vol"></div>
+            </div>
+            <div class="metric-card mc-price">
+                <div class="metric-title"><i class="fa-solid fa-arrow-trend-up"></i> 価格・VWAP</div>
+                <div id="m-price"></div>
+            </div>
+            <div class="metric-card mc-bolt">
+                <div class="metric-title"><i class="fa-solid fa-bolt"></i> BOLT判定</div>
+                <div id="m-bolt"></div>
+            </div>
+            <div class="metric-card mc-fund">
+                <div class="metric-title"><i class="fa-solid fa-building-columns"></i> ファンダ概要</div>
+                <div id="m-fund"></div>
+            </div>
+        </div>
+
+        <!-- 採点内訳 -->
+        <div class="breakdown-card">
+            <div class="breakdown-title">採点内訳</div>
+            <div id="r-breakdown"></div>
+        </div>
+
+    </div>
+</div>
+
+<footer style="text-align:center; padding: 30px 20px; color: var(--text-sub); font-size: 0.85rem;">
+    © 2026 AIスコア投資研究所 / 負けてる人を救いたい💓<br>
+    <div style="margin-top: 10px;">
+        <a href="https://stock.blogmura.com/ranking/in?p_cid=11212929" target="_blank">
+            <img src="https://b.blogmura.com/stock/88_31.gif" width="88" height="31" alt="ブログ村 株式投資ブログランキング">
+        </a>
+    </div>
+</footer>
+
+<script>
+// ===== モード管理 =====
+let currentMode = 'day';
+let latestStocks = [];
+
+const MODE_CONFIG = {
+    day: {
+        label: 'デイトレ',
+        tagCls: 'smt-day', tagIcon: '⚡', tagText: 'デイトレモード',
+        htCls: 'ht-day',
+    },
+    swing: {
+        label: 'スイング',
+        tagCls: 'smt-swing', tagIcon: '📈', tagText: 'スイングモード',
+        htCls: 'ht-swing',
+    }
+};
+
+function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('btn-day').className   = 'mode-btn' + (mode === 'day'   ? ' active-day'   : '');
+    document.getElementById('btn-swing').className = 'mode-btn' + (mode === 'swing' ? ' active-swing' : '');
+
+    // 既に結果が出ていれば再描画
+    const code = document.getElementById('code-input').value.trim();
+    if (code && latestStocks.length > 0) {
+        const stock = latestStocks.find(s => s.code === code);
+        if (stock) renderResult(stock);
+    }
+}
+
+// ===== スコア計算 =====
+function calcStateMultiplier(s) {
+    const isBuy  = s.sign.includes('買い') || s.sign.includes('🔥');
+    const isBolt = s.bolt === 'BOLT!';
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const rvolOk  = rvolVal >= 1.5;
+    const isDn    = s.changePct < 0;
+    let multiplier, stateLabel, stateColor;
+    if (isBuy && isBolt) {
+        multiplier = 1.0; stateLabel = '🔥買い判定＋BOLT　フル評価'; stateColor = '#059669';
+    } else if (isBuy) {
+        multiplier = 0.85; stateLabel = '🔥買い判定あり　良好'; stateColor = '#3b82f6';
+    } else if (rvolOk) {
+        multiplier = 0.60; stateLabel = '⚠ 判定待ち（RVOL高）'; stateColor = '#d97706';
+    } else {
+        multiplier = 0.35; stateLabel = '🔴 判定なし・低RVOL'; stateColor = '#dc2626';
+    }
+    if (isDn) {
+        multiplier = +(multiplier * 0.8).toFixed(2);
+        stateLabel += '　／　前日比マイナス(-20%)';
+    }
+    return { multiplier, stateLabel, stateColor };
+}
+
+function calcScoreDay(s) {
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const items   = [];
+    let a3Pt = 0;
+    if      (s.corrA3 >= 500) a3Pt = 35;
+    else if (s.corrA3 >= 200) a3Pt = 28;
+    else if (s.corrA3 >= 100) a3Pt = 21;
+    else if (s.corrA3 >= 50)  a3Pt = 14;
+    else if (s.corrA3 >= 10)  a3Pt = 7;
+    items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 35, color: '#f59e0b' });
+    let rvolPt = 0;
+    if      (rvolVal >= 5.0) rvolPt = 35;
+    else if (rvolVal >= 3.0) rvolPt = 28;
+    else if (rvolVal >= 2.0) rvolPt = 21;
+    else if (rvolVal >= 1.5) rvolPt = 14;
+    else if (rvolVal >= 1.0) rvolPt = 7;
+    items.push({ label: '補正RVOL（出来高爆発力）', pt: rvolPt, max: 35, color: '#3b82f6' });
+    let boltPt = 0;
+    const bc = s.boltCount;
+    if      (bc >= 30) boltPt = 30;
+    else if (bc >= 20) boltPt = 26;
+    else if (bc >= 10) boltPt = 22;
+    else if (bc >= 5)  boltPt = 18;
+    else if (bc >= 3)  boltPt = 14;
+    else if (bc >= 2)  boltPt = 10;
+    else if (bc >= 1)  boltPt = 5;
+    items.push({ label: 'BOLT回数（継続的な勢い）', pt: boltPt, max: 30, color: '#ef4444' });
+    const rawTotal = items.reduce((a, b) => a + b.pt, 0);
+    const { multiplier, stateLabel, stateColor } = calcStateMultiplier(s);
+    const total = Math.min(Math.round(rawTotal * multiplier), 100);
+    return { items, total, multiplier, stateLabel, stateColor };
+}
+
+function calcScoreSwing(s) {
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const items   = [];
+    let a3Pt = 0;
+    if      (s.corrA3 >= 500) a3Pt = 30;
+    else if (s.corrA3 >= 200) a3Pt = 24;
+    else if (s.corrA3 >= 100) a3Pt = 18;
+    else if (s.corrA3 >= 50)  a3Pt = 12;
+    else if (s.corrA3 >= 10)  a3Pt = 6;
+    items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 30, color: '#f59e0b' });
+    let gapPt = 0;
+    const gr = s.gapRatio;
+    if      (gr >= 2.0) gapPt = 35;
+    else if (gr >= 1.5) gapPt = 28;
+    else if (gr >= 1.2) gapPt = 21;
+    else if (gr >= 1.0) gapPt = 14;
+    else if (gr > 0)    gapPt = 5;
+    items.push({ label: 'ギャップ比／A5（将来性）', pt: gapPt, max: 35, color: '#8b5cf6' });
+    let rvolPt = 0;
+    if      (rvolVal >= 5.0) rvolPt = 20;
+    else if (rvolVal >= 3.0) rvolPt = 16;
+    else if (rvolVal >= 2.0) rvolPt = 12;
+    else if (rvolVal >= 1.5) rvolPt = 8;
+    else if (rvolVal >= 1.0) rvolPt = 4;
+    items.push({ label: '補正RVOL（エントリータイミング）', pt: rvolPt, max: 20, color: '#3b82f6' });
+    let pricePt = 0;
+    const cp = s.changePct;
+    if      (cp >= 5)  pricePt = 15;
+    else if (cp >= 3)  pricePt = 12;
+    else if (cp >= 1)  pricePt = 8;
+    else if (cp >= 0)  pricePt = 3;
+    items.push({ label: '前日比率（価格トレンド）', pt: pricePt, max: 15, color: '#10b981' });
+    const rawTotal = items.reduce((a, b) => a + b.pt, 0);
+    const { multiplier, stateLabel, stateColor } = calcStateMultiplier(s);
+    const total = Math.min(Math.round(rawTotal * multiplier), 100);
+    return { items, total, multiplier, stateLabel, stateColor };
+}
+
+function calcScore(s) {
+    return currentMode === 'day' ? calcScoreDay(s) : calcScoreSwing(s);
+}
+
+function getScoreRank(total) {
+    if (total >= 80) return { rbCls: 'rb-s', label: '🏆 S級', sClass: 's-great', fClass: 'fill-great', vClass: 'verdict-great' };
+    if (total >= 60) return { rbCls: 'rb-a', label: '⭐ A級', sClass: 's-good',  fClass: 'fill-good',  vClass: 'verdict-good'  };
+    if (total >= 40) return { rbCls: 'rb-b', label: '✅ B級', sClass: 's-mid',   fClass: 'fill-mid',   vClass: 'verdict-mid'   };
+    return               { rbCls: 'rb-c', label: 'C級',    sClass: 's-low',   fClass: 'fill-low',   vClass: 'verdict-low'   };
+}
+
+function buildVerdictText(s, stateLabel) {
+    const rvolVal    = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const isBuy      = s.sign.includes('買い') || s.sign.includes('🔥');
+    const isBolt     = s.bolt === 'BOLT!';
+    const rvolOk     = rvolVal >= 1.5;
+    const rvolStrong = rvolVal >= 5.0;
+    const isDn       = s.changePct < 0;
+    const isBoltWait = stateLabel.includes('判定待ち');
+    const isNoSignal = stateLabel.includes('判定なし');
+    const isDnPenalty = stateLabel.includes('前日比マイナス');
+
+    let rvolComment = '';
+    if (rvolStrong)    rvolComment = `出来高・RVOLは<strong>非常に強く（${rvolVal.toFixed(1)}x）</strong>爆発力あり。`;
+    else if (rvolOk)   rvolComment = `出来高・RVOLは<strong>良好（${rvolVal.toFixed(1)}x）</strong>。`;
+    else               rvolComment = `出来高・RVOLは低め（${rvolVal.toFixed(1)}x）。`;
+
+    const dnComment = isDnPenalty ? `前日比<strong>${s.changePct.toFixed(1)}%</strong>のマイナスが評価を下げています。` : '';
+
+    let emoji, strength, advice;
+    if (isBuy && isBolt) {
+        emoji = '🟢'; strength = '強い買い候補';
+        advice = `${rvolComment}BOLT＋買い判定が揃っています。VWAP付近での拾いや追撃を検討できます。${dnComment}`;
+    } else if (isBuy) {
+        emoji = '🔵'; strength = '注目銘柄';
+        advice = `${rvolComment}買い判定が出ています。BOLTが加われば強力なエントリー根拠になります。${dnComment}`;
+    } else if (isBoltWait && rvolStrong) {
+        emoji = '🟡'; strength = '判定待ち（RVOL極めて強）';
+        advice = `${rvolComment}BOLT・買い判定の成立を待てば有力なエントリー候補になります。${dnComment}`;
+    } else if (isBoltWait && rvolOk) {
+        emoji = '🟡'; strength = '判定待ち';
+        advice = `${rvolComment}BOLT・買い判定の成立を待てばエントリー候補になります。${dnComment}`;
+    } else if (isNoSignal && rvolOk) {
+        emoji = '🟡'; strength = '様子見';
+        advice = `${rvolComment}シグナルがまだ揃っていません。判定出現を待つのが得策です。${dnComment}`;
+    } else {
+        emoji = '🔴'; strength = '見送り推奨';
+        advice = `出来高・シグナルともに現時点では積極的なエントリー根拠が少ない状態です。${dnComment}`;
+    }
+    return `${emoji} <strong>${strength}</strong>　${advice}`;
+}
+
+// ===== CSV パース =====
+function parseFullStocks(rows) {
+    const result = [];
+    for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.startsWith('Update:')) continue;
+        const c = row.split(',').map(v => v.replace(/"/g, '').trim());
+        if (!c[0]) continue;
+        const price = parseFloat(c[2]) || 0;
+        const vwap  = parseFloat(c[5]) || 0;
+        result.push({
+            code:      c[0], name: c[1] || '−', price, vwap,
+            vwapDiff:  vwap > 0 ? +((price - vwap) / vwap * 100).toFixed(2) : 0,
+            priceDiff: parseFloat(c[3]) || 0,
+            changePct: parseFloat(c[4]) || 0,
+            volume:    parseFloat(c[6]) || 0,
+            vol5min:   parseFloat(c[7]) || 0,
+            avgVol20:  parseFloat(c[9]) || 0,
+            rvol:      parseFloat(c[10]) || 0,
+            corrRvol:  parseFloat(c[11]) || 0,
+            sign:      c[12] || '',
+            bolt:      c[13] || '',
+            boltCount: parseInt(c[14]) || 0,
+            kubun:     c[15] || '',
+            scoreA3:   parseFloat(c[16]) || 0,
+            corrA3:    parseFloat(c[17]) || 0,
+            gapRatio:  parseFloat(c[18]) || 0,
+            per:       parseFloat(c[19]) || 0,
+            pbr:       parseFloat(c[20]) || 0,
+            eigyo:     parseFloat(c[21]) || 0,
+            growth:    parseFloat(c[22]) || 0,
+            netCash:   parseFloat(c[23]) || 0,
+            shinyo:    parseFloat(c[24]) || 0,
+        });
+    }
+    return result;
+}
+
+// ===== CSV読み込み =====
+async function loadCSV() {
+    try {
+        const response = await fetch('data_push.csv', { cache: "no-store" });
+        const data     = await response.text();
+        const rows     = data.split(/\r?\n/).filter(r => r.trim() !== "");
+        latestStocks   = parseFullStocks(rows);
+
+        // 更新時間抽出
+        const updateRow = rows.find(r => r.startsWith('Update:'));
+        if (updateRow) {
+            const t = updateRow.split(',')[0].replace('Update:', '').trim();
+            document.getElementById('update-info').innerHTML =
+                `最終更新: <strong>${t}</strong>　取得: ${new Date().toLocaleTimeString()}`;
+        }
+        document.getElementById('loading').classList.remove('show');
+    } catch(e) {
+        console.error(e);
+        document.getElementById('update-info').textContent = 'データ取得エラー';
+        document.getElementById('loading').classList.remove('show');
+    }
+}
+
+// ===== 分析実行 =====
+function doAnalyze() {
+    const raw = document.getElementById('code-input').value.trim();
+    document.getElementById('error-box').classList.remove('show');
+    document.getElementById('result-area').classList.remove('show');
+
+    if (!raw) { showError('銘柄コードを入力してください'); return; }
+    if (latestStocks.length === 0) { showError('CSVデータがまだ読み込まれていません。しばらくお待ちください。'); return; }
+
+    const stock = latestStocks.find(s => s.code === raw);
+    if (!stock) {
+        showError(`「${raw}」は監視リストに含まれていません。当サイト掲載銘柄のみ分析できます。`);
+        return;
+    }
+    renderResult(stock);
+    document.getElementById('result-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showError(msg) {
+    const el = document.getElementById('error-box');
+    el.textContent = '⚠ ' + msg;
+    el.classList.add('show');
+}
+
+function mriRow(rows) {
+    return rows.map(r => `
+        <div class="mri">
+            <div class="mri-key">${r.key}</div>
+            <div class="mri-val ${r.cls || ''}">
+                ${r.pip ? `<span class="az-pip ${r.pip}"></span>` : ''}${r.val}
+            </div>
+        </div>`).join('');
+}
+
+function volFmt(n) {
+    if (!n) return '−';
+    if (n >= 10000) return (n / 10000).toFixed(1) + '万株';
+    return n.toLocaleString() + '株';
+}
+
+function renderResult(s) {
+    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const isBuy   = s.sign.includes('買い') || s.sign.includes('🔥');
+    const isAi    = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
+    const isBolt  = s.bolt === 'BOLT!';
+    const rvolOk  = rvolVal >= 1.5;
+    const cfg     = MODE_CONFIG[currentMode];
+
+    // ヒーロー
+    document.getElementById('r-code').textContent = s.code;
+    document.getElementById('r-name').textContent = s.name;
+    document.getElementById('r-price').innerHTML  =
+        s.price.toLocaleString() + '<span>円</span>';
+
+    const chSign = s.changePct >= 0 ? '+' : '';
+    const chEl   = document.getElementById('r-change');
+    chEl.textContent = `${chSign}${s.priceDiff.toLocaleString()}円 (${chSign}${s.changePct.toFixed(2)}%)`;
+    chEl.className   = 'hero-change ' + (s.changePct >= 0 ? 'up' : 'dn');
+
+    const vSgn = s.vwapDiff >= 0 ? '▲' : '▼';
+    document.getElementById('r-vwap').textContent =
+        `VWAP ${s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−'}  ${vSgn}${Math.abs(s.vwapDiff)}%`;
+
+    const tags = [];
+    tags.push(`<span class="h-tag ${cfg.htCls}">${cfg.tagIcon} ${cfg.tagText}</span>`);
+    if (isAi)   tags.push('<span class="h-tag ht-ai">★ AIクリア</span>');
+    if (isBuy)  tags.push('<span class="h-tag ht-buy">🔥 買い判定</span>');
+    if (isBolt) tags.push(`<span class="h-tag ht-bolt">⚡ BOLT ${s.boltCount}回</span>`);
+    if (!isBuy && !isBolt) tags.push('<span class="h-tag ht-none">待機中</span>');
+    document.getElementById('r-tags').innerHTML = tags.join('');
+
+    // モードタグ
+    const modeTag = document.getElementById('r-mode-tag');
+    modeTag.className   = 'score-mode-tag ' + cfg.tagCls;
+    modeTag.textContent = cfg.tagIcon + ' ' + cfg.tagText;
+
+    // スコア計算
+    const { items, total, multiplier, stateLabel, stateColor } = calcScore(s);
+    const rank = getScoreRank(total);
+
+    document.getElementById('r-score-val').textContent = total;
+    document.getElementById('r-score-num').className   = 'score-num ' + rank.sClass;
+    document.getElementById('r-rank-badge').textContent = rank.label;
+    document.getElementById('r-rank-badge').className  = 'score-rank-badge ' + rank.rbCls;
+
+    const verdictText = buildVerdictText(s, stateLabel);
+    document.getElementById('r-verdict').innerHTML = verdictText;
+    document.getElementById('r-verdict').className = 'verdict ' + rank.vClass;
+
+    setTimeout(() => {
+        const bar = document.getElementById('r-bar');
+        bar.className   = 'bar-fill ' + rank.fClass;
+        bar.style.width = total + '%';
+    }, 80);
+
+    // メトリクス
+    document.getElementById('m-vol').innerHTML = mriRow([
+        { key: '当日出来高',     val: volFmt(s.volume) },
+        { key: '20日平均出来高', val: volFmt(s.avgVol20) },
+        { key: 'RVOL（補正）',   val: rvolVal.toFixed(2) + 'x',
+          cls: rvolOk ? 'up' : 'warn', pip: rvolOk ? 'pip-green' : 'pip-yellow' },
+    ]);
+    document.getElementById('m-price').innerHTML = mriRow([
+        { key: '現在値', val: s.price.toLocaleString() + '円' },
+        { key: 'VWAP',   val: s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−' },
+        { key: 'VWAP乖離', val: (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%',
+          cls: s.vwapDiff >= 0 ? 'up' : 'dn', pip: s.vwapDiff >= 0 ? 'pip-green' : 'pip-red' },
+    ]);
+    document.getElementById('m-bolt').innerHTML = mriRow([
+        { key: 'BOLT判定', val: isBolt ? '⚡ BOLT!' : '−',
+          cls: isBolt ? 'hi' : '', pip: isBolt ? 'pip-green' : 'pip-gray' },
+        { key: 'BOLT回数', val: s.boltCount > 0 ? s.boltCount + '回' : '−',
+          cls: s.boltCount > 0 ? 'hi' : '' },
+        { key: '買い判定', val: isBuy ? s.sign : '−',
+          cls: isBuy ? 'up' : '', pip: isBuy ? 'pip-green' : 'pip-gray' },
+    ]);
+    document.getElementById('m-fund').innerHTML = mriRow([
+        { key: '補正A3スコア',   val: s.corrA3 || '−', cls: s.corrA3 > 60 ? 'up' : '' },
+        { key: 'ギャップ比(A5)', val: s.gapRatio > 0 ? s.gapRatio.toFixed(2) : '−',
+          cls: s.gapRatio >= 1.5 ? 'up' : s.gapRatio >= 1.0 ? '' : 'warn' },
+        { key: 'PBR',           val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−',
+          cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
+    ]);
+
+    // 採点内訳
+    const rawPts = items.reduce((a, b) => a + b.pt, 0);
+    document.getElementById('r-breakdown').innerHTML =
+        items.map(it => `
+        <div class="bd-item">
+            <div class="bd-label">${it.label}</div>
+            <div class="bd-bar-wrap">
+                <div class="bd-bar-fill" style="background:${it.color};width:0%;" data-w="${(it.pt/it.max*100).toFixed(0)}%"></div>
+            </div>
+            <div class="bd-score">${it.pt}/${it.max}</div>
+        </div>`).join('')
+        + `<div class="breakdown-state">
+            <div class="state-row">
+                <div class="state-label" style="color:${stateColor}; font-weight:700;">状態係数：${stateLabel}</div>
+                <div class="state-val"   style="color:${stateColor};">× ${multiplier}</div>
+            </div>
+            <div class="state-row">
+                <div class="state-label" style="color:var(--text-sub);">素質点 ${rawPts}pt × ${multiplier} ＝</div>
+                <div class="state-val"   style="color:${stateColor}; font-size:0.95rem;">${total}pt</div>
+            </div>
+           </div>`;
+
+    setTimeout(() => {
+        document.querySelectorAll('.bd-bar-fill').forEach(el => { el.style.width = el.dataset.w; });
+    }, 100);
+
+    document.getElementById('result-area').classList.add('show');
+}
+
+// ===== 初期化 =====
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('loading').classList.add('show');
+    loadCSV();
+    setInterval(loadCSV, 30000);
+
+    const inp = document.getElementById('code-input');
+    if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAnalyze(); });
+
+    // URLパラメータから銘柄コード取得（例: analyze.html?code=7203）
+    const params = new URLSearchParams(location.search);
+    const codeParam = params.get('code');
+    if (codeParam) {
+        inp.value = codeParam;
+    }
+});
+</script>
+
+</body>
+</html>

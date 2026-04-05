@@ -1,0 +1,252 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+#app { padding: 1rem 0; font-family: var(--font-sans); }
+h2 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.sub { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; align-items: center; }
+.genre-btn { font-size: 12px; padding: 6px 14px; border-radius: 999px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; }
+.genre-btn.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+.run-btn { margin-left: auto; font-size: 13px; padding: 8px 20px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; font-weight: 500; }
+.run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.status { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1rem; min-height: 20px; }
+.video-grid { display: grid; gap: 12px; }
+.video-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; }
+.card-top { padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+.rank-num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); min-width: 28px; }
+.card-meta { flex: 1; min-width: 0; }
+.video-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; line-height: 1.4; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--color-background-secondary); color: var(--color-text-secondary); }
+.buzz-row { display: flex; align-items: center; gap: 8px; }
+.buzz-label { font-size: 11px; color: var(--color-text-secondary); }
+.bar-track { flex: 1; height: 4px; background: var(--color-background-secondary); border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--color-text-primary); border-radius: 2px; }
+.buzz-num { font-size: 11px; font-weight: 500; color: var(--color-text-primary); min-width: 28px; text-align: right; }
+.links { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+.site-link { font-size: 12px; padding: 4px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); text-decoration: none; }
+.site-link:hover { background: var(--color-background-secondary); }
+.tweet-section { border-top: 0.5px solid var(--color-border-tertiary); padding: 12px 14px; }
+.tweet-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 6px; }
+.tweet-text { font-size: 13px; color: var(--color-text-primary); line-height: 1.7; margin-bottom: 8px; white-space: pre-wrap; min-height: 40px; }
+.copy-btn { font-size: 12px; padding: 5px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.copy-btn.copied { color: var(--color-text-success); border-color: var(--color-border-success); }
+.empty { text-align: center; padding: 3rem 1rem; color: var(--color-text-secondary); font-size: 14px; }
+.export-row { margin-top: 1.5rem; display: flex; gap: 8px; }
+.export-btn { font-size: 12px; padding: 7px 16px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; }
+.export-btn:hover { background: var(--color-background-secondary); }
+</style>
+
+<div id="app">
+  <h2>バズ動画セレクター × X投稿自動生成</h2>
+  <p class="sub">APIキー不要 — AIが厳選した動画をPexels/Pixabayで即検索、X投稿文も自動生成</p>
+
+  <div class="controls">
+    <span style="font-size:12px;color:var(--color-text-secondary);align-self:center;">テーマ：</span>
+    <button class="genre-btn active" data-q="nature">自然・絶景</button>
+    <button class="genre-btn active" data-q="animals">動物・癒し</button>
+    <button class="genre-btn" data-q="city">都市・夜景</button>
+    <button class="genre-btn" data-q="ocean">海・波</button>
+    <button class="genre-btn" data-q="food">料理・グルメ</button>
+    <button class="genre-btn" data-q="space">宇宙・SF</button>
+    <button class="genre-btn" data-q="people">人・感動</button>
+    <button class="genre-btn" data-q="sport">スポーツ</button>
+    <button class="run-btn" id="run-btn" onclick="runGenerate()">▶ AI生成スタート</button>
+  </div>
+
+  <div class="status" id="status"></div>
+  <div id="results"><div class="empty">テーマを選んで「AI生成スタート」を押してください</div></div>
+  <div id="export-area"></div>
+</div>
+
+<script>
+let selectedThemes = ['nature','animals'];
+let generatedCards = [];
+
+document.querySelectorAll('.genre-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active');
+    const q = btn.dataset.q;
+    if (btn.classList.contains('active')) { if (!selectedThemes.includes(q)) selectedThemes.push(q); }
+    else { selectedThemes = selectedThemes.filter(x => x !== q); }
+  });
+});
+
+const PEXELS_QUERIES = {
+  nature: ['aerial+forest','mountain+sunset','waterfall+4k','cherry+blossom','aurora+borealis'],
+  animals: ['baby+animals','eagle+flying','dolphin+ocean','fox+wildlife','cat+playing'],
+  city: ['tokyo+night','new+york+timelapse','neon+city','rain+street','drone+city'],
+  ocean: ['ocean+waves','coral+reef','underwater+fish','surfing+wave','beach+sunset'],
+  food: ['sushi+making','pasta+cooking','coffee+art','chocolate+dessert','ramen+japan'],
+  space: ['milky+way','meteor+shower','planet+earth','astronaut+space','nebula+galaxy'],
+  people: ['kids+laughing','elderly+couple','street+dance','graduation','helping+hands'],
+  sport: ['skateboard+trick','basketball+dunk','soccer+goal','yoga+sunrise','swimming+pool']
+};
+
+const PIXABAY_QUERIES = {
+  nature: ['landscape','sunset+mountains','forest+foggy','flowers+field','volcano'],
+  animals: ['wildlife','birds+flying','horse+running','whale','butterfly'],
+  city: ['cityscape','bridge+night','architecture','street+life','aerial+city'],
+  ocean: ['sea+waves','tropical+beach','diving','lighthouse+storm','river+canyon'],
+  food: ['street+food','bakery','fruit','japanese+food','bbq'],
+  space: ['stars+night','eclipse','cosmic','moon+photography','solar+system'],
+  people: ['community','celebration','friendship','market','meditation'],
+  sport: ['extreme+sports','cycling','marathon','gymnastics','winter+sports']
+};
+
+function getPexelsUrl(query) {
+  return 'https://www.pexels.com/search/videos/' + query + '/';
+}
+function getPixabayUrl(query) {
+  return 'https://pixabay.com/videos/search/' + query.replace(/\+/g,'%20') + '/';
+}
+
+async function generateCards(themes) {
+  const themeStr = themes.join('、');
+  const prompt = `あなたはXバズり動画の専門キュレーターです。
+テーマ「${themeStr}」に関して、著作権フリー動画サイト（Pexels/Pixabay）でバズりやすい動画を10本分提案してください。
+
+以下のJSONのみ出力してください。前置き・説明・マークダウン記法は一切不要です：
+
+[
+  {
+    "rank": 1,
+    "title": "動画の説明タイトル（日本語、20文字以内）",
+    "theme": "カテゴリ名",
+    "pexels_query": "英語検索キーワード（+区切り）",
+    "pixabay_query": "英語検索キーワード（+区切り）",
+    "buzz_score": 数値（65〜98）,
+    "tags": ["タグ1","タグ2","タグ3"],
+    "reason": "バズる理由（30文字以内）",
+    "tweet": "X投稿文（絵文字2〜3個、ハッシュタグ2〜3個、140文字以内、感情的でバズりやすい日本語）"
+  },
+  ...10件
+]`;
+
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const d = await r.json();
+  const raw = d.content?.[0]?.text || '[]';
+  const clean = raw.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+async function runGenerate() {
+  if (selectedThemes.length === 0) { alert('テーマを1つ以上選んでください'); return; }
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true;
+  document.getElementById('status').textContent = 'AIが10本の動画を選定中...';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('export-area').innerHTML = '';
+
+  try {
+    const cards = await generateCards(selectedThemes);
+    generatedCards = cards;
+
+    const grid = document.createElement('div');
+    grid.className = 'video-grid';
+
+    cards.forEach((v, i) => {
+      const pUrl = getPexelsUrl(v.pexels_query || 'nature');
+      const pbUrl = getPixabayUrl(v.pixabay_query || 'nature');
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.innerHTML = `
+        <div class="card-top">
+          <div class="rank-num">${v.rank || i+1}</div>
+          <div class="card-meta">
+            <div class="video-title">${esc(v.title)}</div>
+            <div class="tags">
+              <span class="tag">${esc(v.theme)}</span>
+              ${(v.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}
+            </div>
+            <div class="buzz-row">
+              <span class="buzz-label">バズ度</span>
+              <div class="bar-track"><div class="bar-fill" style="width:${v.buzz_score||80}%"></div></div>
+              <span class="buzz-num">${v.buzz_score||80}</span>
+            </div>
+            <div style="font-size:11px;color:var(--color-text-secondary);margin-top:4px;">${esc(v.reason||'')}</div>
+            <div class="links">
+              <a class="site-link" href="${pUrl}" target="_blank">Pexelsで検索 →</a>
+              <a class="site-link" href="${pbUrl}" target="_blank">Pixabayで検索 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="tweet-section">
+          <div class="tweet-label">X投稿文</div>
+          <div class="tweet-text" id="tw-${i}">${esc(v.tweet||'')}</div>
+          <button class="copy-btn" id="cp-${i}" onclick="copyTweet(${i})">コピー</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    document.getElementById('results').appendChild(grid);
+    document.getElementById('status').textContent = `完了：${cards.length}本を選定しました`;
+
+    const exportArea = document.getElementById('export-area');
+    exportArea.innerHTML = '';
+    const row = document.createElement('div');
+    row.className = 'export-row';
+    const csvBtn = document.createElement('button');
+    csvBtn.className = 'export-btn';
+    csvBtn.textContent = 'CSVエクスポート';
+    csvBtn.onclick = exportCSV;
+    const allBtn = document.createElement('button');
+    allBtn.className = 'export-btn';
+    allBtn.textContent = '投稿文をまとめてコピー';
+    allBtn.onclick = copyAll;
+    row.appendChild(csvBtn);
+    row.appendChild(allBtn);
+    exportArea.appendChild(row);
+
+  } catch (e) {
+    document.getElementById('status').textContent = 'エラーが発生しました: ' + e.message;
+  }
+  btn.disabled = false;
+}
+
+function copyTweet(i) {
+  const el = document.getElementById('tw-' + i);
+  const btn = document.getElementById('cp-' + i);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    btn.textContent = 'コピー済み';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyAll() {
+  const all = generatedCards.map((v, i) => `【${i+1}】${v.title}\n${v.tweet}\nPexels: https://www.pexels.com/search/videos/${v.pexels_query}/\nPixabay: https://pixabay.com/videos/search/${(v.pixabay_query||'').replace(/\+/g,'%20')}/`).join('\n\n');
+  navigator.clipboard.writeText(all).then(() => alert('全投稿文をコピーしました！'));
+}
+
+function exportCSV() {
+  const rows = [['順位','タイトル','テーマ','バズ度','バズる理由','Pexels検索URL','Pixabay検索URL','X投稿文']];
+  generatedCards.forEach((v, i) => {
+    rows.push([
+      i+1, v.title, v.theme, v.buzz_score, v.reason,
+      'https://www.pexels.com/search/videos/' + v.pexels_query + '/',
+      'https://pixabay.com/videos/search/' + (v.pixabay_query||'').replace(/\+/g,'%20') + '/',
+      v.tweet
+    ]);
+  });
+  const csv = rows.map(r => r.map(c => '"' + String(c||'').replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'buzz_videos_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
