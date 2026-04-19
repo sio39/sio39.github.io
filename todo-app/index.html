@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TODO</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #252836;
+      --border: #2e3347;
+      --accent: #7c6af7;
+      --accent2: #a78bfa;
+      --text: #e2e4f0;
+      --muted: #6b7099;
+      --danger: #f87171;
+      --warn: #fbbf24;
+      --ok: #34d399;
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0,0,0,.4);
+    }
+    .light {
+      --bg: #f3f4f8;
+      --surface: #ffffff;
+      --surface2: #eef0f8;
+      --border: #dde0f0;
+      --accent: #6356e8;
+      --accent2: #7c6af7;
+      --text: #1a1d2e;
+      --muted: #7a7f9a;
+      --danger: #ef4444;
+      --warn: #d97706;
+      --ok: #059669;
+      --shadow: 0 4px 24px rgba(0,0,0,.08);
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background .2s, color .2s;
+    }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      padding: 24px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .main { flex: 1; padding: 32px 40px; max-width: 900px; }
+
+    /* ── Logo ── */
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: grid; place-items: center; font-size: 16px;
+    }
+    .logo-text { font-weight: 700; font-size: 18px; letter-spacing: -.3px; }
+
+    /* ── Nav ── */
+    .nav-section { padding: 0 12px; }
+    .nav-label { font-size: 11px; color: var(--muted); font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase; padding: 8px 8px 4px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 8px; cursor: pointer;
+      font-size: 14px; color: var(--muted); transition: all .15s;
+      margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left;
+    }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: rgba(124,106,247,.15); color: var(--accent2); font-weight: 600; }
+    .nav-item .badge {
+      margin-left: auto; background: var(--surface2);
+      font-size: 11px; font-weight: 700;
+      padding: 1px 7px; border-radius: 20px; color: var(--muted);
+    }
+    .nav-item.active .badge { background: rgba(124,106,247,.2); color: var(--accent2); }
+
+    /* ── Tag list ── */
+    .tag-list { list-style: none; }
+    .tag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Theme toggle ── */
+    .sidebar-footer { margin-top: auto; padding: 16px 20px 0; border-top: 1px solid var(--border); }
+    .theme-btn {
+      display: flex; align-items: center; gap: 8px;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 13px; padding: 8px 0;
+    }
+    .theme-btn:hover { color: var(--text); }
+
+    /* ── Main header ── */
+    .page-header { margin-bottom: 28px; }
+    .page-title { font-size: 28px; font-weight: 800; letter-spacing: -.5px; }
+    .page-meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    /* ── Stats ── */
+    .stats { display: flex; gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px;
+    }
+    .stat-num { font-size: 28px; font-weight: 800; line-height: 1; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; }
+    .stat-card.s-total .stat-num { color: var(--accent2); }
+    .stat-card.s-done .stat-num { color: var(--ok); }
+    .stat-card.s-high .stat-num { color: var(--danger); }
+
+    /* ── Input area ── */
+    .add-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    .add-row { display: flex; gap: 10px; }
+    .add-input {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; font-size: 15px; color: var(--text);
+      outline: none; transition: border-color .15s;
+    }
+    .add-input:focus { border-color: var(--accent); }
+    .add-input::placeholder { color: var(--muted); }
+    .add-meta { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .meta-select {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text);
+      outline: none; cursor: pointer;
+    }
+    .meta-select:focus { border-color: var(--accent); }
+    .date-input {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text);
+      outline: none; color-scheme: dark;
+    }
+    .light .date-input { color-scheme: light; }
+    .date-input:focus { border-color: var(--accent); }
+    .tag-input {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--text);
+      outline: none;
+    }
+    .tag-input:focus { border-color: var(--accent); }
+    .tag-input::placeholder { color: var(--muted); }
+
+    /* ── Buttons ── */
+    .btn {
+      border: none; border-radius: 8px; cursor: pointer; font-size: 14px;
+      font-weight: 600; padding: 10px 18px; transition: all .15s;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+    .btn-ghost {
+      background: var(--surface2); color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Filters ── */
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+    .search-wrap { position: relative; flex: 1; min-width: 160px; }
+    .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; pointer-events: none; }
+    .search-input {
+      width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 12px 8px 32px; font-size: 14px; color: var(--text);
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--muted); }
+    .filter-btn {
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--muted); border-radius: 8px; padding: 7px 14px; font-size: 13px;
+      cursor: pointer; font-weight: 500; transition: all .15s; white-space: nowrap;
+    }
+    .filter-btn:hover { color: var(--text); border-color: var(--muted); }
+    .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Sort ── */
+    .sort-select {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--muted);
+      outline: none; cursor: pointer;
+    }
+    .sort-select:focus { border-color: var(--accent); }
+
+    /* ── Todo list ── */
+    .todo-list { display: flex; flex-direction: column; gap: 8px; }
+    .todo-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 16px;
+      display: flex; align-items: flex-start; gap: 12px;
+      transition: all .2s; position: relative; overflow: hidden;
+    }
+    .todo-item:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(124,106,247,.1); }
+    .todo-item.done { opacity: .6; }
+    .todo-item.done .todo-text { text-decoration: line-through; color: var(--muted); }
+    .todo-item.editing { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(124,106,247,.2); }
+
+    /* priority stripe */
+    .todo-item::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    }
+    .todo-item.p-high::before { background: var(--danger); }
+    .todo-item.p-medium::before { background: var(--warn); }
+    .todo-item.p-low::before { background: var(--ok); }
+
+    .check-btn {
+      width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+      background: none; cursor: pointer; flex-shrink: 0; margin-top: 2px;
+      transition: all .15s; display: grid; place-items: center; color: transparent;
+    }
+    .check-btn:hover { border-color: var(--accent); }
+    .todo-item.done .check-btn {
+      background: var(--ok); border-color: var(--ok); color: #fff;
+    }
+
+    .todo-body { flex: 1; min-width: 0; }
+    .todo-text { font-size: 15px; line-height: 1.5; word-break: break-word; }
+    .todo-edit-input {
+      width: 100%; background: var(--surface2); border: 1px solid var(--accent);
+      border-radius: 6px; padding: 4px 8px; font-size: 15px; color: var(--text);
+      outline: none; font-family: inherit;
+    }
+    .todo-footer { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .todo-tag {
+      font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
+      background: rgba(124,106,247,.15); color: var(--accent2);
+    }
+    .todo-date { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+    .todo-date.overdue { color: var(--danger); font-weight: 600; }
+    .priority-badge {
+      font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .p-high .priority-badge { background: rgba(248,113,113,.15); color: var(--danger); }
+    .p-medium .priority-badge { background: rgba(251,191,36,.15); color: var(--warn); }
+    .p-low .priority-badge { background: rgba(52,211,153,.15); color: var(--ok); }
+
+    .todo-actions {
+      display: flex; gap: 4px; opacity: 0; transition: opacity .15s;
+    }
+    .todo-item:hover .todo-actions { opacity: 1; }
+    .action-btn {
+      background: none; border: none; cursor: pointer; padding: 4px 6px;
+      border-radius: 6px; color: var(--muted); font-size: 14px; transition: all .15s;
+    }
+    .action-btn:hover { background: var(--surface2); color: var(--text); }
+    .action-btn.del:hover { color: var(--danger); }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center; padding: 60px 20px; color: var(--muted);
+    }
+    .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-text { font-size: 16px; font-weight: 500; }
+    .empty-sub { font-size: 13px; margin-top: 6px; }
+
+    /* ── Progress bar ── */
+    .progress-wrap { margin-bottom: 20px; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .progress-bar { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--ok)); border-radius: 99px; transition: width .4s ease; }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .sidebar { display: none; }
+      .main { padding: 20px 16px; }
+      .stats { flex-wrap: wrap; }
+      .stat-card { min-width: 120px; }
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+    /* ── Animations ── */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .todo-item { animation: slideIn .15s ease; }
+  </style>
+</head>
+<body>
+
+<div class="layout" id="app">
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">✓</div>
+      <span class="logo-text">TODO</span>
+    </div>
+
+    <nav class="nav-section">
+      <div class="nav-label">表示</div>
+      <button class="nav-item active" data-filter-status="all" onclick="setStatusFilter('all', this)">
+        🗂 すべて <span class="badge" id="badge-all">0</span>
+      </button>
+      <button class="nav-item" data-filter-status="active" onclick="setStatusFilter('active', this)">
+        ⏳ 未完了 <span class="badge" id="badge-active">0</span>
+      </button>
+      <button class="nav-item" data-filter-status="done" onclick="setStatusFilter('done', this)">
+        ✅ 完了済 <span class="badge" id="badge-done">0</span>
+      </button>
+      <button class="nav-item" data-filter-status="today" onclick="setStatusFilter('today', this)">
+        📅 今日期限 <span class="badge" id="badge-today">0</span>
+      </button>
+      <button class="nav-item" data-filter-status="overdue" onclick="setStatusFilter('overdue', this)">
+        🔥 期限超過 <span class="badge" id="badge-overdue">0</span>
+      </button>
+
+      <div class="nav-label" style="margin-top:16px;">優先度</div>
+      <button class="nav-item" data-filter-status="high" onclick="setStatusFilter('high', this)">
+        🔴 高 <span class="badge" id="badge-high">0</span>
+      </button>
+      <button class="nav-item" data-filter-status="medium" onclick="setStatusFilter('medium', this)">
+        🟡 中 <span class="badge" id="badge-medium">0</span>
+      </button>
+      <button class="nav-item" data-filter-status="low" onclick="setStatusFilter('low', this)">
+        🟢 低 <span class="badge" id="badge-low">0</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-btn" onclick="toggleTheme()">
+        <span id="theme-icon">☀️</span>
+        <span id="theme-label">ライトモード</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <div class="page-header">
+      <div class="page-title" id="page-title">すべてのタスク</div>
+      <div class="page-meta" id="page-meta"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card s-total">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">合計タスク</div>
+      </div>
+      <div class="stat-card s-done">
+        <div class="stat-num" id="stat-done">0</div>
+        <div class="stat-label">完了済み</div>
+      </div>
+      <div class="stat-card s-high">
+        <div class="stat-num" id="stat-high">0</div>
+        <div class="stat-label">高優先度</div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>達成率</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Add -->
+    <div class="add-card">
+      <div class="add-row">
+        <input class="add-input" id="add-text" placeholder="新しいタスクを追加… (Enter で追加)" onkeydown="if(event.key==='Enter') addTodo()" />
+        <button class="btn btn-primary" onclick="addTodo()">追加</button>
+      </div>
+      <div class="add-meta">
+        <select class="meta-select" id="add-priority">
+          <option value="medium">🟡 中</option>
+          <option value="high">🔴 高</option>
+          <option value="low">🟢 低</option>
+        </select>
+        <input class="date-input" type="date" id="add-date" />
+        <input class="tag-input" id="add-tag" placeholder="タグ (任意)" />
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="search" placeholder="タスクを検索…" oninput="render()" />
+      </div>
+      <select class="sort-select" id="sort-select" onchange="render()">
+        <option value="created">追加順</option>
+        <option value="priority">優先度順</option>
+        <option value="due">期限順</option>
+        <option value="name">名前順</option>
+      </select>
+      <button class="btn btn-ghost" onclick="clearDone()" style="font-size:13px;padding:7px 12px;">完了を削除</button>
+    </div>
+
+    <!-- List -->
+    <div class="todo-list" id="todo-list"></div>
+  </main>
+</div>
+
+<script>
+// ─── State ───────────────────────────────────────────────────────────
+let todos = JSON.parse(localStorage.getItem('todos') || '[]');
+let statusFilter = 'all';
+let theme = localStorage.getItem('theme') || 'dark';
+let editingId = null;
+
+// ─── Theme ────────────────────────────────────────────────────────────
+function applyTheme() {
+  if (theme === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('theme-icon').textContent = '🌙';
+    document.getElementById('theme-label').textContent = 'ダークモード';
+  } else {
+    document.body.classList.remove('light');
+    document.getElementById('theme-icon').textContent = '☀️';
+    document.getElementById('theme-label').textContent = 'ライトモード';
+  }
+}
+function toggleTheme() {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', theme);
+  applyTheme();
+}
+applyTheme();
+
+// ─── Helpers ──────────────────────────────────────────────────────────
+function save() { localStorage.setItem('todos', JSON.stringify(todos)); }
+function today() { return new Date().toISOString().slice(0, 10); }
+function isOverdue(t) { return t.due && !t.done && t.due < today(); }
+function isToday(t)   { return t.due === today(); }
+
+const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
+
+const FILTER_LABELS = {
+  all: 'すべてのタスク', active: '未完了タスク', done: '完了済みタスク',
+  today: '今日期限のタスク', overdue: '期限超過タスク',
+  high: '高優先度タスク', medium: '中優先度タスク', low: '低優先度タスク'
+};
+
+// ─── Add ──────────────────────────────────────────────────────────────
+function addTodo() {
+  const text = document.getElementById('add-text').value.trim();
+  if (!text) { document.getElementById('add-text').focus(); return; }
+
+  todos.unshift({
+    id: Date.now(),
+    text,
+    done: false,
+    priority: document.getElementById('add-priority').value,
+    due: document.getElementById('add-date').value || null,
+    tag: document.getElementById('add-tag').value.trim() || null,
+    created: new Date().toISOString()
+  });
+
+  document.getElementById('add-text').value = '';
+  document.getElementById('add-date').value = '';
+  document.getElementById('add-tag').value = '';
+  save(); render();
+  document.getElementById('add-text').focus();
+}
+
+// ─── Toggle ───────────────────────────────────────────────────────────
+function toggleDone(id) {
+  const t = todos.find(x => x.id === id);
+  if (t) { t.done = !t.done; save(); render(); }
+}
+
+// ─── Delete ───────────────────────────────────────────────────────────
+function deleteTodo(id) {
+  todos = todos.filter(x => x.id !== id);
+  save(); render();
+}
+
+function clearDone() {
+  todos = todos.filter(x => !x.done);
+  save(); render();
+}
+
+// ─── Edit ─────────────────────────────────────────────────────────────
+function startEdit(id) {
+  editingId = id;
+  render();
+  const inp = document.getElementById('edit-' + id);
+  if (inp) { inp.focus(); inp.select(); }
+}
+
+function commitEdit(id) {
+  const inp = document.getElementById('edit-' + id);
+  if (!inp) return;
+  const val = inp.value.trim();
+  if (val) {
+    const t = todos.find(x => x.id === id);
+    if (t) t.text = val;
+  }
+  editingId = null;
+  save(); render();
+}
+
+function editKeydown(e, id) {
+  if (e.key === 'Enter')  { commitEdit(id); }
+  if (e.key === 'Escape') { editingId = null; render(); }
+}
+
+// ─── Filter ───────────────────────────────────────────────────────────
+function setStatusFilter(f, el) {
+  statusFilter = f;
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('page-title').textContent = FILTER_LABELS[f] || 'タスク';
+  render();
+}
+
+function filteredTodos() {
+  const q = document.getElementById('search').value.toLowerCase();
+  return todos.filter(t => {
+    if (q && !t.text.toLowerCase().includes(q) && !(t.tag || '').toLowerCase().includes(q)) return false;
+    if (statusFilter === 'active')  return !t.done;
+    if (statusFilter === 'done')    return t.done;
+    if (statusFilter === 'today')   return isToday(t) && !t.done;
+    if (statusFilter === 'overdue') return isOverdue(t);
+    if (statusFilter === 'high')    return t.priority === 'high';
+    if (statusFilter === 'medium')  return t.priority === 'medium';
+    if (statusFilter === 'low')     return t.priority === 'low';
+    return true;
+  });
+}
+
+function sortedTodos(list) {
+  const s = document.getElementById('sort-select').value;
+  return [...list].sort((a, b) => {
+    if (s === 'priority') return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+    if (s === 'due') {
+      if (!a.due && !b.due) return 0;
+      if (!a.due) return 1; if (!b.due) return -1;
+      return a.due.localeCompare(b.due);
+    }
+    if (s === 'name') return a.text.localeCompare(b.text);
+    return 0; // created order preserved
+  });
+}
+
+// ─── Render ───────────────────────────────────────────────────────────
+function render() {
+  // Badges
+  const all = todos.length;
+  const done = todos.filter(t => t.done).length;
+  const active = todos.filter(t => !t.done).length;
+  const high = todos.filter(t => t.priority === 'high' && !t.done).length;
+  const medium = todos.filter(t => t.priority === 'medium' && !t.done).length;
+  const low = todos.filter(t => t.priority === 'low' && !t.done).length;
+  const todayCount = todos.filter(t => isToday(t) && !t.done).length;
+  const overdueCount = todos.filter(t => isOverdue(t)).length;
+
+  document.getElementById('badge-all').textContent     = all;
+  document.getElementById('badge-active').textContent  = active;
+  document.getElementById('badge-done').textContent    = done;
+  document.getElementById('badge-today').textContent   = todayCount;
+  document.getElementById('badge-overdue').textContent = overdueCount;
+  document.getElementById('badge-high').textContent    = high;
+  document.getElementById('badge-medium').textContent  = medium;
+  document.getElementById('badge-low').textContent     = low;
+
+  document.getElementById('stat-total').textContent = all;
+  document.getElementById('stat-done').textContent  = done;
+  document.getElementById('stat-high').textContent  = high;
+
+  const pct = all === 0 ? 0 : Math.round(done / all * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // Meta
+  const now = new Date().toLocaleDateString('ja-JP', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+  document.getElementById('page-meta').textContent = now;
+
+  // List
+  const list = sortedTodos(filteredTodos());
+  const container = document.getElementById('todo-list');
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">✨</div>
+        <div class="empty-text">タスクがありません</div>
+        <div class="empty-sub">上のフォームから追加してみましょう</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(t => {
+    const overdue = isOverdue(t);
+    const dueLabel = t.due
+      ? `<span class="todo-date ${overdue ? 'overdue' : ''}">📅 ${t.due}${overdue ? ' (期限超過)' : ''}</span>`
+      : '';
+    const tagLabel = t.tag
+      ? `<span class="todo-tag">#${t.tag}</span>`
+      : '';
+    const priorityLabel = `<span class="priority-badge">${{high:'高',medium:'中',low:'低'}[t.priority]}</span>`;
+
+    const bodyContent = editingId === t.id
+      ? `<input class="todo-edit-input" id="edit-${t.id}" value="${escHtml(t.text)}"
+           onkeydown="editKeydown(event,${t.id})" onblur="commitEdit(${t.id})" />`
+      : `<div class="todo-text">${escHtml(t.text)}</div>`;
+
+    return `
+      <div class="todo-item p-${t.priority} ${t.done ? 'done' : ''} ${editingId === t.id ? 'editing' : ''}">
+        <button class="check-btn" onclick="toggleDone(${t.id})" title="完了切替">
+          ${t.done ? '✓' : ''}
+        </button>
+        <div class="todo-body">
+          ${bodyContent}
+          <div class="todo-footer">
+            ${priorityLabel}
+            ${dueLabel}
+            ${tagLabel}
+          </div>
+        </div>
+        <div class="todo-actions">
+          <button class="action-btn" onclick="startEdit(${t.id})" title="編集">✏️</button>
+          <button class="action-btn del" onclick="deleteTodo(${t.id})" title="削除">🗑</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────
+// サンプルデータ (初回のみ)
+if (todos.length === 0) {
+  todos = [
+    { id: 1, text: 'TODOアプリを使い始める', done: true,  priority: 'low',    due: null,    tag: 'チュートリアル', created: new Date().toISOString() },
+    { id: 2, text: 'タスクを追加してみる',   done: false, priority: 'medium', due: today(), tag: null,            created: new Date().toISOString() },
+    { id: 3, text: '期限を設定してみる',     done: false, priority: 'high',   due: null,    tag: 'Tips',          created: new Date().toISOString() },
+  ];
+  save();
+}
+
+render();
+</script>
+</body>
+</html>
