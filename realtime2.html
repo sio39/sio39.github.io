@@ -31,7 +31,6 @@
             --buy-border: #ef4444;
             --gold: #b45309;
             --bolt-color: #ef4444;
-            /* モードカラー */
             --day-color: #ef4444;
             --day-dark: #b91c1c;
             --swing-color: #8b5cf6;
@@ -114,7 +113,7 @@
             font-size: 0.78rem; color: var(--text-sub); text-align: center;
             padding: 6px 14px; background: #f8fafc; border-radius: 10px;
             border: 1px solid var(--border-color); line-height: 1.5;
-            max-width: 340px;
+            max-width: 380px;
         }
         .mode-desc strong { color: var(--text-main); }
 
@@ -141,6 +140,7 @@
         .sp-bolt  { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
         .sp-gap   { background: #f3e8ff; color: #6b21a8; border: 1px solid #ddd6fe; }
         .sp-price { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .sp-cash  { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
         .sp-plus  { color: var(--text-sub); font-weight: 900; font-size: 1rem; }
 
         /* ===== AIスコアランク凡例 ===== */
@@ -210,11 +210,12 @@
         .mika-name { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .mika-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
         .mika-tag  { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; letter-spacing: 0.5px; }
-        .mika-tag-ai   { background: rgba(59,130,246,0.1); border: 1px solid #bfdbfe; color: #1d4ed8; }
-        .mika-tag-bolt { background: rgba(239,68,68,0.08); border: 1px solid #fecaca; color: #dc2626; }
-        .mika-tag-buy  { background: rgba(16,185,129,0.1); border: 1px solid #a7f3d0; color: #065f46; }
+        .mika-tag-ai     { background: rgba(59,130,246,0.1); border: 1px solid #bfdbfe; color: #1d4ed8; }
+        .mika-tag-bolt   { background: rgba(239,68,68,0.08); border: 1px solid #fecaca; color: #dc2626; }
+        .mika-tag-buy    { background: rgba(16,185,129,0.1); border: 1px solid #a7f3d0; color: #065f46; }
+        .mika-tag-growth { background: rgba(139,92,246,0.1); border: 1px solid #ddd6fe; color: #6d28d9; }
+        .mika-tag-cash   { background: rgba(16,185,129,0.08); border: 1px solid #6ee7b7; color: #065f46; }
 
-        /* ミカカードのAIスコア表示 */
         .mika-ai-score {
             display: flex; align-items: center; justify-content: space-between;
             background: #f8fafc; border-radius: 10px; padding: 8px 12px; margin-bottom: 10px;
@@ -298,10 +299,12 @@
         .az-name  { font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 2px 0 8px; }
         .az-tags  { display: flex; flex-wrap: wrap; gap: 5px; }
         .az-tag   { font-size: 0.7rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; }
-        .az-tag-ai   { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
-        .az-tag-buy  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
-        .az-tag-bolt { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
-        .az-tag-none { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--text-sub); }
+        .az-tag-ai     { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+        .az-tag-buy    { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .az-tag-bolt   { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
+        .az-tag-none   { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--text-sub); }
+        .az-tag-growth { background: #f3e8ff; border: 1px solid #ddd6fe; color: #6d28d9; }
+        .az-tag-cash   { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; }
         .az-tag-mode-day   { background: #fff1f2; border: 1px solid #fecdd3; color: #b91c1c; font-size: 0.65rem; }
         .az-tag-mode-swing { background: #f3e8ff; border: 1px solid #ddd6fe; color: #6d28d9; font-size: 0.65rem; }
 
@@ -357,10 +360,12 @@
             position: relative; overflow: hidden;
         }
         .az-metric-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-        .mc-vol::before   { background: linear-gradient(90deg, #3b82f6, transparent); }
-        .mc-price::before { background: linear-gradient(90deg, #10b981, transparent); }
-        .mc-bolt::before  { background: linear-gradient(90deg, #ef4444, transparent); }
-        .mc-fund::before  { background: linear-gradient(90deg, #f59e0b, transparent); }
+        .mc-vol::before    { background: linear-gradient(90deg, #3b82f6, transparent); }
+        .mc-price::before  { background: linear-gradient(90deg, #10b981, transparent); }
+        .mc-bolt::before   { background: linear-gradient(90deg, #ef4444, transparent); }
+        .mc-fund::before   { background: linear-gradient(90deg, #f59e0b, transparent); }
+        .mc-growth::before { background: linear-gradient(90deg, #8b5cf6, transparent); }
+        .mc-cash::before   { background: linear-gradient(90deg, #10b981, transparent); }
 
         .az-metric-title {
             font-size: 0.68rem; color: var(--text-sub); letter-spacing: 2px;
@@ -415,7 +420,6 @@
         .swing-notice-inner li { margin-bottom: 3px; }
         .swing-notice-inner strong { color: #5b21b6; }
 
-        
         .table-container { width: 95%; max-width: 1200px; margin: 0 auto; background: #fff; border-radius: 20px; overflow: auto; max-height: 75vh; border: 1px solid var(--border-color); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
         thead th { position: sticky; top: 0; z-index: 10; background: #f8fafc; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
@@ -425,7 +429,6 @@
         .bolt-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.10); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 2px 8px; }
         .bolt-count-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.08); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.25); border-radius: 20px; padding: 2px 10px; }
 
-        /* AIスコアセル */
         .ai-score-cell { display: inline-flex; align-items: center; gap: 5px; }
         .ai-score-badge {
             font-size: 0.82rem; font-weight: 900; font-family: monospace;
@@ -456,7 +459,6 @@
             <a href="index.html" class="logo"><span>AI</span>スコア投資研究所</a>
             <nav>
                 <a href="index.html">TOP</a>
-                <a href="BBS.html">BBS</a>
                 <a href="tool.html">ツール</a>
                 <a href="realtime.html" class="active">リアルボード</a>
             </nav>
@@ -486,7 +488,7 @@
         </button>
     </div>
     <div class="mode-desc" id="mode-desc">
-        <strong>デイトレモード：</strong>補正A3(45%) ＋ 補正RVOL(35%) ＋ BOLT回数(20%)
+        <strong>デイトレモード：</strong>補正A3(35%) ＋ 補正RVOL(35%) ＋ BOLT回数(30%)
     </div>
 </div>
 
@@ -500,12 +502,13 @@
 <div class="swing-notice" id="swing-notice" style="display:none;">
     <div class="swing-notice-inner">
         <div class="swing-notice-title">
-            <i class="fa-solid fa-triangle-exclamation"></i> スイングモードをご利用の前に
+            <i class="fa-solid fa-circle-info"></i> スイングモードについて
         </div>
         <ul>
-            <li><strong>ギャップ比（A5/A3）は手動入力のため、未入力の銘柄はギャップ比＝1として計算</strong>されます。該当銘柄のスイングスコアは実態より低く出る場合があります。</li>
-            <li>デイトレモードで上位に来た銘柄を目安にデータ確認していますが、<strong>一部の銘柄はデータが古いまたは未入力の可能性</strong>があります。</li>
-            <li>スイングスコアは<strong>参考程度</strong>にとどめ、個別にギャップ比・成長率・ネットキャッシュ率をご確認ください。</li>
+            <li><strong>元A3・成長率・ネットキャッシュ率の3指標</strong>でスコアを算出します。当日の出来高・RVOL・前日比は使用しません。</li>
+            <li>成長率が未入力の銘柄は<strong>0点</strong>として計算されます。ネットキャッシュ率が計算不能（#DIV/0!）の銘柄も<strong>0点</strong>扱いです。</li>
+            <li>下落時の仕込みを想定した設計のため、<strong>状態係数（買い判定・BOLT）による補正はありません。</strong></li>
+            <li>スコアはあくまで参考値です。<strong>投資の最終判断はご自身の責任</strong>でお願いします。</li>
         </ul>
     </div>
 </div>
@@ -598,23 +601,8 @@
                 <div class="az-bar-wrap"><div class="az-bar-fill" id="az-r-bar"></div></div>
                 <div class="az-verdict"   id="az-r-verdict"></div>
             </div>
-            <div class="az-metrics-grid">
-                <div class="az-metric-card mc-vol">
-                    <div class="az-metric-title"><i class="fa-solid fa-chart-bar"></i> 出来高・RVOL</div>
-                    <div id="az-m-vol"></div>
-                </div>
-                <div class="az-metric-card mc-price">
-                    <div class="az-metric-title"><i class="fa-solid fa-arrow-trend-up"></i> 価格・VWAP</div>
-                    <div id="az-m-price"></div>
-                </div>
-                <div class="az-metric-card mc-bolt">
-                    <div class="az-metric-title"><i class="fa-solid fa-bolt"></i> BOLT判定</div>
-                    <div id="az-m-bolt"></div>
-                </div>
-                <div class="az-metric-card mc-fund">
-                    <div class="az-metric-title"><i class="fa-solid fa-building-columns"></i> ファンダ概要</div>
-                    <div id="az-m-fund"></div>
-                </div>
+            <div class="az-metrics-grid" id="az-metrics-grid">
+                <!-- デイ／スイングで中身を差し替え -->
             </div>
         </div>
 
@@ -639,7 +627,7 @@
 
 <script>
 // ===== モード管理 =====
-let currentMode = 'day'; // 'day' or 'swing'
+let currentMode = 'day';
 
 const MODE_CONFIG = {
     day: {
@@ -656,15 +644,13 @@ const MODE_CONFIG = {
     },
     swing: {
         label: 'スイング',
-        desc: '<strong>スイングモード：</strong>補正A3(30%) ＋ ギャップ比/A5(35%) ＋ 補正RVOL(20%) ＋ 前日比率(15%)',
+        desc: '<strong>スイングモード：</strong>元A3(30%) ＋ 成長率(40%) ＋ ネットキャッシュ率(30%)',
         pills: [
-            { cls: 'sp-a3',   text: '補正A3 × 30%' },
+            { cls: 'sp-a3',   text: '元A3 × 30%' },
             { cls: 'sp-plus', text: '+' },
-            { cls: 'sp-gap',  text: 'ギャップ比(A5) × 35%' },
+            { cls: 'sp-gap',  text: '成長率 × 40%' },
             { cls: 'sp-plus', text: '+' },
-            { cls: 'sp-rvol', text: '補正RVOL × 20%' },
-            { cls: 'sp-plus', text: '+' },
-            { cls: 'sp-price',text: '前日比率 × 15%' },
+            { cls: 'sp-cash', text: 'ネットキャッシュ率 × 30%' },
         ],
         tagCls: 'smt-swing', tagIcon: '📈', tagText: 'スイングモード',
     }
@@ -674,31 +660,25 @@ function setMode(mode) {
     currentMode = mode;
     const cfg = MODE_CONFIG[mode];
 
-    // ボタンの見た目
     document.getElementById('btn-day').className   = 'mode-btn' + (mode === 'day'   ? ' active-day'   : '');
     document.getElementById('btn-swing').className = 'mode-btn' + (mode === 'swing' ? ' active-swing' : '');
-
-    // 説明文
     document.getElementById('mode-desc').innerHTML = cfg.desc;
 
-    // 計算式ピル
     document.getElementById('formula-pills').innerHTML = cfg.pills.map(p =>
         p.cls === 'sp-plus'
             ? `<span class="sp-plus">${p.text}</span>`
             : `<span class="score-pill ${p.cls}">${p.text}</span>`
     ).join(' ');
 
-    // スイングモード注意書きの表示切替
     document.getElementById('swing-notice').style.display = mode === 'swing' ? 'block' : 'none';
 
-    // テーブル・MIKAカードの再描画
     if (latestStocks.length > 0) {
         renderMikaPicks(getMikaPicks(latestStocks));
         renderTableBody(latestStocks);
     }
 }
 
-// ===== 状態係数を計算 =====
+// ===== 状態係数を計算（デイトレ専用） =====
 function calcStateMultiplier(s) {
     const isBuy  = s.sign.includes('買い') || s.sign.includes('🔥');
     const isBolt = s.bolt === 'BOLT!';
@@ -718,7 +698,6 @@ function calcStateMultiplier(s) {
         multiplier = 0.35; stateLabel = '🔴 判定なし・低RVOL'; stateColor = '#dc2626';
     }
 
-    // 下落中はさらに×0.8
     if (isDn) {
         multiplier = +(multiplier * 0.8).toFixed(2);
         stateLabel += '　／　前日比マイナス(-20%)';
@@ -732,7 +711,6 @@ function calcScoreDay(s) {
     const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
     const items   = [];
 
-    // 補正A3スコア → 0〜35点
     let a3Pt = 0;
     if      (s.corrA3 >= 500) a3Pt = 35;
     else if (s.corrA3 >= 200) a3Pt = 28;
@@ -741,7 +719,6 @@ function calcScoreDay(s) {
     else if (s.corrA3 >= 10)  a3Pt = 7;
     items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 35, color: '#f59e0b' });
 
-    // 補正RVOL → 0〜35点
     let rvolPt = 0;
     if      (rvolVal >= 5.0) rvolPt = 35;
     else if (rvolVal >= 3.0) rvolPt = 28;
@@ -750,7 +727,6 @@ function calcScoreDay(s) {
     else if (rvolVal >= 1.0) rvolPt = 7;
     items.push({ label: '補正RVOL（出来高爆発力）', pt: rvolPt, max: 35, color: '#3b82f6' });
 
-    // BOLT回数 → 0〜30点（上限引き上げ・細分化）
     let boltPt = 0;
     const bc = s.boltCount;
     if      (bc >= 30) boltPt = 30;
@@ -769,63 +745,125 @@ function calcScoreDay(s) {
 }
 
 // ===== AIスコア計算（スイング） =====
+// 比例計算方式：値が高いほどなめらかに点数が上がる
+// 元A3：300で満点30pt / 成長率：60%で満点40pt / ネットキャッシュ：70%で満点30pt
 function calcScoreSwing(s) {
-    const rvolVal = s.corrRvol > 0 ? s.corrRvol : s.rvol;
-    const items   = [];
+    const items = [];
 
-    // 補正A3スコア → 0〜30点
-    let a3Pt = 0;
-    if      (s.corrA3 >= 500) a3Pt = 30;
-    else if (s.corrA3 >= 200) a3Pt = 24;
-    else if (s.corrA3 >= 100) a3Pt = 18;
-    else if (s.corrA3 >= 50)  a3Pt = 12;
-    else if (s.corrA3 >= 10)  a3Pt = 6;
-    items.push({ label: '補正A3（企業の地力）', pt: a3Pt, max: 30, color: '#f59e0b' });
+    // 元A3（30点満点・300以上で満点・100未満は比例計算）
+    const a3Pt = s.scoreA3 > 0
+        ? Math.min(Math.round(s.scoreA3 / 300 * 30), 30)
+        : 0;
+    items.push({ label: '元A3（企業の地力）', pt: a3Pt, max: 30, color: '#f59e0b' });
 
-    // ギャップ比（A5/A3）→ 0〜35点
-    let gapPt = 0;
-    const gr = s.gapRatio;
-    if      (gr >= 2.0) gapPt = 35;
-    else if (gr >= 1.5) gapPt = 28;
-    else if (gr >= 1.2) gapPt = 21;
-    else if (gr >= 1.0) gapPt = 14;
-    else if (gr > 0)    gapPt = 5;
-    items.push({ label: 'ギャップ比／A5（将来性）', pt: gapPt, max: 35, color: '#8b5cf6' });
+    // 成長率（40点満点・60%以上で満点・0以下は0点）
+    const growthPt = s.growth > 0
+        ? Math.min(Math.round(s.growth / 60 * 40), 40)
+        : 0;
+    items.push({ label: '成長率（業績成長予測）', pt: growthPt, max: 40, color: '#8b5cf6' });
 
-    // 補正RVOL → 0〜20点
-    let rvolPt = 0;
-    if      (rvolVal >= 5.0) rvolPt = 20;
-    else if (rvolVal >= 3.0) rvolPt = 16;
-    else if (rvolVal >= 2.0) rvolPt = 12;
-    else if (rvolVal >= 1.5) rvolPt = 8;
-    else if (rvolVal >= 1.0) rvolPt = 4;
-    items.push({ label: '補正RVOL（エントリータイミング）', pt: rvolPt, max: 20, color: '#3b82f6' });
+    // ネットキャッシュ率（30点満点・70%以上で満点・0以下は0点）
+    const cashPt = s.netCash > 0
+        ? Math.min(Math.round(s.netCash / 70 * 30), 30)
+        : 0;
+    items.push({ label: 'ネットキャッシュ率（財務健全性）', pt: cashPt, max: 30, color: '#10b981' });
 
-    // 前日比率 → 0〜15点
-    let pricePt = 0;
-    const cp = s.changePct;
-    if      (cp >= 5)  pricePt = 15;
-    else if (cp >= 3)  pricePt = 12;
-    else if (cp >= 1)  pricePt = 8;
-    else if (cp >= 0)  pricePt = 3;
-    items.push({ label: '前日比率（価格トレンド）', pt: pricePt, max: 15, color: '#10b981' });
+    const total = Math.min(items.reduce((a, b) => a + b.pt, 0), 100);
 
-    const rawTotal = items.reduce((a, b) => a + b.pt, 0);
-    const { multiplier, stateLabel, stateColor } = calcStateMultiplier(s);
-    const total = Math.min(Math.round(rawTotal * multiplier), 100);
-    return { items, total, multiplier, stateLabel, stateColor };
+    return {
+        items,
+        total,
+        multiplier: 1.0,
+        stateLabel: 'ファンダ評価（状態係数なし）',
+        stateColor: '#6b7280'
+    };
 }
 
 function calcScore(s) {
     return currentMode === 'day' ? calcScoreDay(s) : calcScoreSwing(s);
 }
 
-// スコアランク
+// ===== スコアランク =====
 function getScoreRank(total) {
-    if (total >= 80) return { cls: 'asb-s', label: '🏆S', sClass: 's-great', fClass: 'fill-great', vClass: 'verdict-great', vText: '🟢 <strong>強い買い候補</strong>　複数シグナル点灯。VWAP付近での拾いや追撃を検討できます。' };
-    if (total >= 60) return { cls: 'asb-a', label: '⭐A', sClass: 's-good',  fClass: 'fill-good',  vClass: 'verdict-good',  vText: '🔵 <strong>注目銘柄</strong>　シグナルが出始めています。もう一押しで仕掛けどころになる可能性があります。' };
-    if (total >= 40) return { cls: 'asb-b', label: '✅B', sClass: 's-mid',   fClass: 'fill-mid',   vClass: 'verdict-mid',   vText: '🟡 <strong>様子見</strong>　出来高・判定ともに弱め。シグナルが揃うまで待つのが得策です。' };
-    return               { cls: 'asb-c', label: 'C',   sClass: 's-low',   fClass: 'fill-low',   vClass: 'verdict-low',   vText: '🔴 <strong>見送り推奨</strong>　現時点では積極的なエントリー根拠が少ない状態です。' };
+    if (total >= 80) return { cls: 'asb-s', label: '🏆S', sClass: 's-great', fClass: 'fill-great', vClass: 'verdict-great' };
+    if (total >= 60) return { cls: 'asb-a', label: '⭐A', sClass: 's-good',  fClass: 'fill-good',  vClass: 'verdict-good'  };
+    if (total >= 40) return { cls: 'asb-b', label: '✅B', sClass: 's-mid',   fClass: 'fill-mid',   vClass: 'verdict-mid'   };
+    return               { cls: 'asb-c', label: 'C',   sClass: 's-low',   fClass: 'fill-low',   vClass: 'verdict-low'   };
+}
+
+// ===== デイトレ用：動的解説文 =====
+function buildVerdictTextDay(s, total, stateLabel, stateColor) {
+    const rvolVal    = s.corrRvol > 0 ? s.corrRvol : s.rvol;
+    const isBuy      = s.sign.includes('買い') || s.sign.includes('🔥');
+    const isBolt     = s.bolt === 'BOLT!';
+    const rvolOk     = rvolVal >= 1.5;
+    const rvolStrong = rvolVal >= 5.0;
+    const isDn       = s.changePct < 0;
+    const isBoltWait = stateLabel.includes('判定待ち');
+    const isNoSignal = stateLabel.includes('判定なし');
+    const isDnPenalty = stateLabel.includes('前日比マイナス');
+
+    let rvolComment = '';
+    if (rvolStrong)    rvolComment = `出来高・RVOLは<strong>非常に強く（${rvolVal.toFixed(1)}x）</strong>爆発力あり。`;
+    else if (rvolOk)   rvolComment = `出来高・RVOLは<strong>良好（${rvolVal.toFixed(1)}x）</strong>。`;
+    else               rvolComment = `出来高・RVOLは低め（${rvolVal.toFixed(1)}x）。`;
+
+    const dnComment = isDnPenalty
+        ? `前日比<strong>${s.changePct.toFixed(1)}%</strong>のマイナスが評価を下げています。`
+        : '';
+
+    let emoji, strength, advice;
+
+    if (isBuy && isBolt) {
+        emoji = '🟢'; strength = '強い買い候補';
+        advice = `${rvolComment}BOLT＋買い判定が揃っています。VWAP付近での拾いや追撃を検討できます。${dnComment}`;
+    } else if (isBuy) {
+        emoji = '🔵'; strength = '注目銘柄';
+        advice = `${rvolComment}買い判定が出ています。BOLTが加われば強力なエントリー根拠になります。${dnComment}`;
+    } else if (isBoltWait && rvolStrong) {
+        emoji = '🟡'; strength = '判定待ち（RVOL極めて強）';
+        advice = `${rvolComment}BOLT・買い判定の成立を待てば有力なエントリー候補になります。${dnComment}`;
+    } else if (isBoltWait && rvolOk) {
+        emoji = '🟡'; strength = '判定待ち';
+        advice = `${rvolComment}BOLT・買い判定の成立を待てばエントリー候補になります。${dnComment}`;
+    } else if (isNoSignal && rvolOk) {
+        emoji = '🟡'; strength = '様子見';
+        advice = `${rvolComment}シグナルがまだ揃っていません。判定出現を待つのが得策です。${dnComment}`;
+    } else {
+        emoji = '🔴'; strength = '見送り推奨';
+        advice = `出来高・シグナルともに現時点では積極的なエントリー根拠が少ない状態です。${dnComment}`;
+    }
+
+    return `${emoji} <strong>${strength}</strong>　${advice}`;
+}
+
+// ===== スイング用：動的解説文 =====
+function buildVerdictTextSwing(s, total) {
+    const a3Ok     = s.scoreA3 >= 120;
+    const growthOk = s.growth >= 10;
+    const cashOk   = s.netCash >= 20;
+
+    let emoji, strength, advice;
+
+    if (total >= 80) {
+        emoji = '🟢'; strength = '優良な仕込み候補';
+        advice = `企業の地力・成長性・財務健全性がすべて高水準です。押し目や下落時の分割買いを検討できます。`;
+    } else if (total >= 60) {
+        emoji = '🔵'; strength = '注目銘柄';
+        const weak = [];
+        if (!a3Ok)     weak.push('A3スコアがやや低め');
+        if (!growthOk) weak.push('成長率が控えめ');
+        if (!cashOk)   weak.push('ネットキャッシュ率が低め');
+        advice = `中長期の保有候補として注目できます。${weak.length > 0 ? '（' + weak.join('・') + '）' : ''}`;
+    } else if (total >= 40) {
+        emoji = '🟡'; strength = '条件付き注目';
+        advice = `一部の指標が物足りません。成長率・ネットキャッシュ率を個別に確認してから判断することをおすすめします。`;
+    } else {
+        emoji = '🔴'; strength = '見送り推奨';
+        advice = `成長性・財務健全性ともに現時点では中長期保有の根拠が乏しい状態です。`;
+    }
+
+    return `${emoji} <strong>${strength}</strong>　${advice}`;
 }
 
 // ===== CSV全カラムパース =====
@@ -871,12 +909,20 @@ function parseFullStocks(rows) {
 
 let latestStocks = [];
 
-// ===== MIKA厳選銘柄 =====
+// ===== MIKA厳選銘柄の選定 =====
 function getMikaPicks(stocks) {
-    const isBuy  = s => s.sign === '🔥買い' || s.sign === '買いサイン' || s.sign === '🔥' || s.sign.includes('買い');
-    const rvolOk = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol) >= 1.5;
-    const picks  = stocks.filter(s => isBuy(s) && rvolOk(s));
-    // モードに応じたスコアでソート
+    let picks;
+
+    if (currentMode === 'day') {
+        // デイ：買い判定＋RVOL≥1.5
+        const isBuy  = s => s.sign === '🔥買い' || s.sign === '買いサイン' || s.sign === '🔥' || s.sign.includes('買い');
+        const rvolOk = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol) >= 1.5;
+        picks = stocks.filter(s => isBuy(s) && rvolOk(s));
+    } else {
+        // スイング：成長率＞0 かつ 元A3≥100
+        picks = stocks.filter(s => s.growth > 0 && s.scoreA3 >= 100);
+    }
+
     picks.sort((a, b) => calcScore(b).total - calcScore(a).total);
     return picks.slice(0, 3);
 }
@@ -886,29 +932,54 @@ const RANK_LABELS = ['🥇 BEST', '🥈 2ND', '🥉 3RD'];
 function renderMikaPicks(picks) {
     const container = document.getElementById('mika-picks');
     if (!picks || picks.length === 0) {
+        const condText = currentMode === 'day'
+            ? '条件：補正RVOL≥1.5 ／ 買い判定あり'
+            : '条件：成長率＞0 ／ 元A3≥100';
         container.innerHTML = `
             <div class="mika-empty">
                 <div class="mika-empty-icon">📭</div>
                 <div class="mika-empty-text">現在、厳選銘柄はありません</div>
-                <div class="mika-empty-sub">条件：補正RVOL≥1.5 ／ 買い判定あり</div>
+                <div class="mika-empty-sub">${condText}</div>
             </div>`;
         return;
     }
+
     container.innerHTML = picks.map((s, i) => {
         const rvolVal   = s.corrRvol > 0 ? s.corrRvol : s.rvol;
         const isAi      = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
         const { total } = calcScore(s);
         const rank      = getScoreRank(total);
-        const tags      = [];
-        if (isAi) tags.push('<span class="mika-tag mika-tag-ai">★AIクリア</span>');
-        tags.push('<span class="mika-tag mika-tag-buy">🔥買い判定</span>');
-        if (s.bolt === 'BOLT!') tags.push(`<span class="mika-tag mika-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
-        const vwapClass   = s.vwapDiff >= 0 ? 'up' : 'dn';
-        const changeClass = s.changePct >= 0 ? 'up' : 'dn';
 
-        // スコアバーの色
+        const tags = [];
+        if (isAi) tags.push('<span class="mika-tag mika-tag-ai">★AIクリア</span>');
+
+        if (currentMode === 'day') {
+            tags.push('<span class="mika-tag mika-tag-buy">🔥買い判定</span>');
+            if (s.bolt === 'BOLT!') tags.push(`<span class="mika-tag mika-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
+        } else {
+            if (s.growth > 0) tags.push(`<span class="mika-tag mika-tag-growth">📈成長率 ${s.growth.toFixed(1)}%</span>`);
+            if (s.netCash > 0) tags.push(`<span class="mika-tag mika-tag-cash">💰キャッシュ ${s.netCash.toFixed(1)}%</span>`);
+        }
+
         const barColors = { 'fill-great': '#34d399', 'fill-good': '#3b82f6', 'fill-mid': '#f59e0b', 'fill-low': '#ef4444' };
         const barColor  = barColors[rank.fClass] || '#3b82f6';
+
+        // メトリクス：モード別
+        let metricsHtml;
+        if (currentMode === 'day') {
+            const changeClass = s.changePct >= 0 ? 'up' : 'dn';
+            metricsHtml = `
+                <div class="mika-metric"><div class="mika-metric-key">補正A3</div><div class="mika-metric-val cyan">${s.corrA3 || '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">補正RVOL</div><div class="mika-metric-val up">${rvolVal.toFixed(2)}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">BOLT回数</div><div class="mika-metric-val ${s.boltCount > 0 ? 'up' : ''}">${s.boltCount > 0 ? s.boltCount + '回' : '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">前日比率</div><div class="mika-metric-val ${changeClass}">${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%</div></div>`;
+        } else {
+            metricsHtml = `
+                <div class="mika-metric"><div class="mika-metric-key">元A3</div><div class="mika-metric-val cyan">${s.scoreA3 || '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">成長率</div><div class="mika-metric-val up">${s.growth > 0 ? '+' + s.growth.toFixed(1) + '%' : '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">ネットキャッシュ</div><div class="mika-metric-val ${s.netCash > 0 ? 'up' : 'dn'}">${s.netCash > 0 ? s.netCash.toFixed(1) + '%' : '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">PBR</div><div class="mika-metric-val">${s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−'}</div></div>`;
+        }
 
         return `
         <div class="mika-pick-card rank-${i+1}">
@@ -925,12 +996,7 @@ function renderMikaPicks(picks) {
                 </div>
                 <div class="mika-ai-score-val" style="color:${barColor};">${total}pt</div>
             </div>
-            <div class="mika-metrics">
-                <div class="mika-metric"><div class="mika-metric-key">補正A3</div><div class="mika-metric-val cyan">${s.corrA3 || '−'}</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">補正RVOL</div><div class="mika-metric-val up">${rvolVal.toFixed(2)}</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">ギャップ比</div><div class="mika-metric-val">${s.gapRatio > 0 ? s.gapRatio.toFixed(2) : '−'}</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">前日比率</div><div class="mika-metric-val ${changeClass}">${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%</div></div>
-            </div>
+            <div class="mika-metrics">${metricsHtml}</div>
         </div>`;
     }).join('');
 }
@@ -956,7 +1022,6 @@ function doAnalyze() {
 document.addEventListener('DOMContentLoaded', () => {
     const inp = document.getElementById('az-code-input');
     if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') doAnalyze(); });
-    // 初期の計算式表示
     setMode('day');
 });
 
@@ -1001,16 +1066,24 @@ function renderAnalyze(s) {
     const vSgn = s.vwapDiff >= 0 ? '▲' : '▼';
     document.getElementById('az-r-vwap').textContent = `VWAP ${s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−'}  ${vSgn}${Math.abs(s.vwapDiff)}%`;
 
+    // タグ
     const tags = [];
     const cfg  = MODE_CONFIG[currentMode];
     tags.push(`<span class="az-tag az-tag-mode-${currentMode}">${cfg.tagIcon} ${cfg.tagText}</span>`);
-    if (isAi)   tags.push('<span class="az-tag az-tag-ai">★AIクリア</span>');
-    if (isBuy)  tags.push('<span class="az-tag az-tag-buy">🔥買い判定</span>');
-    if (isBolt) tags.push(`<span class="az-tag az-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
-    if (!isBuy && !isBolt) tags.push('<span class="az-tag az-tag-none">待機中</span>');
+    if (isAi) tags.push('<span class="az-tag az-tag-ai">★AIクリア</span>');
+
+    if (currentMode === 'day') {
+        if (isBuy)  tags.push('<span class="az-tag az-tag-buy">🔥買い判定</span>');
+        if (isBolt) tags.push(`<span class="az-tag az-tag-bolt">⚡BOLT ${s.boltCount}回</span>`);
+        if (!isBuy && !isBolt) tags.push('<span class="az-tag az-tag-none">待機中</span>');
+    } else {
+        if (s.growth > 0)   tags.push(`<span class="az-tag az-tag-growth">📈成長率 ${s.growth.toFixed(1)}%</span>`);
+        if (s.netCash > 0)  tags.push(`<span class="az-tag az-tag-cash">💰キャッシュ ${s.netCash.toFixed(1)}%</span>`);
+        if (s.growth <= 0 && s.netCash <= 0) tags.push('<span class="az-tag az-tag-none">データ少</span>');
+    }
     document.getElementById('az-r-tags').innerHTML = tags.join('');
 
-    // モードタグ
+    // スコアモードタグ
     const modeTag = document.getElementById('az-r-mode-tag');
     modeTag.className   = 'az-score-mode-tag ' + cfg.tagCls;
     modeTag.textContent = cfg.tagIcon + ' ' + cfg.tagText;
@@ -1020,7 +1093,12 @@ function renderAnalyze(s) {
 
     document.getElementById('az-r-score').textContent = total + 'pt';
     document.getElementById('az-r-score').className   = 'az-score-num ' + rank.sClass;
-    document.getElementById('az-r-verdict').innerHTML = rank.vText;
+
+    // 解説文
+    const verdictText = currentMode === 'day'
+        ? buildVerdictTextDay(s, total, stateLabel, stateColor)
+        : buildVerdictTextSwing(s, total);
+    document.getElementById('az-r-verdict').innerHTML = verdictText;
     document.getElementById('az-r-verdict').className = 'az-verdict ' + rank.vClass;
 
     setTimeout(() => {
@@ -1029,27 +1107,89 @@ function renderAnalyze(s) {
         bar.style.width = total + '%';
     }, 80);
 
-    document.getElementById('az-m-vol').innerHTML = azMri([
-        { key: '当日出来高',     val: azVol(s.volume) },
-        { key: '20日平均出来高', val: azVol(s.avgVol20) },
-        { key: 'RVOL（補正）',   val: rvolVal.toFixed(2) + 'x', cls: rvolOk ? 'up' : 'warn', pip: rvolOk ? 'pip-green' : 'pip-yellow' },
-    ]);
-    document.getElementById('az-m-price').innerHTML = azMri([
-        { key: '現在値',    val: s.price.toLocaleString() + '円' },
-        { key: 'VWAP',     val: s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−' },
-        { key: 'VWAP乖離', val: (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%', cls: s.vwapDiff >= 0 ? 'up' : 'dn', pip: s.vwapDiff >= 0 ? 'pip-green' : 'pip-red' },
-    ]);
-    document.getElementById('az-m-bolt').innerHTML = azMri([
-        { key: 'BOLT判定', val: isBolt ? '⚡ BOLT!' : '−', cls: isBolt ? 'hi' : '', pip: isBolt ? 'pip-green' : 'pip-gray' },
-        { key: 'BOLT回数', val: s.boltCount > 0 ? s.boltCount + '回' : '−', cls: s.boltCount > 0 ? 'hi' : '' },
-        { key: '買い判定', val: isBuy ? s.sign : '−', cls: isBuy ? 'up' : '', pip: isBuy ? 'pip-green' : 'pip-gray' },
-    ]);
-    document.getElementById('az-m-fund').innerHTML = azMri([
-        { key: '補正A3スコア', val: s.corrA3 || '−', cls: s.corrA3 > 60 ? 'up' : '' },
-        { key: 'ギャップ比(A5)', val: s.gapRatio > 0 ? s.gapRatio.toFixed(2) : '−', cls: s.gapRatio >= 1.5 ? 'up' : s.gapRatio >= 1.0 ? '' : 'warn' },
-        { key: 'PBR', val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−', cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
-    ]);
+    // メトリクスカード：モード別
+    const metricsGrid = document.getElementById('az-metrics-grid');
+    if (currentMode === 'day') {
+        metricsGrid.innerHTML = `
+            <div class="az-metric-card mc-vol">
+                <div class="az-metric-title"><i class="fa-solid fa-chart-bar"></i> 出来高・RVOL</div>
+                <div id="az-m-vol"></div>
+            </div>
+            <div class="az-metric-card mc-price">
+                <div class="az-metric-title"><i class="fa-solid fa-arrow-trend-up"></i> 価格・VWAP</div>
+                <div id="az-m-price"></div>
+            </div>
+            <div class="az-metric-card mc-bolt">
+                <div class="az-metric-title"><i class="fa-solid fa-bolt"></i> BOLT判定</div>
+                <div id="az-m-bolt"></div>
+            </div>
+            <div class="az-metric-card mc-fund">
+                <div class="az-metric-title"><i class="fa-solid fa-building-columns"></i> ファンダ概要</div>
+                <div id="az-m-fund"></div>
+            </div>`;
 
+        document.getElementById('az-m-vol').innerHTML = azMri([
+            { key: '当日出来高',     val: azVol(s.volume) },
+            { key: '20日平均出来高', val: azVol(s.avgVol20) },
+            { key: 'RVOL（補正）',   val: rvolVal.toFixed(2) + 'x', cls: rvolOk ? 'up' : 'warn', pip: rvolOk ? 'pip-green' : 'pip-yellow' },
+        ]);
+        document.getElementById('az-m-price').innerHTML = azMri([
+            { key: '現在値',    val: s.price.toLocaleString() + '円' },
+            { key: 'VWAP',     val: s.vwap > 0 ? s.vwap.toLocaleString() + '円' : '−' },
+            { key: 'VWAP乖離', val: (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%', cls: s.vwapDiff >= 0 ? 'up' : 'dn', pip: s.vwapDiff >= 0 ? 'pip-green' : 'pip-red' },
+        ]);
+        document.getElementById('az-m-bolt').innerHTML = azMri([
+            { key: 'BOLT判定', val: isBolt ? '⚡ BOLT!' : '−', cls: isBolt ? 'hi' : '', pip: isBolt ? 'pip-green' : 'pip-gray' },
+            { key: 'BOLT回数', val: s.boltCount > 0 ? s.boltCount + '回' : '−', cls: s.boltCount > 0 ? 'hi' : '' },
+            { key: '買い判定', val: isBuy ? s.sign : '−', cls: isBuy ? 'up' : '', pip: isBuy ? 'pip-green' : 'pip-gray' },
+        ]);
+        document.getElementById('az-m-fund').innerHTML = azMri([
+            { key: '補正A3スコア',   val: s.corrA3 || '−', cls: s.corrA3 > 60 ? 'up' : '' },
+            { key: 'ギャップ比(A5)', val: s.gapRatio > 0 ? s.gapRatio.toFixed(2) : '−', cls: s.gapRatio >= 1.5 ? 'up' : s.gapRatio >= 1.0 ? '' : 'warn' },
+            { key: 'PBR',           val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−', cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
+        ]);
+
+    } else {
+        // スイングモード用メトリクス
+        metricsGrid.innerHTML = `
+            <div class="az-metric-card mc-fund">
+                <div class="az-metric-title"><i class="fa-solid fa-building-columns"></i> 企業スコア</div>
+                <div id="az-m-a3"></div>
+            </div>
+            <div class="az-metric-card mc-growth">
+                <div class="az-metric-title"><i class="fa-solid fa-chart-line"></i> 成長率</div>
+                <div id="az-m-growth"></div>
+            </div>
+            <div class="az-metric-card mc-cash">
+                <div class="az-metric-title"><i class="fa-solid fa-coins"></i> 財務健全性</div>
+                <div id="az-m-cash"></div>
+            </div>
+            <div class="az-metric-card mc-price">
+                <div class="az-metric-title"><i class="fa-solid fa-arrow-trend-up"></i> 価格情報</div>
+                <div id="az-m-price-sw"></div>
+            </div>`;
+
+        document.getElementById('az-m-a3').innerHTML = azMri([
+            { key: '元A3スコア', val: s.scoreA3 || '−', cls: s.scoreA3 >= 120 ? 'up' : s.scoreA3 >= 100 ? '' : 'warn', pip: s.scoreA3 >= 120 ? 'pip-green' : s.scoreA3 >= 100 ? 'pip-yellow' : 'pip-red' },
+            { key: 'PER',       val: s.per > 0 ? s.per.toFixed(1) + '倍' : '−' },
+            { key: 'PBR',       val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−', cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
+        ]);
+        document.getElementById('az-m-growth').innerHTML = azMri([
+            { key: '成長率予測', val: s.growth > 0 ? '+' + s.growth.toFixed(1) + '%' : s.growth < 0 ? s.growth.toFixed(1) + '%' : '−', cls: s.growth >= 10 ? 'up' : s.growth > 0 ? '' : 'dn', pip: s.growth >= 10 ? 'pip-green' : s.growth > 0 ? 'pip-yellow' : 'pip-red' },
+            { key: '営業利益率', val: s.eigyo > 0 ? s.eigyo.toFixed(1) + '%' : '−', cls: s.eigyo >= 15 ? 'up' : '' },
+        ]);
+        document.getElementById('az-m-cash').innerHTML = azMri([
+            { key: 'ネットキャッシュ率', val: s.netCash > 0 ? '+' + s.netCash.toFixed(1) + '%' : s.netCash < 0 ? s.netCash.toFixed(1) + '%' : '−', cls: s.netCash >= 20 ? 'up' : s.netCash > 0 ? '' : 'dn', pip: s.netCash >= 20 ? 'pip-green' : s.netCash > 0 ? 'pip-yellow' : 'pip-red' },
+            { key: '信用倍率', val: s.shinyo > 0 ? s.shinyo.toFixed(2) + '倍' : '−', cls: s.shinyo > 0 && s.shinyo < 1 ? 'up' : s.shinyo > 5 ? 'warn' : '' },
+        ]);
+        document.getElementById('az-m-price-sw').innerHTML = azMri([
+            { key: '現在値',    val: s.price.toLocaleString() + '円' },
+            { key: '前日比',    val: (s.changePct >= 0 ? '+' : '') + s.changePct.toFixed(2) + '%', cls: s.changePct >= 0 ? 'up' : 'dn' },
+            { key: 'VWAP乖離', val: (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%', cls: s.vwapDiff >= 0 ? 'up' : 'dn' },
+        ]);
+    }
+
+    // 採点内訳
     const rawPts = items.reduce((a, b) => a + b.pt, 0);
     document.getElementById('az-r-breakdown').innerHTML =
         items.map(it => `
@@ -1060,16 +1200,23 @@ function renderAnalyze(s) {
             </div>
             <div class="az-bd-score">${it.pt}/${it.max}</div>
         </div>`).join('')
-        + `<div style="margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;">
-            <div class="az-bd-item">
-                <div class="az-bd-label" style="color:${stateColor}; font-weight:700;">状態係数：${stateLabel}</div>
-                <div class="az-bd-score" style="color:${stateColor}; width:auto;">× ${multiplier}</div>
-            </div>
-            <div class="az-bd-item" style="margin-top:4px;">
-                <div class="az-bd-label" style="color:var(--text-sub);">素質点 ${rawPts}pt × ${multiplier} ＝</div>
-                <div class="az-bd-score" style="color:${stateColor}; font-size:0.9rem; width:auto;">${total}pt</div>
-            </div>
-           </div>`;
+        + (currentMode === 'day' ? `
+           <div style="margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;">
+               <div class="az-bd-item">
+                   <div class="az-bd-label" style="color:${stateColor}; font-weight:700;">状態係数：${stateLabel}</div>
+                   <div class="az-bd-score" style="color:${stateColor}; width:auto;">× ${multiplier}</div>
+               </div>
+               <div class="az-bd-item" style="margin-top:4px;">
+                   <div class="az-bd-label" style="color:var(--text-sub);">素質点 ${rawPts}pt × ${multiplier} ＝</div>
+                   <div class="az-bd-score" style="color:${stateColor}; font-size:0.9rem; width:auto;">${total}pt</div>
+               </div>
+           </div>` : `
+           <div style="margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;">
+               <div class="az-bd-item">
+                   <div class="az-bd-label" style="color:#6b7280; font-weight:700;">状態係数なし（ファンダ純粋評価）</div>
+                   <div class="az-bd-score" style="color:#6b7280; width:auto;">合計 ${total}pt</div>
+               </div>
+           </div>`);
 
     setTimeout(() => {
         document.querySelectorAll('.az-bd-bar-fill').forEach(el => { el.style.width = el.dataset.w; });
@@ -1082,7 +1229,6 @@ function renderAnalyze(s) {
 function formatNum(val) {
     let n = parseFloat(val.replace(/,/g, ''));
     if (isNaN(n)) return val;
-    // 小数点あり・または1000未満の整数はカンマ不要
     if (val.includes('.')) return val;
     if (n < 1000) return String(n);
     return n.toLocaleString();
@@ -1110,7 +1256,6 @@ function renderTable(rows) {
             noCell.textContent = 'No.'; noCell.style.width = '45px';
             tr.appendChild(noCell);
 
-            // AIスコアヘッダー追加
             const scoreTh = document.createElement('th');
             scoreTh.textContent = 'AIスコア';
             scoreTh.style.color = '#ef4444';
@@ -1140,21 +1285,18 @@ function renderTableBody(stocks) {
         const isHighlight = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
         if (isHighlight) tr.classList.add('row-highlight');
 
-        // No.
         const noCell = document.createElement('td');
         noCell.textContent = idx + 1;
         noCell.style.color = 'var(--text-sub)';
         noCell.style.fontSize = '0.75rem';
         tr.appendChild(noCell);
 
-        // AIスコアセル
         const { total } = calcScore(s);
         const rank = getScoreRank(total);
         const scoreTd = document.createElement('td');
         scoreTd.innerHTML = `<span class="ai-score-badge ${rank.cls}">${rank.label} ${total}pt</span>`;
         tr.appendChild(scoreTd);
 
-        // 元のCSV列
         const raw = [s.code, s.name, s.price, s.priceDiff, s.changePct, s.vwap,
                      s.volume, s.vol5min, '', s.avgVol20, s.rvol, s.corrRvol,
                      s.sign, s.bolt, s.boltCount];
@@ -1165,7 +1307,6 @@ function renderTableBody(stocks) {
             let val = (raw[i] !== undefined && raw[i] !== null) ? String(raw[i]) : '';
 
             if (i === 0) {
-                // コードは数値変換せずそのまま表示
                 td.textContent = val;
             } else if (i === 4) {
                 let num = parseFloat(val);
