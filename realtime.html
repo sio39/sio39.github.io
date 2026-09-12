@@ -439,6 +439,42 @@
         .asb-b { background: linear-gradient(135deg,#f0fdf4,#bbf7d0); color: #14532d; border: 1px solid #bbf7d0; }
         .asb-c { background: #f8fafc; color: var(--text-sub); border: 1px solid var(--border-color); font-size: 0.78rem; }
 
+        /* ===== S/A判定：行の左端に強調バーを表示 ===== */
+        .row-rank-s td:first-child::before,
+        .row-rank-a td:first-child::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+        }
+        .row-rank-s td:first-child::before { width: 4px; background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+        .row-rank-a td:first-child::before { width: 3px; background: linear-gradient(180deg, #60a5fa, #3b82f6); }
+
+        /* S判定のスコアバッジは一段強く光らせる */
+        tr.row-rank-s .ai-score-badge {
+            box-shadow: 0 0 0 1px #fde68a, 0 2px 8px rgba(245,158,11,0.4);
+        }
+
+        /* ===== 補正RVOL・現在値の強調セル ===== */
+        .cell-flag {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-weight: 800; font-family: monospace;
+        }
+        .cell-flag-dot {
+            display: inline-block; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+        }
+        .rvol-flag { color: #c2410c; }
+        .rvol-flag .cell-flag-dot { background: #f97316; box-shadow: 0 0 5px rgba(249,115,22,0.6); }
+        .price-flag { color: #059669; }
+        .price-flag .cell-flag-dot { background: #10b981; box-shadow: 0 0 5px rgba(16,185,129,0.6); }
+
+        /* ===== もっと見るボタン ===== */
+        .show-more-wrap { width: 95%; max-width: 1200px; margin: 16px auto 0; text-align: center; }
+        .show-more-btn {
+            background: #fff; border: 1.5px solid var(--primary-color); color: var(--primary-color);
+            font-size: 0.9rem; font-weight: 800; padding: 12px 28px; border-radius: 12px;
+            cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .show-more-btn:hover { background: var(--primary-color); color: #fff; }
+        .show-more-hint { font-size: 0.78rem; color: var(--text-sub); margin-top: 8px; }
+
         @media (max-width: 768px) {
             body { padding-top: 140px; }
             .header { height: auto; padding: 10px 0; }
@@ -615,6 +651,10 @@
 
 <div class="color-legend">
     <span class="color-box"></span> <span>この色の背景は<strong>AIスコアクリア銘柄</strong>です。</span>
+    <span class="cell-flag price-flag" style="font-size:0.82rem;"><span class="cell-flag-dot"></span>1,255</span>
+    <span>現在値が<strong>VWAPを上回っている</strong>ことを示します。</span>
+    <span class="cell-flag rvol-flag" style="font-size:0.82rem;"><span class="cell-flag-dot"></span>3.58</span>
+    <span>補正RVOLが<strong>3.0以上</strong>であることを示します。</span>
     <div class="full-width">※判定は<strong>9：15以降</strong>です</div>
 </div>
 
@@ -625,7 +665,16 @@
     </table>
 </div>
 
+<div class="show-more-wrap" id="show-more-wrap" style="display:none;">
+    <button class="show-more-btn" id="show-more-btn" onclick="toggleShowAll()"></button>
+    <div class="show-more-hint" id="show-more-hint"></div>
+</div>
+
 <script>
+// ===== 表示件数の設定 =====
+const INITIAL_SHOW_COUNT = 30;
+let showAllRows = false;
+
 // ===== モード管理 =====
 let currentMode = 'day';
 
@@ -1275,12 +1324,47 @@ function renderTable(rows) {
     renderTableBody(latestStocks.length > 0 ? latestStocks : []);
 }
 
+// ===== もっと見る／たたむ切替 =====
+function toggleShowAll() {
+    showAllRows = !showAllRows;
+    renderTableBody(latestStocks);
+    // 開いた場合はテーブル位置までスクロールしすぎないよう、ボタン付近に留める
+    if (!showAllRows) {
+        document.getElementById('table-container') && document.getElementById('table-container').scrollTo(0, 0);
+    }
+}
+
+function updateShowMoreUI(totalCount) {
+    const wrap = document.getElementById('show-more-wrap');
+    const btn  = document.getElementById('show-more-btn');
+    const hint = document.getElementById('show-more-hint');
+
+    if (totalCount <= INITIAL_SHOW_COUNT) {
+        wrap.style.display = 'none';
+        return;
+    }
+
+    wrap.style.display = 'block';
+    const remaining = totalCount - INITIAL_SHOW_COUNT;
+
+    if (showAllRows) {
+        btn.innerHTML = `<i class="fa-solid fa-angles-up"></i> 上位${INITIAL_SHOW_COUNT}銘柄だけ表示に戻す`;
+        hint.textContent = `全${totalCount}銘柄を表示中`;
+    } else {
+        btn.innerHTML = `<i class="fa-solid fa-angles-down"></i> 残り${remaining}銘柄をすべて表示`;
+        hint.textContent = `上位${INITIAL_SHOW_COUNT}銘柄を表示中（全${totalCount}銘柄）`;
+    }
+}
+
 function renderTableBody(stocks) {
     const tableBody = document.getElementById('table-body');
     tableBody.innerHTML = '';
     const hideIndices = [3, 7, 8, 15];
 
-    stocks.forEach((s, idx) => {
+    const displayStocks = showAllRows ? stocks : stocks.slice(0, INITIAL_SHOW_COUNT);
+    updateShowMoreUI(stocks.length);
+
+    displayStocks.forEach((s, idx) => {
         const tr = document.createElement('tr');
         const isHighlight = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
         if (isHighlight) tr.classList.add('row-highlight');
@@ -1293,6 +1377,9 @@ function renderTableBody(stocks) {
 
         const { total } = calcScore(s);
         const rank = getScoreRank(total);
+        if (rank.cls === 'asb-s') tr.classList.add('row-rank-s');
+        else if (rank.cls === 'asb-a') tr.classList.add('row-rank-a');
+
         const scoreTd = document.createElement('td');
         scoreTd.innerHTML = `<span class="ai-score-badge ${rank.cls}">${rank.label} ${total}pt</span>`;
         tr.appendChild(scoreTd);
@@ -1311,9 +1398,27 @@ function renderTableBody(stocks) {
             } else if (i === 4) {
                 let num = parseFloat(val);
                 td.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
-            } else if (i === 5 || i === 2) {
+            } else if (i === 2) {
+                // 現在値：VWAPより上なら強調表示
+                let num = parseFloat(val.replace(/,/g, ''));
+                const priceText = isNaN(num) ? val : num.toLocaleString();
+                if (!isNaN(num) && s.vwap > 0 && num > s.vwap) {
+                    td.innerHTML = `<span class="cell-flag price-flag"><span class="cell-flag-dot"></span>${priceText}</span>`;
+                } else {
+                    td.textContent = priceText;
+                }
+            } else if (i === 5) {
                 let num = parseFloat(val.replace(/,/g, ''));
                 td.textContent = isNaN(num) ? val : num.toLocaleString();
+            } else if (i === 11) {
+                // 補正RVOL：3.0以上なら強調表示
+                let num = parseFloat(val);
+                const rvolText = isNaN(num) ? val : formatNum(val);
+                if (!isNaN(num) && num >= 3.0) {
+                    td.innerHTML = `<span class="cell-flag rvol-flag"><span class="cell-flag-dot"></span>${rvolText}</span>`;
+                } else {
+                    td.textContent = rvolText;
+                }
             } else if (i === 12) {
                 td.textContent = val;
                 if (val.includes("買い") || val.includes("🔥")) td.classList.add("buy-highlight");
