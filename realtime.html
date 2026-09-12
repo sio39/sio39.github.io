@@ -504,6 +504,16 @@
             nav a { font-size: 14px; padding: 6px 12px; white-space: nowrap; }
             h1 { font-size: 1.8rem; }
             .mode-switch-area { flex-direction: column; }
+
+            /* ===== テーブルをスマホ向けにコンパクト化 ===== */
+            table { min-width: 720px; }
+            thead th { padding: 12px 6px; font-size: 0.68rem; }
+            td { padding: 10px 6px; font-size: 0.8rem; }
+            th:nth-child(3), td:nth-child(3) { width: 52px;  min-width: 52px; }
+            th:nth-child(4), td:nth-child(4) { left: 52px; width: 84px; min-width: 84px; }
+            .ai-score-badge { font-size: 0.72rem; padding: 2px 6px; }
+            .bolt-badge, .bolt-count-badge { font-size: 0.72rem; padding: 2px 6px; }
+            .cell-flag { font-size: 0.78rem; padding: 2px 7px; }
         }
     </style>
 </head>
