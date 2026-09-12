@@ -75,7 +75,15 @@
         /* ===== タイトルエリア ===== */
         .title-area { text-align: center; margin-bottom: 20px; width: 100%; }
         h1 { font-size: 2.2rem; font-weight: 900; margin: 0 0 10px 0; color: var(--text-main); letter-spacing: -0.5px; }
-        #csv-update-time { font-size: 1.1rem; font-weight: 700; color: #ef4444; font-family: monospace; }
+        #csv-update-time { font-size: 1.05rem; font-weight: 700; color: var(--text-sub); font-family: monospace; transition: color 0.2s; }
+        #csv-update-time.stale { color: #dc2626; }
+        .update-warn-badge {
+            display: none; align-items: center; gap: 6px;
+            background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", sans-serif;
+            font-weight: 800; font-size: 0.82rem;
+            padding: 5px 16px; border-radius: 20px; margin-top: 8px;
+        }
 
         /* ===== モード切替スイッチ ===== */
         .mode-switch-area {
@@ -428,6 +436,14 @@
         thead th { position: sticky; top: 0; z-index: 10; background: #f8fafc; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
         td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
         tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
+
+        /* ===== スマホ横スクロール対応：コード・銘柄名の2列だけを左に固定 ===== */
+        /* No.・AIスコア列は固定せず通常どおりスクロールで流れる（固定列が広くなりすぎるのを防ぐ） */
+        th:nth-child(3), td:nth-child(3) { position: sticky; left: 0px;  width: 70px;  min-width: 70px;  background: #fff; z-index: 3; }
+        th:nth-child(4), td:nth-child(4) { position: sticky; left: 70px; width: 120px; min-width: 120px; background: #fff; z-index: 3; }
+        thead th:nth-child(3), thead th:nth-child(4) { z-index: 11; background: #f8fafc; }
+        /* 固定範囲の右端が分かるよう、薄い影を入れる */
+        td:nth-child(4), th:nth-child(4) { box-shadow: 4px 0 6px -4px rgba(0,0,0,0.18); }
         .buy-highlight { background: var(--buy-bg) !important; color: var(--buy-text) !important; font-weight: 800; border: 1px solid var(--buy-border); border-radius: 6px; padding: 3px 10px; font-size: 0.8rem; }
         .bolt-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.10); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.3); border-radius: 6px; padding: 2px 8px; }
         .bolt-count-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.08); color: var(--bolt-color); font-weight: 800; font-size: 0.82rem; border: 1px solid rgba(239,68,68,0.25); border-radius: 20px; padding: 2px 10px; }
@@ -458,15 +474,16 @@
         /* ===== 補正RVOL・現在値の強調セル ===== */
         .cell-flag {
             display: inline-flex; align-items: center; gap: 5px;
-            font-weight: 800; font-family: monospace;
+            font-weight: 800; font-family: monospace; font-size: 0.92rem;
+            padding: 3px 10px; border-radius: 8px;
         }
         .cell-flag-dot {
-            display: inline-block; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+            display: inline-block; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
         }
-        .rvol-flag { color: #c2410c; }
-        .rvol-flag .cell-flag-dot { background: #f97316; box-shadow: 0 0 5px rgba(249,115,22,0.6); }
-        .price-flag { color: #059669; }
-        .price-flag .cell-flag-dot { background: #10b981; box-shadow: 0 0 5px rgba(16,185,129,0.6); }
+        .rvol-flag { background: rgba(249,115,22,0.14); color: #c2410c; border: 1px solid rgba(249,115,22,0.4); }
+        .rvol-flag .cell-flag-dot { background: #f97316; box-shadow: 0 0 6px rgba(249,115,22,0.8); }
+        .price-flag { background: rgba(16,185,129,0.14); color: #047857; border: 1px solid rgba(16,185,129,0.4); }
+        .price-flag .cell-flag-dot { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.8); }
 
         /* ===== もっと見るボタン ===== */
         .show-more-wrap { width: 95%; max-width: 1200px; margin: 16px auto 0; text-align: center; }
@@ -513,6 +530,7 @@
 <div class="title-area">
     <h1>銘柄リアルタイムボード</h1>
     <div id="csv-update-time">読み込み中...</div>
+    <div id="update-warning" class="update-warn-badge"></div>
     <div id="last-load" style="font-size:0.75rem; color:var(--text-sub); margin-top:5px;"></div>
 </div>
 
@@ -684,6 +702,49 @@
 // ===== 表示件数の設定 =====
 const INITIAL_SHOW_COUNT = 30;
 let showAllRows = false;
+
+// ===== データ更新監視の設定 =====
+const STALE_THRESHOLD_MIN = 10;   // これ以上更新がないと警告表示
+let lastUpdateDate = null;        // CSV内の最終更新時刻（Dateオブジェクト）
+
+function parseUpdateDateStr(str) {
+    // Excel VBA の Format(Now,"yyyy/mm/dd HH:mm:ss") 形式を想定
+    const d = new Date(str.replace(/-/g, '/'));
+    return isNaN(d.getTime()) ? null : d;
+}
+
+function handleUpdateTimestamp(rawStr) {
+    const parsed = parseUpdateDateStr(rawStr);
+    lastUpdateDate = parsed || lastUpdateDate; // パース失敗時は直前の値を維持
+    refreshUpdateStatus();
+}
+
+function refreshUpdateStatus() {
+    const timeEl = document.getElementById('csv-update-time');
+    const warnEl = document.getElementById('update-warning');
+    if (!lastUpdateDate) return;
+
+    const diffMin = Math.max(0, Math.floor((Date.now() - lastUpdateDate.getTime()) / 60000));
+    const dateStr = lastUpdateDate.toLocaleString('ja-JP', { hour12: false });
+    const elapsedText = diffMin < 1 ? 'たった今' : diffMin + '分前';
+    const isStale = diffMin >= STALE_THRESHOLD_MIN;
+
+    timeEl.innerHTML =
+        '<span style="font-size:0.85rem; color:var(--text-sub); font-weight:normal;">最終更新:</span> ' +
+        dateStr +
+        `<span style="font-size:0.85rem; margin-left:6px;">（${elapsedText}）</span>`;
+    timeEl.classList.toggle('stale', isStale);
+
+    if (isStale) {
+        warnEl.style.display = 'inline-flex';
+        warnEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 更新が停止している可能性があります（最終更新から${diffMin}分経過）`;
+    } else {
+        warnEl.style.display = 'none';
+    }
+}
+
+// フェッチが失敗している間も経過時間を進めるため、独立したタイマーで表示を更新
+setInterval(refreshUpdateStatus, 15000);
 
 // ===== モード管理 =====
 let currentMode = 'day';
@@ -1303,9 +1364,7 @@ function renderTable(rows) {
 
     rows.forEach((row, index) => {
         if (row.includes("Update:")) {
-            document.getElementById('csv-update-time').innerHTML =
-                '<span style="font-size:0.85rem; color:var(--text-sub); font-weight:normal;">最終更新:</span> ' +
-                row.split(',')[0].replace("Update:", "").trim();
+            handleUpdateTimestamp(row.split(',')[0].replace("Update:", "").trim());
             return;
         }
         if (index === 0) {
@@ -1405,6 +1464,13 @@ function renderTableBody(stocks) {
 
             if (i === 0) {
                 td.textContent = val;
+            } else if (i === 1) {
+                // 銘柄名：A判定以上は太字で強調
+                td.textContent = val;
+                if (rank.cls === 'asb-s' || rank.cls === 'asb-a') {
+                    td.style.fontWeight = '800';
+                    td.style.color = 'var(--text-main)';
+                }
             } else if (i === 4) {
                 let num = parseFloat(val);
                 td.textContent = isNaN(num) ? val : num.toFixed(2) + "%";
