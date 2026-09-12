@@ -162,10 +162,13 @@
 
         .color-legend {
             width: 95%; max-width: 1100px; margin: 0 auto 15px;
-            display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+            background: #fff; border: 1px solid var(--border-color); border-radius: 14px;
+            padding: 14px 18px;
+            display: flex; flex-direction: column; gap: 8px;
             color: var(--text-sub); font-size: 0.85rem;
         }
-        .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); }
+        .legend-item { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); flex-shrink: 0; }
         .full-width { width: 100%; margin-top: 5px; }
 
         /* ===== AI MIKA 厳選銘柄 ===== */
@@ -650,11 +653,18 @@
 </div>
 
 <div class="color-legend">
-    <span class="color-box"></span> <span>この色の背景は<strong>AIスコアクリア銘柄</strong>です。</span>
-    <span class="cell-flag price-flag" style="font-size:0.82rem;"><span class="cell-flag-dot"></span>1,255</span>
-    <span>現在値が<strong>VWAPを上回っている</strong>ことを示します。</span>
-    <span class="cell-flag rvol-flag" style="font-size:0.82rem;"><span class="cell-flag-dot"></span>3.58</span>
-    <span>補正RVOLが<strong>3.0以上</strong>であることを示します。</span>
+    <div class="legend-item">
+        <span class="color-box"></span>
+        <span>この色の背景は<strong>AIスコアクリア銘柄</strong>です。</span>
+    </div>
+    <div class="legend-item">
+        <span class="cell-flag price-flag" style="font-size:0.82rem;"><span class="cell-flag-dot"></span>1,255</span>
+        <span>現在値が<strong>VWAPを上回っている</strong>ことを示します。</span>
+    </div>
+    <div class="legend-item">
+        <span class="cell-flag rvol-flag" style="font-size:0.82rem;"><span class="cell-flag-dot"></span>3.58</span>
+        <span>補正RVOLが<strong>3.0以上</strong>であることを示します。</span>
+    </div>
     <div class="full-width">※判定は<strong>9：15以降</strong>です</div>
 </div>
 
