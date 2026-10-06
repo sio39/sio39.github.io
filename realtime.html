@@ -1021,6 +1021,8 @@ function buildVerdictTextSwing(s, total) {
 }
 
 // ===== CSV全カラムパース =====
+// ※ P列（インデックス15）に列を追加したため、区分はQ列（インデックス16）へ移動。
+//   区分以降の列はすべて1つずつ右にずれています。
 function parseFullStocks(rows) {
     const result = [];
     for (let i = 1; i < rows.length; i++) {
@@ -1046,16 +1048,17 @@ function parseFullStocks(rows) {
             sign:      c[12] || '',
             bolt:      c[13] || '',
             boltCount: parseInt(c[14]) || 0,
-            kubun:     c[15] || '',
-            scoreA3:   parseFloat(c[16]) || 0,
-            corrA3:    parseFloat(c[17]) || 0,
-            gapRatio:  parseFloat(c[18]) || 0,
-            per:       parseFloat(c[19]) || 0,
-            pbr:       parseFloat(c[20]) || 0,
-            eigyo:     parseFloat(c[21]) || 0,
-            growth:    parseFloat(c[22]) || 0,
-            netCash:   parseFloat(c[23]) || 0,
-            shinyo:    parseFloat(c[24]) || 0,
+            // c[15] = P列（追加した列）
+            kubun:     c[16] || '',
+            scoreA3:   parseFloat(c[17]) || 0,
+            corrA3:    parseFloat(c[18]) || 0,
+            gapRatio:  parseFloat(c[19]) || 0,
+            per:       parseFloat(c[20]) || 0,
+            pbr:       parseFloat(c[21]) || 0,
+            eigyo:     parseFloat(c[22]) || 0,
+            growth:    parseFloat(c[23]) || 0,
+            netCash:   parseFloat(c[24]) || 0,
+            shinyo:    parseFloat(c[25]) || 0,
         });
     }
     return result;
