@@ -179,6 +179,16 @@
         .color-box { display: inline-block; width: 24px; height: 18px; border-radius: 4px; border: 1px solid var(--level1-border); background: var(--level1-bg); flex-shrink: 0; }
         .full-width { width: 100%; margin-top: 5px; }
 
+        /* ===== 銘柄選びのアドバイス ===== */
+        .pick-advice {
+            width: 95%; max-width: 1100px; margin: 0 auto 20px;
+            background: var(--level1-bg); border: 1px solid var(--level1-border);
+            border-left: 5px solid #0ea5e9;
+            border-radius: 12px; padding: 14px 18px;
+            font-size: 0.85rem; color: #0c4a6e; line-height: 1.8;
+        }
+        .pick-advice strong { color: #075985; }
+
         /* ===== AI MIKA 厳選銘柄 ===== */
         .mika-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
         .mika-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
@@ -435,7 +445,7 @@
         table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1000px; }
         thead th { position: sticky; top: 0; z-index: 10; background: #f8fafc; color: var(--text-sub); font-size: 0.75rem; padding: 18px 10px; border-bottom: 2px solid var(--border-color); }
         td { padding: 16px 10px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.03); font-size: 0.9rem; color: var(--text-main); position: relative; }
-        tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 500; }
+        tr.row-highlight td { background-color: var(--level1-bg) !important; font-weight: 800; font-size: 1.08em; color: #0c4a6e; }
 
         /* ===== スマホ横スクロール対応：コード・銘柄名の2列だけを左に固定 ===== */
         /* No.・AIスコア列は固定せず通常どおりスクロールで流れる（固定列が広くなりすぎるのを防ぐ） */
@@ -498,12 +508,29 @@
         @media (max-width: 768px) {
             body { padding-top: 140px; }
             .header { height: auto; padding: 10px 0; }
-            .header-container { flex-direction: column; gap: 10px; padding: 0 15px; }
-            .header-left { flex-direction: column; gap: 5px; width: 100%; }
+            .header-container { flex-direction: column; justify-content: center; gap: 10px; padding: 0 15px; }
+            .header-left { flex-direction: column; align-items: center; gap: 5px; width: 100%; }
+            .header-sns { justify-content: center; width: 100%; }
             nav { width: 100%; justify-content: center; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
             nav a { font-size: 14px; padding: 6px 12px; white-space: nowrap; }
             h1 { font-size: 1.8rem; }
             .mode-switch-area { flex-direction: column; }
+
+            /* ===== テーブルをスマホ向けにコンパクト化 ===== */
+            table { min-width: 620px; }
+            thead th { padding: 10px 4px; font-size: 0.62rem; }
+            td { padding: 8px 4px; font-size: 0.75rem; }
+            th:nth-child(3), td:nth-child(3) { width: 44px;  min-width: 44px; }
+            th:nth-child(4), td:nth-child(4) { left: 44px; width: 68px; min-width: 68px; }
+            .ai-score-badge { font-size: 0.66rem; padding: 1px 5px; }
+            .bolt-badge, .bolt-count-badge { font-size: 0.66rem; padding: 1px 5px; }
+            .cell-flag { font-size: 0.72rem; padding: 1px 5px; gap: 3px; }
+            .cell-flag-dot { width: 5px; height: 5px; }
+
+            /* ===== 個別銘柄分析：入力行が画面幅を超えないように ===== */
+            .analyze-input-row { gap: 6px; }
+            .analyze-code-input { flex: 1 1 90px; min-width: 0; padding: 10px 12px; font-size: 1.05rem; letter-spacing: 2px; }
+            .analyze-btn { padding: 0 14px; font-size: 0.82rem; flex: 0 0 auto; }
         }
     </style>
 </head>
@@ -684,6 +711,13 @@
         <span>補正RVOLが<strong>3.0以上</strong>であることを示します。</span>
     </div>
     <div class="full-width">※判定は<strong>9：15以降</strong>です</div>
+</div>
+
+<div class="pick-advice">
+    <i class="fa-solid fa-lightbulb"></i>
+    <strong>銘柄選びの目安：</strong>
+    デイトレの対象は、まず<strong>この色の背景が付いている「AIスコアクリア銘柄」</strong>から選ぶのが基本です。
+    それ以外の銘柄を対象にする場合は、出来高(RVOL)・BOLT判定・買い判定など<strong>他の要素も踏まえたうえで慎重に判断</strong>してください。
 </div>
 
 <div class="table-container">
@@ -987,6 +1021,8 @@ function buildVerdictTextSwing(s, total) {
 }
 
 // ===== CSV全カラムパース =====
+// ※ P列（インデックス15）に列を追加したため、区分はQ列（インデックス16）へ移動。
+//   区分以降の列はすべて1つずつ右にずれています。
 function parseFullStocks(rows) {
     const result = [];
     for (let i = 1; i < rows.length; i++) {
@@ -1012,16 +1048,17 @@ function parseFullStocks(rows) {
             sign:      c[12] || '',
             bolt:      c[13] || '',
             boltCount: parseInt(c[14]) || 0,
-            kubun:     c[15] || '',
-            scoreA3:   parseFloat(c[16]) || 0,
-            corrA3:    parseFloat(c[17]) || 0,
-            gapRatio:  parseFloat(c[18]) || 0,
-            per:       parseFloat(c[19]) || 0,
-            pbr:       parseFloat(c[20]) || 0,
-            eigyo:     parseFloat(c[21]) || 0,
-            growth:    parseFloat(c[22]) || 0,
-            netCash:   parseFloat(c[23]) || 0,
-            shinyo:    parseFloat(c[24]) || 0,
+            // c[15] = P列（追加した列）
+            kubun:     c[16] || '',
+            scoreA3:   parseFloat(c[17]) || 0,
+            corrA3:    parseFloat(c[18]) || 0,
+            gapRatio:  parseFloat(c[19]) || 0,
+            per:       parseFloat(c[20]) || 0,
+            pbr:       parseFloat(c[21]) || 0,
+            eigyo:     parseFloat(c[22]) || 0,
+            growth:    parseFloat(c[23]) || 0,
+            netCash:   parseFloat(c[24]) || 0,
+            shinyo:    parseFloat(c[25]) || 0,
         });
     }
     return result;
