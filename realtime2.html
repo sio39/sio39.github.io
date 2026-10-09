@@ -1021,44 +1021,100 @@ function buildVerdictTextSwing(s, total) {
 }
 
 // ===== CSV全カラムパース =====
-// ※ P列（インデックス15）に列を追加したため、区分はQ列（インデックス16）へ移動。
-//   区分以降の列はすべて1つずつ右にずれています。
+// 列番号ではなく「ヘッダー名（1行目の見出し）」で列を探して読み込みます。
+// Excelに列を追加・並べ替えしても、見出し名が同じなら正しく読めます。
+// 見出し名を変えた場合は、下の COLUMN_NAMES の候補に新しい名前を追加してください。
+const COLUMN_NAMES = {
+    code:      ['コード'],
+    name:      ['銘柄名'],
+    price:     ['現在値'],
+    priceDiff: ['前日差額'],
+    changePct: ['前日比率'],
+    vwap:      ['VWAP'],
+    volume:    ['当日出来高'],
+    vol5min:   ['5分前出来高'],
+    avgVol20:  ['20日平均出来高'],
+    rvol:      ['RVOL'],
+    corrRvol:  ['補正RVOL'],
+    sign:      ['判定'],
+    bolt:      ['ボルト判定'],
+    boltCount: ['ボルト回数'],
+    kubun:     ['区分'],
+    scoreA3:   ['A3'],
+    corrA3:    ['補正A3'],
+    gapRatio:  ['ギャップ比'],
+    per:       ['PER'],
+    opPeg:     ['営業PEG'],
+    eigyo:     ['営業利益率(予）', '営業利益率(予)', '営業利益率（予）', '営業利益率'],
+    growth:    ['利益成長率', '成長率'],   // 旧「成長率」列は現在の「利益成長率」にあたる
+    netCash:   ['ネットキャッシュ率'],
+    shinyo:    ['信用倍率'],
+};
+
+// CSVの1つのセルを整える（前後の空白・ダブルクォート・先頭のBOMを除去）
+function cleanCell(v) {
+    return (v || '').replace(/^﻿/, '').replace(/"/g, '').trim();
+}
+
+// ヘッダー行から「項目名 → 列番号」の対応表を作る
+function buildColumnIndex(headerRow) {
+    const headers = headerRow.split(',').map(cleanCell);
+    const idx = {};
+    const missing = [];
+    for (const [key, names] of Object.entries(COLUMN_NAMES)) {
+        const found = names.map(n => headers.indexOf(n)).find(i => i >= 0);
+        idx[key] = (found === undefined) ? -1 : found;
+        if (idx[key] < 0) missing.push(names[0]);
+    }
+    if (missing.length > 0) {
+        console.warn('CSVに見つからない列があります（0または空欄として扱います）:', missing.join(', '));
+    }
+    return idx;
+}
+
 function parseFullStocks(rows) {
     const result = [];
+    if (!rows || rows.length === 0) return result;
+
+    const col = buildColumnIndex(rows[0]);
     for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
         if (!row || row.startsWith('Update:')) continue;
-        const c = row.split(',').map(v => v.replace(/"/g, '').trim());
-        if (!c[0]) continue;
-        const price = parseFloat(c[2]) || 0;
-        const vwap  = parseFloat(c[5]) || 0;
+        const c = row.split(',').map(cleanCell);
+
+        const str = key => (col[key] >= 0 ? (c[col[key]] || '') : '');
+        const num = key => parseFloat(str(key).replace(/,/g, '')) || 0;   // #DIV/0! や #### は 0 扱い
+
+        const code = str('code');
+        if (!code) continue;
+        const price = num('price');
+        const vwap  = num('vwap');
         result.push({
-            code:      c[0],
-            name:      c[1] || '−',
+            code,
+            name:      str('name') || '−',
             price,
             vwap,
             vwapDiff:  vwap > 0 ? +((price - vwap) / vwap * 100).toFixed(2) : 0,
-            priceDiff: parseFloat(c[3]) || 0,
-            changePct: parseFloat(c[4]) || 0,
-            volume:    parseFloat(c[6]) || 0,
-            vol5min:   parseFloat(c[7]) || 0,
-            avgVol20:  parseFloat(c[9]) || 0,
-            rvol:      parseFloat(c[10]) || 0,
-            corrRvol:  parseFloat(c[11]) || 0,
-            sign:      c[12] || '',
-            bolt:      c[13] || '',
-            boltCount: parseInt(c[14]) || 0,
-            // c[15] = P列（追加した列）
-            kubun:     c[16] || '',
-            scoreA3:   parseFloat(c[17]) || 0,
-            corrA3:    parseFloat(c[18]) || 0,
-            gapRatio:  parseFloat(c[19]) || 0,
-            per:       parseFloat(c[20]) || 0,
-            pbr:       parseFloat(c[21]) || 0,
-            eigyo:     parseFloat(c[22]) || 0,
-            growth:    parseFloat(c[23]) || 0,
-            netCash:   parseFloat(c[24]) || 0,
-            shinyo:    parseFloat(c[25]) || 0,
+            priceDiff: num('priceDiff'),
+            changePct: num('changePct'),
+            volume:    num('volume'),
+            vol5min:   num('vol5min'),
+            avgVol20:  num('avgVol20'),
+            rvol:      num('rvol'),
+            corrRvol:  num('corrRvol'),
+            sign:      str('sign'),
+            bolt:      str('bolt'),
+            boltCount: parseInt(str('boltCount')) || 0,
+            kubun:     str('kubun'),
+            scoreA3:   num('scoreA3'),
+            corrA3:    num('corrA3'),
+            gapRatio:  num('gapRatio'),
+            per:       num('per'),
+            opPeg:     num('opPeg'),
+            eigyo:     num('eigyo'),
+            growth:    num('growth'),
+            netCash:   num('netCash'),
+            shinyo:    num('shinyo'),
         });
     }
     return result;
@@ -1135,7 +1191,7 @@ function renderMikaPicks(picks) {
                 <div class="mika-metric"><div class="mika-metric-key">元A3</div><div class="mika-metric-val cyan">${s.scoreA3 || '−'}</div></div>
                 <div class="mika-metric"><div class="mika-metric-key">成長率</div><div class="mika-metric-val up">${s.growth > 0 ? '+' + s.growth.toFixed(1) + '%' : '−'}</div></div>
                 <div class="mika-metric"><div class="mika-metric-key">ネットキャッシュ</div><div class="mika-metric-val ${s.netCash > 0 ? 'up' : 'dn'}">${s.netCash > 0 ? s.netCash.toFixed(1) + '%' : '−'}</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">PBR</div><div class="mika-metric-val">${s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−'}</div></div>`;
+                <div class="mika-metric"><div class="mika-metric-key">営業PEG</div><div class="mika-metric-val">${s.opPeg > 0 ? s.opPeg.toFixed(2) : '−'}</div></div>`;
         }
 
         return `
@@ -1303,7 +1359,7 @@ function renderAnalyze(s) {
         document.getElementById('az-m-fund').innerHTML = azMri([
             { key: '補正A3スコア',   val: s.corrA3 || '−', cls: s.corrA3 > 60 ? 'up' : '' },
             { key: 'ギャップ比(A5)', val: s.gapRatio > 0 ? s.gapRatio.toFixed(2) : '−', cls: s.gapRatio >= 1.5 ? 'up' : s.gapRatio >= 1.0 ? '' : 'warn' },
-            { key: 'PBR',           val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−', cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
+            { key: '営業PEG',       val: s.opPeg > 0 ? s.opPeg.toFixed(2) : '−', cls: s.opPeg > 0 && s.opPeg < 1 ? 'up' : '' },
         ]);
 
     } else {
@@ -1329,7 +1385,7 @@ function renderAnalyze(s) {
         document.getElementById('az-m-a3').innerHTML = azMri([
             { key: '元A3スコア', val: s.scoreA3 || '−', cls: s.scoreA3 >= 120 ? 'up' : s.scoreA3 >= 100 ? '' : 'warn', pip: s.scoreA3 >= 120 ? 'pip-green' : s.scoreA3 >= 100 ? 'pip-yellow' : 'pip-red' },
             { key: 'PER',       val: s.per > 0 ? s.per.toFixed(1) + '倍' : '−' },
-            { key: 'PBR',       val: s.pbr > 0 ? s.pbr.toFixed(2) + '倍' : '−', cls: s.pbr > 0 && s.pbr < 1 ? 'up' : '' },
+            { key: '営業PEG',   val: s.opPeg > 0 ? s.opPeg.toFixed(2) : '−', cls: s.opPeg > 0 && s.opPeg < 1 ? 'up' : '' },
         ]);
         document.getElementById('az-m-growth').innerHTML = azMri([
             { key: '成長率予測', val: s.growth > 0 ? '+' + s.growth.toFixed(1) + '%' : s.growth < 0 ? s.growth.toFixed(1) + '%' : '−', cls: s.growth >= 10 ? 'up' : s.growth > 0 ? '' : 'dn', pip: s.growth >= 10 ? 'pip-green' : s.growth > 0 ? 'pip-yellow' : 'pip-red' },
@@ -1393,6 +1449,11 @@ function formatNum(val) {
 
 let cachedHeaderRow = null;
 
+// 一覧表の見出し（下の raw 配列と同じ並び）
+const TABLE_HEADER_LABELS = ['コード', '銘柄名', '現在値', '前日差額', '前日比率', 'VWAP',
+                             '当日出来高', '5分前出来高', '列2', '20日平均出来高', 'RVOL', '補正RVOL',
+                             '判定', 'ボルト判定', 'ボルト回数'];
+
 function renderTable(rows) {
     const tableHeader = document.getElementById('table-header');
     const tableBody   = document.getElementById('table-body');
@@ -1416,11 +1477,11 @@ function renderTable(rows) {
             scoreTh.style.color = '#ef4444';
             tr.appendChild(scoreTh);
 
-            const columns = row.split(',');
+            // 見出しは固定の名前で表示（Excelの列が増減しても表の見出しがずれないように）
             for (let i = 0; i <= 14; i++) {
                 if (hideIndices.includes(i)) continue;
                 const th = document.createElement('th');
-                th.textContent = (columns[i] || '').replace(/"/g, '').trim();
+                th.textContent = TABLE_HEADER_LABELS[i];
                 tr.appendChild(th);
             }
             tableHeader.appendChild(tr);
