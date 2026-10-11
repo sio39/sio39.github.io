@@ -887,7 +887,7 @@
         <strong><i class="fa-solid fa-triangle-exclamation"></i> ご利用前にお読みください</strong>
         <ul>
             <li><strong>当サイトの監視リストに登録された銘柄のみ</strong>対応しています。リスト外の銘柄コードを入力しても結果は表示されません。</li>
-            <li>データは<strong>約5分ごとに更新</strong>されます。取引時間外（夜間・休日）はデータが古い状態のため、スコアは参考程度にとどめてください。</li>
+            <li>データは<strong>約10分ごとに更新</strong>されます。取引時間外（夜間・休日）はデータが古い状態のため、スコアは参考程度にとどめてください。</li>
             <li>スコアはあらかじめ決めたルールによる自動計算です。<strong>投資の最終判断はご自身の責任</strong>でお願いします。</li>
         </ul>
     </div>
@@ -976,7 +976,7 @@ const INITIAL_SHOW_COUNT = 30;
 let showAllRows = false;
 
 // ===== データ更新監視の設定 =====
-const STALE_THRESHOLD_MIN = 10;   // これ以上更新がないと警告表示
+const STALE_THRESHOLD_MIN = 15;   // これ以上更新がないと警告表示（Excelの送信は10分おき）
 let lastUpdateDate = null;        // CSV内の最終更新時刻（Dateオブジェクト）
 
 function parseUpdateDateStr(str) {
@@ -1897,7 +1897,7 @@ const ANOM_DEFAULT_CFG = {
     scoreWindowMin: 10,   // 重要度は直近この分数に出たルールの合計で決める
     highPts: 5,           // 重要度「高」になる点数
     midPts: 2,            // 重要度「中」になる点数
-    staleMin: 10,         // 場中にこの分数以上更新がなければ「更新停止」
+    staleMin: 15,         // 場中にこの分数以上更新がなければ「更新停止」（Excelの送信は10分おき）
     startHHMM: 915,       // 検知開始（既存ボードの「判定は9:15以降」に合わせる）
     endHHMM: 1530,
 };
@@ -1977,7 +1977,7 @@ function anomSnapshotFromRows(rows) {
 // 比較対象（compareMin 分前以前で一番新しいスナップショット）を探す
 function anomFindBase(snaps, cur, cfg) {
     const limit = cur.t.getTime() - cfg.compareMin * 60000 + 30000; // 30秒の誤差は許容
-    const oldest = cur.t.getTime() - cfg.compareMin * 2 * 60000 - 30000; // 比較相手が古すぎる（更新の空白）なら比較しない
+    const oldest = cur.t.getTime() - cfg.staleMin * 60000 - 30000;   // 比較相手が古すぎる（更新が止まっていた後）なら比較しない
     let base = null;
     for (const s of snaps) {
         const ms = s.t.getTime();
@@ -2377,7 +2377,7 @@ const ANOM = (() => {
         const notes = [];
         if (ls.note) notes.push({ warn: ls.warn, text: ls.note });
         if (ls.cls === 'st-ok' && st.inHours && !st.compareReady && st.lastSnapT) {
-            notes.push({ warn: false, text: `比較用データをためています。${cfg.compareMin}分前のデータがそろうと急上昇などの検知が始まります（ページを開いた直後や朝一番は数分かかります）。` });
+            notes.push({ warn: false, text: `比較用データをためています。次のデータ（約10分後）が届くと、前回との比較で急上昇などの検知が始まります（ページを開いた直後や朝一番は10分ほどかかります）。` });
         }
         document.getElementById('anom-notes').innerHTML = notes.map(n =>
             `<div class="anom-note ${n.warn ? 'warn' : ''}"><i class="fa-solid ${n.warn ? 'fa-triangle-exclamation' : 'fa-circle-info'}"></i> ${esc(n.text)}</div>`).join('');
