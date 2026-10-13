@@ -2377,7 +2377,7 @@ const ANOM = (() => {
         const notes = [];
         if (ls.note) notes.push({ warn: ls.warn, text: ls.note });
         if (ls.cls === 'st-ok' && st.inHours && !st.compareReady && st.lastSnapT) {
-            notes.push({ warn: false, text: `比較用データをためています。次のデータ（約10分後）が届くと、前回との比較で急上昇などの検知が始まります（ページを開いた直後や朝一番は10分ほどかかります）。` });
+            notes.push({ warn: false, text: `比較用データをためています。次のデータ（約10分後）が届くと、前回との比較で急上昇などの検知が始まります（朝一番や、過去データを読み込めなかった時は10分ほどかかります）。` });
         }
         document.getElementById('anom-notes').innerHTML = notes.map(n =>
             `<div class="anom-note ${n.warn ? 'warn' : ''}"><i class="fa-solid ${n.warn ? 'fa-triangle-exclamation' : 'fa-circle-info'}"></i> ${esc(n.text)}</div>`).join('');
@@ -2512,18 +2512,65 @@ const ANOM = (() => {
     });
 
     // ---------- 実データの受け取り（loadCSV から呼ばれる） ----------
+    // ページを開いた直後でも比較できるよう、最初の1回だけGitHubの履歴から「ひとつ前のCSV」を読み込む
+    const HISTORY_API = 'https://api.github.com/repos/sio39/sio39.github.io/commits?path=data_push.csv&per_page=4';
+    const RAW_BASE = 'https://raw.githubusercontent.com/sio39/sio39.github.io/';
+    let backfillStarted = false;
+    let queue = Promise.resolve();   // 履歴の読み込みが終わるまで、新しいデータの処理を待たせる
+
+    function hasCompareBase(cur) {
+        const ms = cur.t.getTime();
+        return live.snaps.some(s => anomSameDay(s.t, cur.t) &&
+            ms - s.t.getTime() >= cfg.compareMin * 60000 - 30000 &&
+            ms - s.t.getTime() <= cfg.staleMin * 60000 + 30000);
+    }
+    async function fetchText(url) {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
+        try {
+            const r = await fetch(url, { cache: 'no-store', signal: ctrl.signal });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return await r.text();
+        } finally { clearTimeout(timer); }
+    }
+    async function backfill(cur) {
+        if (hasCompareBase(cur)) return;   // すでに比較相手がある（ページを開き直した等）なら不要
+        let list;
+        try { list = JSON.parse(await fetchText(HISTORY_API)); } catch (e) { console.warn('履歴の取得に失敗（次の更新から比較を開始します）', e); return; }
+        if (!Array.isArray(list)) return;
+        const olds = [];
+        for (const c of list) {
+            if (!c || !c.sha) continue;
+            try {
+                const rows = (await fetchText(RAW_BASE + c.sha + '/data_push.csv')).split(/\r?\n/).filter(r => r.trim() !== '');
+                const s = anomSnapshotFromRows(rows);
+                if (s.t && s.t < cur.t && anomSameDay(s.t, cur.t) && s.t.getTime() > live.lastT) olds.push(s);
+            } catch (e) { console.warn('過去のCSVの読み込みに失敗', e); }
+            if (olds.length >= 2) break;
+        }
+        olds.sort((a, b) => a.t - b.t);
+        // ページを開く前の分は、一覧と履歴にだけ反映（ポップアップ・音は出さない）
+        for (const s of olds) anomProcess(live, s, cfg);
+    }
+    function processLive(snap) {
+        const alerts = anomProcess(live, snap, cfg);
+        saveLiveState();
+        if (mode === 'live') { notify(alerts, live); render(); }   // サンプル表示中は実データの通知を鳴らさない（履歴には残る）
+    }
     function onCsv(rows) {
         live.fetchError = null;
         let snap;
         try { snap = anomSnapshotFromRows(rows); } catch (e) { console.error(e); return; }
         if (!snap.t) {
             live.fetchError = 'CSVに更新時刻（Update:）の行がありません';
-        } else {
-            const alerts = anomProcess(live, snap, cfg);
-            saveLiveState();
-            if (mode === 'live') notify(alerts, live);   // サンプル表示中は実データの通知を鳴らさない（履歴には残る）
+            if (mode === 'live') render();
+            return;
         }
-        if (mode === 'live') render();
+        if (!backfillStarted) {
+            backfillStarted = true;
+            queue = queue.then(() => backfill(snap)).catch(e => console.warn(e));
+        }
+        queue = queue.then(() => processLive(snap)).catch(e => console.error(e));
     }
     function onFetchError(err) {
         live.fetchError = String(err && err.message ? err.message : err);
