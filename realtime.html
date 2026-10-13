@@ -619,6 +619,7 @@
         .anom-c-reason li { font-size: 0.76rem; line-height: 1.45; padding-left: 8px; border-left: 3px solid #cbd5e1; color: var(--text-main); }
         .anom-c-reason li.r-buy  { border-left-color: #10b981; }
         .anom-c-reason li.r-sell { border-left-color: #ef4444; }
+        .anom-c-reason li.r-caution { border-left-color: #f59e0b; color: #92400e; font-weight: 700; }
         .anom-rt { font-family: monospace; color: #94a3b8; margin-right: 6px; font-size: 0.7rem; }
         .anom-pts { font-size: 0.66rem !important; color: #94a3b8 !important; }
 
@@ -779,7 +780,7 @@
                 <li><strong>売り圧力</strong>：出来高急増なのに株価が下落／VWAPの下抜け／直近高値からの下落（上昇が崩れた可能性）</li>
                 <li><strong>スコア変化</strong>：区分が1になった／判定（買い）の点灯／補正A3・AIスコア(デイ)の急変</li>
             </ul>
-            <p><strong>重要度：</strong>直近10分に出た変化の点数の合計で決めます（3条件の新規成立 3点、補正RVOL急上昇・出来高急増・判定点灯 2点 など）。5点以上が<span class="anom-sev sev-high">高</span>、2〜4点が<span class="anom-sev sev-mid">中</span>、1点が<span class="anom-sev sev-low">低</span>です。音が鳴るのは「高」だけです。</p>
+            <p><strong>重要度：</strong>直近10分に出た変化の点数の合計で決めます（3条件の新規成立 3点、補正RVOL急上昇・出来高急増・判定点灯 2点 など）。5点以上が<span class="anom-sev sev-high">高</span>（ただし補正RVOL1.5未満の銘柄や、⚠高値追い・地合い過熱に当てはまる買いは「中」どまり）、2〜4点が<span class="anom-sev sev-mid">中</span>、1点が<span class="anom-sev sev-low">低</span>です。音が鳴るのは「高」だけです。</p>
             <p><strong>重複防止：</strong>同じ銘柄の異常は、動きが続いている間は1回しか通知しません。15分以上おさまってから再び起きた時は、もう一度通知します。</p>
             <p><strong>対象銘柄：</strong>現在の補正RVOLが1.0以上の銘柄だけを検知します（下の設定で変更できます）。データの欠損チェックは全銘柄が対象です。</p>
             <p><strong>検知する時間：</strong>平日 9:15〜15:30（データの時刻）。Excelの買い判定に合わせています。更新が止まった時やデータの欠損は、相場の異常とは別に表示します。</p>
@@ -1891,6 +1892,11 @@ const ANOM_DEFAULT_CFG = {
     dropFromHighPct: 3.0, // 直近高値からの下落率(%)で「上昇崩れ」
     aiJump: 20,           // AIスコア(デイ)の急変幅(pt)
     minActiveRvol: 1.0,   // 現在の補正RVOLがこれ未満の銘柄は異常検知の対象外（データ異常のチェックは全銘柄）
+    highMinRvol: 1.5,     // 重要度「高」にするのは補正RVOLがこの値以上の銘柄だけ（未満は「中」どまり）
+    cautionChg: 15,       // 高値追い注意：前日比(%)がこの値以上
+    cautionDist: 2,       // 高値追い注意：株価がVWAPよりこの%以上高い
+    cautionBreadth: 70,   // 地合い過熱：監視銘柄のうちVWAPより上にある割合(%)がこの値以上
+    // ↑3つの注意に当てはまる「買い」の異常は「中」どまり（過去データの検証で成績が悪かった状況）
     compareMin: 5,        // 何分前のデータと比べるか
     rearmMin: 15,         // 異常が止まってから何分後の再発で再通知するか
     keepMin: 30,          // 一覧に残す時間（分）
@@ -1996,6 +2002,9 @@ function anomEvaluate(cur, base, recentSnaps, cfg) {
     const findings = [];
     const dataFlags = [];
     const mins = (cur.t - base.t) / 60000;
+    // 地合い：監視銘柄のうち株価がVWAPより上にある割合
+    const valid = Object.values(cur.recs).filter(x => x.p > 0 && x.vw > 0);
+    const breadth = valid.length ? valid.filter(x => x.p > x.vw).length / valid.length * 100 : 0;
     for (const code of Object.keys(cur.recs)) {
         const s = cur.recs[code], b = base.recs[code];
         if (!b) continue;
@@ -2106,7 +2115,13 @@ function anomEvaluate(cur, base, recentSnaps, cfg) {
         if (rules.some(r => r.dir === 'buy') && b.r !== null && b.r < cfg.minActiveRvol) {
             rules.push({ id: 'quiet', dir: 'buy', pts: 1, text: `直前まで出来高は平常並みだった（${Math.round(mins)}分前の補正RVOL ${anomFmtNum(b.r, 2)}）` });
         }
-        if (rules.length > 0) findings.push({ code, rules });
+        if (rules.length > 0) {
+            const cautions = [];
+            if (s.chg !== null && s.chg >= cfg.cautionChg) cautions.push(`前日比+${s.chg.toFixed(1)}%（高値追い注意）`);
+            if (hasP && (s.p / s.vw - 1) * 100 >= cfg.cautionDist) cautions.push(`VWAPより${((s.p / s.vw - 1) * 100).toFixed(1)}%上（高値追い注意）`);
+            if (breadth >= cfg.cautionBreadth) cautions.push(`地合い過熱（監視銘柄の${breadth.toFixed(0)}%がVWAPより上）`);
+            findings.push({ code, rules, cautions, r: s.r });
+        }
     }
     return { findings, dataFlags };
 }
@@ -2129,7 +2144,17 @@ function anomEpisodeScore(ep, now, cfg) {
     }
     const pts = Math.max(buy, sell) + neu;
     const dir = buy > sell ? 'buy' : sell > buy ? 'sell' : 'neutral';
-    return { pts, sev: anomSeverity(pts, cfg), dir };
+    return { pts, sev: anomCapSeverity(anomSeverity(pts, cfg), dir, ep, cfg), dir };
+}
+
+// 「高」の条件を満たしても、次の場合は「中」どまりにする（通知を本当に見るべき銘柄に絞るため）
+//  ・補正RVOLが highMinRvol 未満（売買の対象外）
+//  ・買い方向で、高値追い・地合い過熱の注意に当てはまる（過去データの検証で成績が悪かった状況）
+function anomCapSeverity(sev, dir, ep, cfg) {
+    if (sev !== 'high') return sev;
+    if (ep.rNow !== null && ep.rNow !== undefined && ep.rNow < cfg.highMinRvol) return 'mid';
+    if (dir === 'buy' && ep.cautions && ep.cautions.length > 0) return 'mid';
+    return sev;
 }
 
 function anomNewState() {
@@ -2184,8 +2209,11 @@ function anomProcess(st, snap, cfg) {
                 ep.rules[r.id] = Object.assign({}, r, { firstT: prev ? prev.firstT : tms, lastT: tms });
             }
             ep.lastT = tms;
+            ep.cautions = f.cautions;
+            ep.rNow = f.r;
             const sc = anomEpisodeScore(ep, tms, cfg);
             ep.peakPts = Math.max(ep.peakPts || 0, sc.pts);   // 一覧ではこのエピソードで一番強かった時の重要度を表示
+            if (sc.sev === 'high') ep.wasHigh = true;
             if (!ep.logged) {
                 ep.logged = true;
                 st.history.unshift({ t: tms, code: ep.code, name: ep.name, sev: sc.sev, dir: sc.dir, kind: 'new',
@@ -2232,6 +2260,10 @@ const ANOM = (() => {
         { key: 'dropFromHighPct', label: '上昇崩れ：直近高値から下落(%) ≥',  step: 0.5 },
         { key: 'minActiveRvol',   label: '対象にする最低の補正RVOL',         step: 0.1 },
         { key: 'highPts',         label: '重要度「高」になる点数',           step: 1 },
+        { key: 'highMinRvol',     label: '「高」にする最低の補正RVOL',       step: 0.1 },
+        { key: 'cautionChg',      label: '高値追い注意：前日比(%) ≥',        step: 1 },
+        { key: 'cautionDist',     label: '高値追い注意：VWAPより上(%) ≥',    step: 0.5 },
+        { key: 'cautionBreadth',  label: '地合い過熱：VWAP上の銘柄割合(%) ≥', step: 5 },
         { key: 'rearmMin',        label: '再通知までの間隔（分）',           step: 1 },
         { key: 'staleMin',        label: '更新停止とみなす時間（分）',       step: 1 },
     ];
@@ -2337,7 +2369,9 @@ const ANOM = (() => {
             // 向きは直近の動きで、重要度はこの異常のピーク時で表示（10分たっても「高」が一覧から消えないように）
             const cs = anomEpisodeScore(ep, now, cfg);
             const pts = Math.max(ep.peakPts || 0, cs.pts);
-            const sc = { pts, sev: anomSeverity(pts, cfg), dir: cs.dir };
+            let sev = anomCapSeverity(anomSeverity(pts, cfg), cs.dir, ep, cfg);
+            if (ep.wasHigh) sev = 'high';   // 一度「高」で通知したものは、一覧でも「高」のまま
+            const sc = { pts, sev, dir: cs.dir };
             const snap = st.snaps.length ? st.snaps[st.snaps.length - 1] : null;
             const rec = (snap && snap.recs[ep.code]) || {};
             const rules = Object.values(ep.rules).sort((a, b) => b.lastT - a.lastT || b.pts - a.pts);
@@ -2449,7 +2483,9 @@ const ANOM = (() => {
                           : `<span class="dn">下 ▼${((r.vw - r.p) / r.vw * 100).toFixed(1)}%</span>`)
             : '−';
         const reasons = e.ruleList.slice(0, 5).map(x =>
-            `<li class="r-${x.dir}"><span class="anom-rt">${anomTimeStr(new Date(x.lastT))}</span>${esc(x.text)}</li>`).join('');
+            `<li class="r-${x.dir}"><span class="anom-rt">${anomTimeStr(new Date(x.lastT))}</span>${esc(x.text)}</li>`).join('') +
+            (e.dir === 'buy' && e.cautions && e.cautions.length
+                ? `<li class="r-caution">⚠ ${esc(e.cautions.join('／'))}</li>` : '');
         return `
         <div class="anom-row ${sev.cls} ${freshCodes.has(e.code) ? 'fresh' : ''}" data-code="${esc(e.code)}" ${isSample ? '' : 'role="button" tabindex="0"'}>
             <div class="anom-c anom-c-sev"><span class="anom-sev ${sev.cls}">${sev.label}</span><span class="anom-pts">${e.pts}点</span></div>
@@ -2485,22 +2521,37 @@ const ANOM = (() => {
     function notify(alerts, st) {
         if (alerts.length === 0) return;
         const box = document.getElementById('anom-toasts');
-        alerts.slice(0, 3).forEach(ep => {
+        const sampleTag = mode === 'sample' ? '<span class="anom-toast-sample">サンプル</span>' : '';
+        const el = document.createElement('div');
+        el.className = 'anom-toast';
+        if (alerts.length === 1) {
+            const ep = alerts[0];
             const sc = anomEpisodeScore(ep, st.lastT, cfg);
-            const el = document.createElement('div');
-            el.className = 'anom-toast';
             el.innerHTML = `
-                <div class="anom-toast-head">🔴 重要な異常を検知 ${mode === 'sample' ? '<span class="anom-toast-sample">サンプル</span>' : ''}
+                <div class="anom-toast-head">🔴 重要な異常を検知 ${sampleTag}
                     <button class="anom-toast-x" aria-label="閉じる">×</button></div>
                 <div class="anom-toast-name"><span class="anom-code">${esc(ep.code)}</span> ${esc(ep.name)}
                     <span class="anom-dir ${DIR_INFO[sc.dir].cls}">${DIR_INFO[sc.dir].label}</span></div>
                 <div class="anom-toast-text">${esc(Object.values(ep.rules).map(r => r.text).slice(0, 2).join(' ／ '))}</div>`;
-            el.querySelector('.anom-toast-x').onclick = ev => { ev.stopPropagation(); el.remove(); };
-            el.onclick = () => { el.remove(); document.getElementById('anom-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
-            box.prepend(el);
-            setTimeout(() => el.remove(), 20000);
-            freshCodes.add(ep.code);
-        });
+        } else {
+            // 同じ更新で複数出た時は、1つのお知らせにまとめる
+            el.innerHTML = `
+                <div class="anom-toast-head">🔴 重要な異常を検知（${alerts.length}件） ${sampleTag}
+                    <button class="anom-toast-x" aria-label="閉じる">×</button></div>
+                ${alerts.slice(0, 5).map(ep => {
+                    const sc = anomEpisodeScore(ep, st.lastT, cfg);
+                    return `<div class="anom-toast-name"><span class="anom-code">${esc(ep.code)}</span> ${esc(ep.name)}
+                        <span class="anom-dir ${DIR_INFO[sc.dir].cls}">${DIR_INFO[sc.dir].label}</span></div>`;
+                }).join('')}
+                ${alerts.length > 5 ? `<div class="anom-toast-text">ほか${alerts.length - 5}件</div>` : ''}
+                <div class="anom-toast-text">押すと一覧へ移動します</div>`;
+        }
+        el.querySelector('.anom-toast-x').onclick = ev => { ev.stopPropagation(); el.remove(); };
+        el.onclick = () => { el.remove(); document.getElementById('anom-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+        box.prepend(el);
+        while (box.children.length > 3) box.lastChild.remove();   // 古いお知らせは3つまで
+        setTimeout(() => el.remove(), 20000);
+        alerts.forEach(ep => freshCodes.add(ep.code));
         beep();
         if (document.hidden) {
             unread += alerts.length;
@@ -2582,12 +2633,12 @@ const ANOM = (() => {
     const SAMPLE_HEADER = 'コード,銘柄名,現在値,前日差額,前日比率,VWAP,当日出来高,5分前出来高,列2,20日平均出来高,RVOL,補正RVOL,判定,ボルト判定,ボルト回数,20MA,区分,A3,補正A3,ギャップ比,PER,営業PEG,PSR,ROE,営業利益率(予）,利益成長率,合計成長率,ネットキャッシュ率,信用倍率,配当,配当率';
     // [時刻, 説明, {銘柄: 上書き}]  ※ 値は架空
     const SAMPLE_BASE = {
-        S01: { name: '【サンプル】銘柄A', p: 1000, vw: 1010, prev: 980, avg: 660000, r: 1.1, a3: 140, ca: 150, sign: '', kubun: '0' },
+        S01: { name: '【サンプル】銘柄A', p: 1000, vw: 1020, prev: 980, avg: 660000, r: 1.1, a3: 140, ca: 150, sign: '', kubun: '0' },
         S02: { name: '【サンプル】銘柄B', p: 2000, vw: 1985, prev: 1990, avg: 330000, r: 1.2, a3: 90, ca: 110, sign: '', kubun: '0' },
         S03: { name: '【サンプル】銘柄C', p: 500, vw: 498, prev: 490, avg: 990000, r: 1.1, a3: 120, ca: 90, sign: '', kubun: '0' },
-        S04: { name: '【サンプル】銘柄D', p: 3000, vw: 2990, prev: 2980, avg: 132000, r: 1.0, a3: 60, ca: 60, sign: '', kubun: '1' },
+        S04: { name: '【サンプル】銘柄D', p: 3000, vw: 3010, prev: 2980, avg: 132000, r: 1.0, a3: 60, ca: 60, sign: '', kubun: '1' },
         S05: { name: '【サンプル】銘柄E', p: 800, vw: 805, prev: 790, avg: 264000, r: 1.3, a3: 70, ca: 80, sign: '', kubun: '0' },
-        S06: { name: '【サンプル】銘柄F', p: 1500, vw: 1490, prev: 1495, avg: 198000, r: 0.8, a3: 50, ca: 40, sign: '', kubun: '0' },
+        S06: { name: '【サンプル】銘柄F', p: 1500, vw: 1510, prev: 1495, avg: 198000, r: 0.8, a3: 50, ca: 40, sign: '', kubun: '0' },
     };
     const SAMPLE_STEPS = [
         { hm: 1000, desc: '基準となる10:00のデータ（まだ比較相手がないので検知なし）', o: {} },
@@ -2604,7 +2655,7 @@ const ANOM = (() => {
         { hm: 1025, desc: '落ち着いた状態（銘柄Aは最後の異常から15分経過）', o: { S01: { p: 1043, r: 2.8, ca: 340 }, S02: { p: 1951, r: 2.4 } } },
         { hm: 1030, desc: '落ち着いた状態', o: { S01: { p: 1042, r: 2.8, ca: 340 }, S02: { p: 1952, r: 2.3 } } },
         { hm: 1035, desc: '銘柄Aで再び資金流入 → 一度収まった後の再発なので、もう一度通知', o: {
-            S01: { p: 1080, r: 4.4, ca: 520, volx: 7 }, S02: { p: 1953, r: 2.3 } } },
+            S01: { p: 1080, vw: 1065, r: 4.4, ca: 520, volx: 7 }, S02: { p: 1953, r: 2.3 } } },
         { hm: 1035, stopMin: 16, desc: 'Excelが停止したと想定（16分間データが届かない）→「更新停止」の警告。相場の異常とは区別', o: {
             S01: { p: 1080, r: 4.4, ca: 520 }, S02: { p: 1953, r: 2.3 } } },
     ];
