@@ -681,7 +681,7 @@
     </div>
     <div id="alert-notes"></div>
     <div class="alert-list" id="alert-list"><div class="alert-empty">データ読み込み中...</div></div>
-    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
+    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。A3が未入力の銘柄は対象外です。銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
 </div>
 <div class="alert-toasts" id="alert-toasts" aria-live="polite"></div>
 
@@ -1188,6 +1188,8 @@ function parseFullStocks(rows) {
             growth:    num('growth'),
             netCash:   num('netCash'),
             shinyo:    num('shinyo'),
+            // A3・補正A3が未入力（空欄やエラー）の銘柄は「まだ評価していない」として扱う
+            noA3:      isNaN(parseFloat(str('scoreA3'))) || isNaN(parseFloat(str('corrA3'))),
             high52:    (col.high52 >= 0 && str('high52') !== '' && !isNaN(parseFloat(str('high52')))) ? parseFloat(str('high52')) : null,
         });
     }
@@ -1767,6 +1769,7 @@ const ALERT = (() => {
         const news = [];
         if (inHours) {
             for (const s of stocks) {
+                if (s.noA3) continue;   // A3が未入力の銘柄は通知しない（0点＝クリアとは扱わない）
                 const sc = calcScoreDay(s).total;
                 const base = { code: s.code, name: s.name, score: sc, rv: rvOf(s), p: s.price, vw: s.vwap, chg: s.changePct,
                                mika: mika.includes(s.code), t: t.getTime(), quiet: firstCall };
