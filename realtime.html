@@ -189,6 +189,55 @@
         }
         .pick-advice strong { color: #075985; }
 
+        /* ===== 厳選通知 ===== */
+        .alert-section { width: 95%; max-width: 1100px; margin: 0 auto 24px; background: #fff; border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 14px 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .alert-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+        .alert-title { font-size: 1.02rem; font-weight: 900; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .alert-sub { font-size: 0.72rem; font-weight: 700; color: var(--text-sub); }
+        .alert-ctrl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .alert-opt { font-size: 0.78rem; font-weight: 700; color: var(--text-sub); display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+        .alert-opt select { font-size: 0.78rem; padding: 3px 6px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; }
+        .alert-btn { border: 1px solid var(--border-color); background: #fff; color: var(--text-sub); font-weight: 700; font-size: 0.78rem;
+            padding: 6px 11px; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-family: inherit; }
+        .alert-btn.on { background: #eff6ff; color: var(--primary-dark); border-color: #bfdbfe; }
+        .alert-note { font-size: 0.78rem; border-radius: 10px; padding: 7px 11px; margin-bottom: 8px; line-height: 1.6;
+            background: #f8fafc; border: 1px solid var(--border-color); color: var(--text-sub); }
+        .alert-note.warn { background: #fef2f2; border-color: #fecaca; color: #991b1b; font-weight: 700; }
+        .alert-list { display: flex; flex-direction: column; gap: 5px; max-height: 260px; overflow-y: auto; }
+        .alert-item { display: grid; grid-template-columns: 48px 1.5fr 2.4fr 1.2fr; gap: 10px; align-items: center; padding: 8px 10px;
+            border: 1px solid var(--border-color); border-left: 4px solid var(--primary-color); border-radius: 10px; cursor: pointer; font-size: 0.82rem; }
+        .alert-item:hover { box-shadow: 0 3px 10px -4px rgba(59,130,246,0.3); }
+        .alert-item.t-high52 { border-left-color: #f59e0b; }
+        .alert-item.quiet { opacity: 0.75; }
+        .alert-item.fresh { animation: alertFlash 1s ease 3; }
+        @keyframes alertFlash { 50% { background: #eff6ff; box-shadow: 0 0 0 3px rgba(59,130,246,0.25); } }
+        .alert-time { font-family: monospace; font-weight: 800; color: var(--text-sub); }
+        .alert-name b { font-family: monospace; color: var(--primary-color); margin-right: 6px; }
+        .alert-why { color: var(--text-main); font-weight: 700; }
+        .alert-why small { display: block; color: #b45309; font-weight: 700; }
+        .alert-num { font-family: monospace; font-size: 0.78rem; color: var(--text-sub); text-align: right; }
+        .alert-tag { display: inline-block; font-size: 0.66rem; font-weight: 800; padding: 1px 7px; border-radius: 10px; margin-left: 4px; vertical-align: middle; }
+        .tag-mika { background: linear-gradient(135deg, #1e3a5f, #1d4ed8); color: #fff; }
+        .tag-s { background: #fde68a; color: #78350f; }
+        .tag-a { background: #bfdbfe; color: #1e3a8a; }
+        .tag-52 { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .alert-empty { text-align: center; color: var(--text-sub); font-size: 0.84rem; font-weight: 700; padding: 14px; border: 1px dashed var(--border-color); border-radius: 10px; }
+        .alert-foot { font-size: 0.7rem; color: #94a3b8; margin-top: 8px; line-height: 1.6; }
+        .alert-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 10001; display: flex; flex-direction: column; gap: 8px; width: 340px; max-width: calc(100vw - 32px); }
+        .alert-toast { background: #fff; border: 1px solid #bfdbfe; border-left: 6px solid var(--primary-color); border-radius: 12px; padding: 12px 14px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.25); cursor: pointer; animation: alertToastIn 0.3s ease; }
+        @keyframes alertToastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .alert-toast-head { font-weight: 900; color: var(--primary-dark); font-size: 0.85rem; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .alert-toast-x { margin-left: auto; border: none; background: none; font-size: 1.2rem; line-height: 1; cursor: pointer; color: var(--text-sub); }
+        .alert-toast-line { font-size: 0.84rem; font-weight: 700; margin: 3px 0; }
+        .alert-toast-line b { font-family: monospace; color: var(--primary-color); margin-right: 4px; }
+        .alert-toast-line span { font-weight: 600; color: var(--text-sub); font-size: 0.76rem; }
+        @media (max-width: 768px) {
+            .alert-item { grid-template-columns: 44px 1fr; }
+            .alert-why, .alert-num { grid-column: 1 / -1; text-align: left; }
+        }
+
         /* ===== AI MIKA 厳選銘柄 ===== */
         .mika-section { width: 95%; max-width: 1100px; margin: 0 auto 28px; }
         .mika-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
@@ -616,6 +665,25 @@
         <li><strong style="color: var(--text-main);">リスク管理：</strong> VWAPを明確に割ったら、撤退して次のチャンスを待つ。</li>
     </ul>
 </div>
+
+<!-- ===== 通知（AIスコアA以上・52週高値越え） ===== -->
+<div class="alert-section" id="alert-section">
+    <div class="alert-head">
+        <div class="alert-title"><i class="fa-solid fa-bell" style="color:var(--primary-color);"></i> 厳選通知
+            <span class="alert-sub" id="alert-sub"></span></div>
+        <div class="alert-ctrl">
+            <label class="alert-opt">AIスコア
+                <select id="alert-rank"><option value="60">A以上（60点〜）</option><option value="80">S以上（80点〜）</option></select></label>
+            <label class="alert-opt"><input type="checkbox" id="alert-52"> 52週高値越え</label>
+            <button class="alert-btn" id="alert-sound" type="button"></button>
+            <button class="alert-btn" id="alert-test" type="button"><i class="fa-solid fa-play"></i> テスト</button>
+        </div>
+    </div>
+    <div id="alert-notes"></div>
+    <div class="alert-list" id="alert-list"><div class="alert-empty">データ読み込み中...</div></div>
+    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
+</div>
+<div class="alert-toasts" id="alert-toasts" aria-live="polite"></div>
 
 <!-- ===== AI MIKA 厳選銘柄 ===== -->
 <div class="mika-section">
@@ -1048,6 +1116,7 @@ const COLUMN_NAMES = {
     growth:    ['利益成長率', '成長率'],   // 旧「成長率」列は現在の「利益成長率」にあたる
     netCash:   ['ネットキャッシュ率'],
     shinyo:    ['信用倍率'],
+    high52:    ['52週高値乖離率', '52週高値乖離', '52週高値比'],
 };
 
 // CSVの1つのセルを整える（前後の空白・ダブルクォート・先頭のBOMを除去）
@@ -1064,6 +1133,11 @@ function buildColumnIndex(headerRow) {
         const found = names.map(n => headers.indexOf(n)).find(i => i >= 0);
         idx[key] = (found === undefined) ? -1 : found;
         if (idx[key] < 0) missing.push(names[0]);
+    }
+    // 52週高値の列は見出しの表記ゆれに備えて「52週」を含む列も探す
+    if (idx.high52 < 0) {
+        const k = headers.findIndex(h => h.includes('52週'));
+        if (k >= 0) { idx.high52 = k; const m = missing.indexOf('52週高値乖離率'); if (m >= 0) missing.splice(m, 1); }
     }
     if (missing.length > 0) {
         console.warn('CSVに見つからない列があります（0または空欄として扱います）:', missing.join(', '));
@@ -1114,6 +1188,7 @@ function parseFullStocks(rows) {
             growth:    num('growth'),
             netCash:   num('netCash'),
             shinyo:    num('shinyo'),
+            high52:    (col.high52 >= 0 && str('high52') !== '' && !isNaN(parseFloat(str('high52')))) ? parseFloat(str('high52')) : null,
         });
     }
     return result;
@@ -1623,11 +1698,182 @@ async function loadCSV() {
         renderTable(rows);
         renderMikaPicks(getMikaPicks(latestStocks));
         document.getElementById('last-load').textContent = '取得: ' + new Date().toLocaleTimeString();
+        // 厳選通知へデータを渡す（通知側のエラーで既存の表示が止まらないよう分離）
+        try { ALERT.onData(latestStocks, lastUpdateDate); } catch (e2) { console.error(e2); }
     } catch(e) { console.error(e); }
 }
 
 loadCSV();
 setInterval(loadCSV, 30000);
+
+// ===== 厳選通知（AIスコアA以上・52週高値越え） =====
+const ALERT = (() => {
+    const LS_STATE = 'mika_alert_state_v1', LS_CFG = 'mika_alert_cfg_v1';
+    const cfg = { rank: 60, high52: true, soundOn: false };
+    let st = { date: '', seen: {}, items: [] };
+    let firstCall = true, audioCtx = null, unread = 0, hasHigh52Col = true, lastT = null;
+    const fresh = new Set();
+    const baseTitle = document.title;
+
+    const lsGet = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+    const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
+    const esc = v => String(v === undefined || v === null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const hhmm = d => d.getHours() * 100 + d.getMinutes();
+    const tstr = ms => { const d = new Date(ms); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+    const rvOf = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol);
+    const isBuy = s => !!s.sign && (s.sign.includes('買い') || s.sign.includes('🔥'));
+
+    // ---- 音（ブラウザは画面を操作した後でないと音を出せないので、最初の操作で準備） ----
+    function unlockAudio() {
+        try {
+            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        } catch (e) { }
+        setTimeout(render, 50);
+    }
+    const audioReady = () => !!(audioCtx && audioCtx.state === 'running');
+    ['pointerdown', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, unlockAudio, { capture: true, passive: true }));
+    function beep() {
+        if (!cfg.soundOn) return;
+        try {
+            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            [0, 0.18].forEach((delay, i) => {
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.type = 'sine'; o.frequency.value = i === 0 ? 880 : 1175;
+                g.gain.setValueAtTime(0.0001, audioCtx.currentTime + delay);
+                g.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + delay + 0.02);
+                g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + 0.16);
+                o.connect(g); g.connect(audioCtx.destination);
+                o.start(audioCtx.currentTime + delay); o.stop(audioCtx.currentTime + delay + 0.18);
+            });
+        } catch (e) { }
+    }
+
+    // ---- データを受け取って判定 ----
+    function onData(stocks, t) {
+        if (!t || !stocks || !stocks.length) { render(); return; }
+        lastT = t;
+        const dateKey = t.toDateString();
+        if (st.date !== dateKey) st = { date: dateKey, seen: {}, items: [] };
+        hasHigh52Col = stocks.some(s => s.high52 !== null && s.high52 !== undefined);
+        const w = t.getDay(), hm = hhmm(t);
+        const inHours = w >= 1 && w <= 5 && hm >= 915 && hm <= 1530;
+
+        // AI MIKA 厳選（デイ）のTOP3：買い判定＋補正RVOL1.5以上をAIスコア順に
+        const mika = stocks.filter(s => isBuy(s) && rvOf(s) >= 1.5)
+            .sort((a, b) => calcScoreDay(b).total - calcScoreDay(a).total).slice(0, 3).map(s => s.code);
+
+        const news = [];
+        if (inHours) {
+            for (const s of stocks) {
+                const sc = calcScoreDay(s).total;
+                const base = { code: s.code, name: s.name, score: sc, rv: rvOf(s), p: s.price, vw: s.vwap, chg: s.changePct,
+                               mika: mika.includes(s.code), t: t.getTime(), quiet: firstCall };
+                if (sc >= cfg.rank && !st.seen[s.code + '|rank']) {
+                    st.seen[s.code + '|rank'] = 1;
+                    news.push(Object.assign({ type: 'rank', why: `AIスコア ${sc}点（${sc >= 80 ? 'S' : 'A'}ランク）に到達` }, base));
+                }
+                if (cfg.high52 && s.high52 !== null && s.high52 !== undefined && s.high52 > 0 && rvOf(s) >= 1.5 && !st.seen[s.code + '|high52']) {
+                    st.seen[s.code + '|high52'] = 1;
+                    news.push(Object.assign({ type: 'high52', why: `52週高値を${s.high52.toFixed(1)}%上回る（補正RVOL ${rvOf(s).toFixed(1)}）` }, base));
+                }
+            }
+        }
+        news.forEach(n => {
+            const cautions = [];
+            if (n.chg >= 15) cautions.push(`前日比+${n.chg.toFixed(1)}%`);
+            if (n.vw > 0 && (n.p / n.vw - 1) * 100 >= 2) cautions.push(`VWAPより${((n.p / n.vw - 1) * 100).toFixed(1)}%上`);
+            n.caution = cautions.length ? '⚠ 高値追い注意（' + cautions.join('・') + '）' : '';
+        });
+        st.items = news.concat(st.items).slice(0, 100);
+        lsSet(LS_STATE, st);
+        // ページを開いた時点ですでに当てはまっていたものは一覧に載せるだけ（まとめて鳴らない）
+        const loud = news.filter(n => !n.quiet);
+        if (loud.length) toast(loud);
+        firstCall = false;
+        render();
+    }
+
+    function toast(list) {
+        const box = document.getElementById('alert-toasts');
+        const el = document.createElement('div');
+        el.className = 'alert-toast';
+        el.innerHTML = `<div class="alert-toast-head">🔔 厳選通知${list.length > 1 ? '（' + list.length + '件）' : ''}
+                <button class="alert-toast-x" aria-label="閉じる">×</button></div>` +
+            list.slice(0, 5).map(n => `<div class="alert-toast-line"><b>${esc(n.code)}</b>${esc(n.name)}${n.mika ? '<span class="alert-tag tag-mika">MIKA TOP3</span>' : ''}<br><span>${esc(n.why)}</span></div>`).join('') +
+            (list.length > 5 ? `<div class="alert-toast-line"><span>ほか${list.length - 5}件</span></div>` : '');
+        el.querySelector('.alert-toast-x').onclick = ev => { ev.stopPropagation(); el.remove(); };
+        el.onclick = () => { el.remove(); document.getElementById('alert-section').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+        box.prepend(el);
+        while (box.children.length > 3) box.lastChild.remove();
+        setTimeout(() => el.remove(), 20000);
+        list.forEach(n => fresh.add(n.code + n.type));
+        beep();
+        if (document.hidden) { unread += list.length; document.title = `🔔(${unread}) ${baseTitle}`; }
+    }
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) { unread = 0; document.title = baseTitle; } });
+
+    // ---- 表示 ----
+    function render() {
+        const sub = document.getElementById('alert-sub');
+        if (!sub) return;
+        sub.textContent = `AIスコア${cfg.rank >= 80 ? 'S' : 'A'}以上${cfg.high52 ? '・52週高値越え' : ''}`;
+        document.getElementById('alert-rank').value = String(cfg.rank);
+        document.getElementById('alert-52').checked = cfg.high52;
+        const sb = document.getElementById('alert-sound');
+        sb.className = 'alert-btn' + (cfg.soundOn ? ' on' : '');
+        sb.innerHTML = cfg.soundOn ? '<i class="fa-solid fa-volume-high"></i> 音ON' : '<i class="fa-solid fa-volume-xmark"></i> 音OFF';
+
+        const notes = [];
+        if (cfg.soundOn && !audioReady()) notes.push('<div class="alert-note warn"><i class="fa-solid fa-volume-xmark"></i> 音はONですが、ブラウザの仕様でまだ鳴らせません。<b>画面のどこかを1回クリック</b>すると鳴るようになります。</div>');
+        if (cfg.high52 && !hasHigh52Col && lastT) notes.push('<div class="alert-note">52週高値の列がCSVに入っていないため、52週高値越えは判定できません（Excelの出力設定が必要です）。</div>');
+        if (lastT) {
+            const w = lastT.getDay(), hm = hhmm(lastT);
+            if (!(w >= 1 && w <= 5 && hm >= 915 && hm <= 1530)) notes.push('<div class="alert-note">取引時間外のデータのため、通知はお休み中です（平日9:15〜15:30に判定）。</div>');
+        }
+        document.getElementById('alert-notes').innerHTML = notes.join('');
+
+        const list = document.getElementById('alert-list');
+        list.innerHTML = st.items.length === 0
+            ? '<div class="alert-empty">今日はまだ通知はありません</div>'
+            : st.items.map(n => `
+                <div class="alert-item t-${n.type} ${n.quiet ? 'quiet' : ''} ${fresh.has(n.code + n.type) ? 'fresh' : ''}" data-code="${esc(n.code)}" role="button" tabindex="0">
+                    <div class="alert-time">${tstr(n.t)}</div>
+                    <div class="alert-name"><b>${esc(n.code)}</b>${esc(n.name)}</div>
+                    <div class="alert-why">${n.type === 'high52' ? '<span class="alert-tag tag-52">52週高値</span>' : `<span class="alert-tag ${n.score >= 80 ? 'tag-s' : 'tag-a'}">${n.score >= 80 ? '🏆S' : '⭐A'}</span>`}
+                        ${esc(n.why)}${n.mika ? '<span class="alert-tag tag-mika">MIKA TOP3</span>' : ''}
+                        ${n.quiet ? '<small style="color:#94a3b8;">ページを開いた時点で該当</small>' : ''}${n.caution ? `<small>${esc(n.caution)}</small>` : ''}</div>
+                    <div class="alert-num">${n.p ? Number(n.p).toLocaleString() + '円' : ''} ${n.chg !== undefined ? (n.chg >= 0 ? '+' : '') + Number(n.chg).toFixed(1) + '%' : ''}<br>補正RVOL ${Number(n.rv).toFixed(2)}</div>
+                </div>`).join('');
+        fresh.clear();
+    }
+
+    function saveCfg() { lsSet(LS_CFG, cfg); }
+
+    function init() {
+        const c = lsGet(LS_CFG); if (c) Object.assign(cfg, c);
+        const o = lsGet(LS_STATE); if (o && o.date) st = o;
+        document.getElementById('alert-rank').onchange = e => { cfg.rank = parseInt(e.target.value) || 60; saveCfg(); render(); };
+        document.getElementById('alert-52').onchange = e => { cfg.high52 = e.target.checked; saveCfg(); render(); };
+        document.getElementById('alert-sound').onclick = () => { cfg.soundOn = !cfg.soundOn; saveCfg(); unlockAudio(); if (cfg.soundOn) beep(); render(); };
+        document.getElementById('alert-test').onclick = () => {
+            unlockAudio();
+            toast([{ code: 'TEST', name: '（テスト表示）', type: 'rank', why: '通知と音のテストです。実際の銘柄ではありません', mika: false }]);
+        };
+        const go = ev => {
+            const row = ev.target.closest('.alert-item');
+            if (!row) return;
+            const inp = document.getElementById('az-code-input');
+            if (inp) { inp.value = row.dataset.code; doAnalyze(); }
+        };
+        document.getElementById('alert-list').addEventListener('click', go);
+        document.getElementById('alert-list').addEventListener('keydown', ev => { if (ev.key === 'Enter') go(ev); });
+        render();
+    }
+    init();
+    return { onData };
+})();
 
 // 以前の「異常検知モニター」がブラウザに残した設定・記録を片付ける（機能は削除済み）
 try { localStorage.removeItem('anom_cfg_v1'); localStorage.removeItem('anom_state_v1'); } catch (e) { }
