@@ -1732,10 +1732,15 @@ const ALERT = (() => {
     function unlockAudio() {
         if (audioReady()) return;   // 準備済みなら何もしない（クリックのたびに画面を描き直さない）
         try {
-            audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                audioCtx.onstatechange = () => render();   // 音が使える状態になったら表示を更新
+            }
             if (audioCtx.state === 'suspended') {
                 const p = audioCtx.resume();
-                if (p && p.then) p.then(() => render());   // 音が使えるようになった時だけ表示を更新
+                if (p && p.then) p.then(() => render());
+            } else {
+                render();
             }
         } catch (e) { }
     }
