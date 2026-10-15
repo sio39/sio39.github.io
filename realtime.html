@@ -681,7 +681,7 @@
     </div>
     <div id="alert-notes"></div>
     <div class="alert-list" id="alert-list"><div class="alert-empty">データ読み込み中...</div></div>
-    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。A3が未入力の銘柄は対象外です。銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
+    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。現在値がVWAPより上で、前日比がプラス（0%以上）の銘柄だけが対象です。A3が未入力の銘柄は対象外です。銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
 </div>
 <div class="alert-toasts" id="alert-toasts" aria-live="polite"></div>
 
@@ -1770,6 +1770,9 @@ const ALERT = (() => {
         if (inHours) {
             for (const s of stocks) {
                 if (s.noA3) continue;   // A3が未入力の銘柄は通知しない（0点＝クリアとは扱わない）
+                // 現在値がVWAPより上で、前日比がマイナスでない銘柄だけ（下げている日・VWAPを割っている銘柄は通知しない）
+                if (!(s.price > 0 && s.vwap > 0 && s.price > s.vwap)) continue;
+                if (s.changePct < 0) continue;
                 const sc = calcScoreDay(s).total;
                 const base = { code: s.code, name: s.name, score: sc, rv: rvOf(s), p: s.price, vw: s.vwap, chg: s.changePct,
                                mika: mika.includes(s.code), t: t.getTime(), quiet: firstCall };
