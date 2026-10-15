@@ -1730,11 +1730,14 @@ const ALERT = (() => {
 
     // ---- 音（ブラウザは画面を操作した後でないと音を出せないので、最初の操作で準備） ----
     function unlockAudio() {
+        if (audioReady()) return;   // 準備済みなら何もしない（クリックのたびに画面を描き直さない）
         try {
             audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (audioCtx.state === 'suspended') {
+                const p = audioCtx.resume();
+                if (p && p.then) p.then(() => render());   // 音が使えるようになった時だけ表示を更新
+            }
         } catch (e) { }
-        setTimeout(render, 50);
     }
     const audioReady = () => !!(audioCtx && audioCtx.state === 'running');
     ['pointerdown', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, unlockAudio, { capture: true, passive: true }));
@@ -1844,7 +1847,7 @@ const ALERT = (() => {
         document.getElementById('alert-notes').innerHTML = notes.join('');
 
         const list = document.getElementById('alert-list');
-        list.innerHTML = st.items.length === 0
+        const html = st.items.length === 0
             ? '<div class="alert-empty">今日はまだ通知はありません</div>'
             : st.items.map(n => `
                 <div class="alert-item t-${n.type} ${n.quiet ? 'quiet' : ''} ${fresh.has(n.code + n.type) ? 'fresh' : ''}" data-code="${esc(n.code)}" role="button" tabindex="0">
@@ -1856,6 +1859,8 @@ const ALERT = (() => {
                     <div class="alert-num">${n.p ? Number(n.p).toLocaleString() + '円' : ''} ${n.chg !== undefined ? (n.chg >= 0 ? '+' : '') + Number(n.chg).toFixed(1) + '%' : ''}<br>補正RVOL ${Number(n.rv).toFixed(2)}
                         <a class="alert-x" href="${xUrl(n)}" target="_blank" rel="noopener" title="Xの投稿画面を開きます（投稿前に文面を確認・編集できます）">𝕏 投稿</a></div>
                 </div>`).join('');
+        // 内容が変わった時だけ書き換える（30秒ごとの更新中にボタンを押しても、押した要素が消えないように）
+        if (list.dataset.html !== html) { list.innerHTML = html; list.dataset.html = html; }
         fresh.clear();
     }
 
