@@ -222,6 +222,9 @@
         .tag-s { background: #fde68a; color: #78350f; }
         .tag-a { background: #bfdbfe; color: #1e3a8a; }
         .tag-52 { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .alert-x { display: inline-block; margin-top: 4px; font-size: 0.72rem; font-weight: 800; color: #fff !important; background: #14171a;
+            padding: 3px 10px; border-radius: 8px; text-decoration: none; font-family: inherit; }
+        .alert-x:hover { background: #333; }
         .alert-empty { text-align: center; color: var(--text-sub); font-size: 0.84rem; font-weight: 700; padding: 14px; border: 1px dashed var(--border-color); border-radius: 10px; }
         .alert-foot { font-size: 0.7rem; color: #94a3b8; margin-top: 8px; line-height: 1.6; }
         .alert-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 10001; display: flex; flex-direction: column; gap: 8px; width: 340px; max-width: calc(100vw - 32px); }
@@ -681,7 +684,7 @@
     </div>
     <div id="alert-notes"></div>
     <div class="alert-list" id="alert-list"><div class="alert-empty">データ読み込み中...</div></div>
-    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。現在値がVWAPより上で、前日比がプラス（0%以上）の銘柄だけが対象です。A3が未入力の銘柄は対象外です。銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
+    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。現在値がVWAPより上で、前日比がプラス（0%以上）の銘柄だけが対象です。A3が未入力の銘柄は対象外です。<strong>52週高値は手動更新のため、一部データが古い場合があります。</strong>銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
 </div>
 <div class="alert-toasts" id="alert-toasts" aria-live="polite"></div>
 
@@ -1850,9 +1853,28 @@ const ALERT = (() => {
                     <div class="alert-why">${n.type === 'high52' ? '<span class="alert-tag tag-52">52週高値</span>' : `<span class="alert-tag ${n.score >= 80 ? 'tag-s' : 'tag-a'}">${n.score >= 80 ? '🏆S' : '⭐A'}</span>`}
                         ${esc(n.why)}${n.mika ? '<span class="alert-tag tag-mika">MIKA TOP3</span>' : ''}
                         ${n.quiet ? '<small style="color:#94a3b8;">ページを開いた時点で該当</small>' : ''}${n.caution ? `<small>${esc(n.caution)}</small>` : ''}</div>
-                    <div class="alert-num">${n.p ? Number(n.p).toLocaleString() + '円' : ''} ${n.chg !== undefined ? (n.chg >= 0 ? '+' : '') + Number(n.chg).toFixed(1) + '%' : ''}<br>補正RVOL ${Number(n.rv).toFixed(2)}</div>
+                    <div class="alert-num">${n.p ? Number(n.p).toLocaleString() + '円' : ''} ${n.chg !== undefined ? (n.chg >= 0 ? '+' : '') + Number(n.chg).toFixed(1) + '%' : ''}<br>補正RVOL ${Number(n.rv).toFixed(2)}
+                        <a class="alert-x" href="${xUrl(n)}" target="_blank" rel="noopener" title="Xの投稿画面を開きます（投稿前に文面を確認・編集できます）">𝕏 投稿</a></div>
                 </div>`).join('');
         fresh.clear();
+    }
+
+    // Xの投稿画面を文面入りで開くURL（APIは使わない。投稿するかどうかは自分で決める）
+    function xUrl(n) {
+        const head = n.type === 'high52'
+            ? `📈 52週高値を${(n.why.match(/([\d.]+)%/) || [, ''])[1]}%上回る`
+            : `${n.score >= 80 ? '🏆' : '⭐'} AIスコア${n.score}点（${n.score >= 80 ? 'S' : 'A'}ランク）到達`;
+        const text = [
+            `【AI MIKA 厳選通知】${tstr(n.t)}`,
+            `${n.code} ${n.name}`,
+            head + (n.mika ? '／MIKA TOP3' : ''),
+            '',
+            '#日本株 #デイトレ #AIスコア',
+            'https://sio39.github.io/realtime.html',
+            n.type === 'high52' ? '※52週高値は手動更新のため一部データが古い場合があります' : '',
+            '※売買推奨ではありません',
+        ].filter((x, i) => x !== '' || i === 3).join('\n');
+        return 'https://x.com/intent/post?text=' + encodeURIComponent(text);
     }
 
     function saveCfg() { lsSet(LS_CFG, cfg); }
@@ -1868,6 +1890,7 @@ const ALERT = (() => {
             toast([{ code: 'TEST', name: '（テスト表示）', type: 'rank', why: '通知と音のテストです。実際の銘柄ではありません', mika: false }]);
         };
         const go = ev => {
+            if (ev.target.closest('.alert-x')) return;   // 「X 投稿」ボタンはリンクとして開くだけ
             const row = ev.target.closest('.alert-item');
             if (!row) return;
             const inp = document.getElementById('az-code-input');
