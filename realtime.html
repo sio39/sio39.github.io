@@ -288,6 +288,8 @@
         .mika-tag-buy    { background: rgba(16,185,129,0.1); border: 1px solid #a7f3d0; color: #065f46; }
         .mika-tag-growth { background: rgba(139,92,246,0.1); border: 1px solid #ddd6fe; color: #6d28d9; }
         .mika-tag-cash   { background: rgba(16,185,129,0.08); border: 1px solid #6ee7b7; color: #065f46; }
+        .mika-tag-liq    { background: #f1f5f9; border: 1px dashed #94a3b8; color: #475569; }
+        .mika-tag-hot    { background: rgba(225,29,72,0.08); border: 1px solid #fecdd3; color: #be123c; }
 
         .mika-ai-score {
             display: flex; align-items: center; justify-content: space-between;
@@ -378,6 +380,8 @@
         .az-tag-none   { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--text-sub); }
         .az-tag-growth { background: #f3e8ff; border: 1px solid #ddd6fe; color: #6d28d9; }
         .az-tag-cash   { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; }
+        .az-tag-liq    { background: #f1f5f9; border: 1px dashed #94a3b8; color: #475569; }
+        .az-tag-hot    { background: #fff1f2; border: 1px solid #fecdd3; color: #be123c; }
         .az-tag-mode-day   { background: #fff1f2; border: 1px solid #fecdd3; color: #b91c1c; font-size: 0.65rem; }
         .az-tag-mode-swing { background: #f3e8ff; border: 1px solid #ddd6fe; color: #6d28d9; font-size: 0.65rem; }
 
@@ -533,11 +537,11 @@
             box-shadow: 0 0 0 1px #fde68a, 0 2px 8px rgba(245,158,11,0.4);
         }
 
-        /* ===== 補正RVOL・現在値の強調セル ===== */
+        /* ===== 補正RVOL・現在値・売買代金・回転率の強調セル ===== */
         .cell-flag {
             display: inline-flex; align-items: center; gap: 5px;
             font-weight: 800; font-family: monospace; font-size: 0.92rem;
-            padding: 3px 10px; border-radius: 8px;
+            padding: 3px 10px; border-radius: 8px; white-space: nowrap;
         }
         .cell-flag-dot {
             display: inline-block; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
@@ -546,6 +550,11 @@
         .rvol-flag .cell-flag-dot { background: #f97316; box-shadow: 0 0 6px rgba(249,115,22,0.8); }
         .price-flag { background: rgba(16,185,129,0.14); color: #047857; border: 1px solid rgba(16,185,129,0.4); }
         .price-flag .cell-flag-dot { background: #10b981; box-shadow: 0 0 6px rgba(16,185,129,0.8); }
+        /* 売買代金が少ない（流動性注意） */
+        .liq-flag { background: #f1f5f9; color: #64748b; border: 1px dashed #94a3b8; font-weight: 700; }
+        /* 売買代金回転率が高い（過熱注意） */
+        .hot-flag { background: rgba(225,29,72,0.10); color: #be123c; border: 1px solid rgba(225,29,72,0.35); }
+        .hot-flag .cell-flag-dot { background: #e11d48; box-shadow: 0 0 6px rgba(225,29,72,0.7); }
 
         /* ===== もっと見るボタン ===== */
         .show-more-wrap { width: 95%; max-width: 1200px; margin: 16px auto 0; text-align: center; }
@@ -569,7 +578,7 @@
             .mode-switch-area { flex-direction: column; }
 
             /* ===== テーブルをスマホ向けにコンパクト化 ===== */
-            table { min-width: 620px; }
+            table { min-width: 760px; }
             thead th { padding: 10px 4px; font-size: 0.62rem; }
             td { padding: 8px 4px; font-size: 0.75rem; }
             th:nth-child(3), td:nth-child(3) { width: 44px;  min-width: 44px; }
@@ -684,7 +693,7 @@
     </div>
     <div id="alert-notes"></div>
     <div class="alert-list" id="alert-list"><div class="alert-empty">データ読み込み中...</div></div>
-    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。現在値がVWAPより上で、前日比がプラス（0%以上）の銘柄だけが対象です。A3が未入力の銘柄は対象外です。<strong>52週高値は手動更新のため、一部データが古い場合があります。</strong>銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
+    <div class="alert-foot">平日9:15〜15:30に、条件に初めて当てはまった銘柄を1日1回ずつ知らせます（ポップアップ・音）。現在値がVWAPより上で、前日比がプラス（0%以上）、<strong>売買代金が基準以上</strong>（1日1億円を目安に、取引時間の経過に応じて基準額が上がります）の銘柄だけが対象です。A3が未入力の銘柄は対象外です。<strong>52週高値は手動更新のため、一部データが古い場合があります。</strong>銘柄を押すと「クイック分析」で表示します。売買を推奨するものではありません。</div>
 </div>
 <div class="alert-toasts" id="alert-toasts" aria-live="polite"></div>
 
@@ -780,7 +789,16 @@
         <span class="cell-flag rvol-flag" style="font-size:0.82rem;"><span class="cell-flag-dot"></span>3.58</span>
         <span>補正RVOLが<strong>3.0以上</strong>であることを示します。</span>
     </div>
-    <div class="full-width">※判定は<strong>9：15以降</strong>です</div>
+    <div class="legend-item">
+        <span class="cell-flag liq-flag" style="font-size:0.82rem;">3,500万円</span>
+        <span>売買代金が<strong>基準未満（流動性注意）</strong>。注文が通りにくく、値が飛びやすい銘柄です。
+            <span id="liq-threshold-note" style="color:#64748b;">（基準は1日1億円。取引中は経過時間に応じて下げて判定）</span></span>
+    </div>
+    <div class="legend-item">
+        <span class="cell-flag hot-flag" style="font-size:0.82rem;"><span class="cell-flag-dot"></span>12.5%</span>
+        <span>売買代金回転率が<strong>10%以上（過熱注意）</strong>。短期資金が集中し、急な値動きに注意が必要です。</span>
+    </div>
+    <div class="full-width">※判定は<strong>9：15以降</strong>です　※売買代金＝VWAP×当日出来高、回転率＝売買代金÷時価総額</div>
 </div>
 
 <div class="pick-advice">
@@ -788,6 +806,7 @@
     <strong>銘柄選びの目安：</strong>
     デイトレの対象は、まず<strong>この色の背景が付いている「AIスコアクリア銘柄」</strong>から選ぶのが基本です。
     それ以外の銘柄を対象にする場合は、出来高(RVOL)・BOLT判定・買い判定など<strong>他の要素も踏まえたうえで慎重に判断</strong>してください。
+    また、<strong>売買代金が少ない銘柄（流動性注意）</strong>は、思った値段で売買できないことがあるので注意してください。
 </div>
 
 <div class="table-container">
@@ -806,6 +825,58 @@
 // ===== 表示件数の設定 =====
 const INITIAL_SHOW_COUNT = 30;
 let showAllRows = false;
+
+// ===== 流動性・過熱の基準（ここを変えれば判定基準が変わります） =====
+const MIN_TRADE_VALUE  = 100000000;  // 1日（大引け時点）の売買代金の基準（円。1億円）
+                                     // 取引中は経過時間に応じて基準を下げます（下の liquidityThreshold）
+                                     // 基準未満は「流動性注意」とし、厳選通知・MIKA TOP3（デイ）の対象からも外します
+const HOT_TURNOVER_PCT = 10;         // 売買代金回転率がこれ以上なら「過熱注意」（%）
+
+// 売買代金（円）と時価総額（億円）の表示用
+function fmtYen(v) {
+    if (!v || v <= 0) return '−';
+    if (v >= 1e12) return (v / 1e12).toFixed(2) + '兆円';
+    if (v >= 1e8)  return (v / 1e8).toFixed(1) + '億円';
+    return Math.round(v / 1e4).toLocaleString() + '万円';
+}
+function fmtCap(oku) {
+    if (!oku || oku <= 0) return '−';
+    if (oku >= 10000) return (oku / 10000).toFixed(2) + '兆円';
+    if (oku < 10)     return oku.toFixed(1) + '億円';
+    return Math.round(oku).toLocaleString() + '億円';
+}
+function fmtTurn(t) {
+    if (t === null || t === undefined) return '−';
+    return t.toFixed(t < 1 ? 2 : 1) + '%';
+}
+// ===== 売買代金の基準を時間に応じて変える =====
+// 1億円は「1日分」の基準なので、取引時間の経過に合わせて基準額を上げていきます。
+// 例）9:30ごろ→約1,500万円、11:30（前場終了）→約4,500万円、15:30（大引け）→1億円
+// 東証の取引時間：前場 9:00〜11:30（150分）、後場 12:30〜15:30（180分）＝合計330分
+const TRADING_MINUTES   = 330;
+const MIN_TIME_FRACTION = 0.15;   // 寄り付き直後に基準が低くなりすぎないよう、最低でも1日分の15%（1,500万円）にする
+
+function elapsedTradingMinutes(d) {
+    const m  = d.getHours() * 60 + d.getMinutes();
+    const am = Math.min(Math.max(m - 540, 0), 150);   // 9:00〜11:30
+    const pm = Math.min(Math.max(m - 750, 0), 180);   // 12:30〜15:30
+    return am + pm;
+}
+
+// 今の時刻（CSVの最終更新時刻）での売買代金の基準額（円）
+function liquidityThreshold() {
+    const d = lastUpdateDate;
+    if (!d) return MIN_TRADE_VALUE;
+    const w = d.getDay();
+    const m = d.getHours() * 60 + d.getMinutes();
+    // 土日・寄り付き前は、前営業日の1日分のデータとみなして満額で判定
+    if (w === 0 || w === 6 || m < 540) return MIN_TRADE_VALUE;
+    const frac = Math.min(1, Math.max(elapsedTradingMinutes(d) / TRADING_MINUTES, MIN_TIME_FRACTION));
+    return MIN_TRADE_VALUE * frac;
+}
+
+const isLowLiquidity = s => s.tradeValue < liquidityThreshold();
+const isOverheated   = s => s.turnover !== null && s.turnover >= HOT_TURNOVER_PCT;
 
 // ===== データ更新監視の設定 =====
 const STALE_THRESHOLD_MIN = 15;   // これ以上更新がないと警告表示（Excelの送信は10分おき）
@@ -1015,6 +1086,18 @@ function getScoreRank(total) {
     return               { cls: 'asb-c', label: 'C',   sClass: 's-low',   fClass: 'fill-low',   vClass: 'verdict-low'   };
 }
 
+// ===== 流動性・過熱の補足コメント（解説文の最後に付ける） =====
+function buildLiquidityComment(s) {
+    const parts = [];
+    if (isLowLiquidity(s)) {
+        parts.push(`💧売買代金が<strong>${fmtYen(s.tradeValue)}</strong>と少なく、思った値段で売買できない可能性があります。`);
+    }
+    if (isOverheated(s)) {
+        parts.push(`🌡️売買代金回転率が<strong>${fmtTurn(s.turnover)}</strong>と高く過熱気味です。急な値動きに注意してください。`);
+    }
+    return parts.length ? '<br>' + parts.join('<br>') : '';
+}
+
 // ===== デイトレ用：動的解説文 =====
 function buildVerdictTextDay(s, total, stateLabel, stateColor) {
     const rvolVal    = s.corrRvol > 0 ? s.corrRvol : s.rvol;
@@ -1058,7 +1141,7 @@ function buildVerdictTextDay(s, total, stateLabel, stateColor) {
         advice = `出来高・シグナルともに現時点では積極的なエントリー根拠が少ない状態です。${dnComment}`;
     }
 
-    return `${emoji} <strong>${strength}</strong>　${advice}`;
+    return `${emoji} <strong>${strength}</strong>　${advice}${buildLiquidityComment(s)}`;
 }
 
 // ===== スイング用：動的解説文 =====
@@ -1087,7 +1170,7 @@ function buildVerdictTextSwing(s, total) {
         advice = `成長性・財務健全性ともに現時点では中長期保有の根拠が乏しい状態です。`;
     }
 
-    return `${emoji} <strong>${strength}</strong>　${advice}`;
+    return `${emoji} <strong>${strength}</strong>　${advice}${buildLiquidityComment(s)}`;
 }
 
 // ===== CSV全カラムパース =====
@@ -1106,6 +1189,7 @@ const COLUMN_NAMES = {
     avgVol20:  ['20日平均出来高'],
     rvol:      ['RVOL'],
     corrRvol:  ['補正RVOL'],
+    marketCap: ['時価総額'],          // M列（億円単位）
     sign:      ['判定'],
     bolt:      ['ボルト判定'],
     boltCount: ['ボルト回数'],
@@ -1163,8 +1247,14 @@ function parseFullStocks(rows) {
 
         const code = str('code');
         if (!code) continue;
-        const price = num('price');
-        const vwap  = num('vwap');
+        const price  = num('price');
+        const vwap   = num('vwap');
+        const volume = num('volume');
+        const marketCap = num('marketCap');   // 億円
+        // 売買代金はサイト側で計算（VWAP×当日出来高。VWAPがない時は現在値×出来高）
+        const tradeValue = volume * (vwap > 0 ? vwap : price);
+        // 売買代金回転率（%）＝売買代金÷時価総額。時価総額がない銘柄（ETFなど）は計算しない
+        const turnover = marketCap > 0 ? tradeValue / (marketCap * 1e8) * 100 : null;
         result.push({
             code,
             name:      str('name') || '−',
@@ -1173,11 +1263,14 @@ function parseFullStocks(rows) {
             vwapDiff:  vwap > 0 ? +((price - vwap) / vwap * 100).toFixed(2) : 0,
             priceDiff: num('priceDiff'),
             changePct: num('changePct'),
-            volume:    num('volume'),
+            volume,
             vol5min:   num('vol5min'),
             avgVol20:  num('avgVol20'),
             rvol:      num('rvol'),
             corrRvol:  num('corrRvol'),
+            marketCap,
+            tradeValue,
+            turnover,
             sign:      str('sign'),
             bolt:      str('bolt'),
             boltCount: parseInt(str('boltCount')) || 0,
@@ -1206,10 +1299,10 @@ function getMikaPicks(stocks) {
     let picks;
 
     if (currentMode === 'day') {
-        // デイ：買い判定＋RVOL≥1.5
+        // デイ：買い判定＋RVOL≥1.5＋売買代金が時間に応じた基準以上
         const isBuy  = s => s.sign === '🔥買い' || s.sign === '買いサイン' || s.sign === '🔥' || s.sign.includes('買い');
         const rvolOk = s => (s.corrRvol > 0 ? s.corrRvol : s.rvol) >= 1.5;
-        picks = stocks.filter(s => isBuy(s) && rvolOk(s));
+        picks = stocks.filter(s => isBuy(s) && rvolOk(s) && !isLowLiquidity(s));
     } else {
         // スイング：成長率＞0 かつ 元A3≥100
         picks = stocks.filter(s => s.growth > 0 && s.scoreA3 >= 100);
@@ -1225,7 +1318,7 @@ function renderMikaPicks(picks) {
     const container = document.getElementById('mika-picks');
     if (!picks || picks.length === 0) {
         const condText = currentMode === 'day'
-            ? '条件：補正RVOL≥1.5 ／ 買い判定あり'
+            ? `条件：補正RVOL≥1.5 ／ 買い判定あり ／ 売買代金${fmtYen(liquidityThreshold())}以上（現在の基準）`
             : '条件：成長率＞0 ／ 元A3≥100';
         container.innerHTML = `
             <div class="mika-empty">
@@ -1252,6 +1345,8 @@ function renderMikaPicks(picks) {
             if (s.growth > 0) tags.push(`<span class="mika-tag mika-tag-growth">📈成長率 ${s.growth.toFixed(1)}%</span>`);
             if (s.netCash > 0) tags.push(`<span class="mika-tag mika-tag-cash">💰キャッシュ ${s.netCash.toFixed(1)}%</span>`);
         }
+        if (isLowLiquidity(s)) tags.push('<span class="mika-tag mika-tag-liq">💧流動性注意</span>');
+        if (isOverheated(s))   tags.push(`<span class="mika-tag mika-tag-hot">🌡️過熱注意 ${fmtTurn(s.turnover)}</span>`);
 
         const barColors = { 'fill-great': '#34d399', 'fill-good': '#3b82f6', 'fill-mid': '#f59e0b', 'fill-low': '#ef4444' };
         const barColor  = barColors[rank.fClass] || '#3b82f6';
@@ -1264,13 +1359,17 @@ function renderMikaPicks(picks) {
                 <div class="mika-metric"><div class="mika-metric-key">補正A3</div><div class="mika-metric-val cyan">${s.corrA3 || '−'}</div></div>
                 <div class="mika-metric"><div class="mika-metric-key">補正RVOL</div><div class="mika-metric-val up">${rvolVal.toFixed(2)}</div></div>
                 <div class="mika-metric"><div class="mika-metric-key">BOLT回数</div><div class="mika-metric-val ${s.boltCount > 0 ? 'up' : ''}">${s.boltCount > 0 ? s.boltCount + '回' : '−'}</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">前日比率</div><div class="mika-metric-val ${changeClass}">${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%</div></div>`;
+                <div class="mika-metric"><div class="mika-metric-key">前日比率</div><div class="mika-metric-val ${changeClass}">${s.changePct >= 0 ? '+' : ''}${s.changePct.toFixed(1)}%</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">売買代金</div><div class="mika-metric-val">${fmtYen(s.tradeValue)}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">回転率</div><div class="mika-metric-val ${isOverheated(s) ? 'dn' : ''}">${fmtTurn(s.turnover)}</div></div>`;
         } else {
             metricsHtml = `
                 <div class="mika-metric"><div class="mika-metric-key">元A3</div><div class="mika-metric-val cyan">${s.scoreA3 || '−'}</div></div>
                 <div class="mika-metric"><div class="mika-metric-key">成長率</div><div class="mika-metric-val up">${s.growth > 0 ? '+' + s.growth.toFixed(1) + '%' : '−'}</div></div>
                 <div class="mika-metric"><div class="mika-metric-key">ネットキャッシュ</div><div class="mika-metric-val ${s.netCash > 0 ? 'up' : 'dn'}">${s.netCash > 0 ? s.netCash.toFixed(1) + '%' : '−'}</div></div>
-                <div class="mika-metric"><div class="mika-metric-key">営業PEG</div><div class="mika-metric-val">${s.opPeg > 0 ? s.opPeg.toFixed(2) : '−'}</div></div>`;
+                <div class="mika-metric"><div class="mika-metric-key">営業PEG</div><div class="mika-metric-val">${s.opPeg > 0 ? s.opPeg.toFixed(2) : '−'}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">時価総額</div><div class="mika-metric-val">${fmtCap(s.marketCap)}</div></div>
+                <div class="mika-metric"><div class="mika-metric-key">売買代金</div><div class="mika-metric-val">${fmtYen(s.tradeValue)}</div></div>`;
         }
 
         return `
@@ -1345,6 +1444,8 @@ function renderAnalyze(s) {
     const isAi    = s.kubun === '区分１' || s.kubun === '区分1' || s.kubun === '1';
     const isBolt  = s.bolt === 'BOLT!';
     const rvolOk  = rvolVal >= 1.5;
+    const lowLiq  = isLowLiquidity(s);
+    const hot     = isOverheated(s);
 
     document.getElementById('az-r-code').textContent = s.code;
     document.getElementById('az-r-name').textContent = s.name;
@@ -1373,6 +1474,8 @@ function renderAnalyze(s) {
         if (s.netCash > 0)  tags.push(`<span class="az-tag az-tag-cash">💰キャッシュ ${s.netCash.toFixed(1)}%</span>`);
         if (s.growth <= 0 && s.netCash <= 0) tags.push('<span class="az-tag az-tag-none">データ少</span>');
     }
+    if (lowLiq) tags.push('<span class="az-tag az-tag-liq">💧流動性注意</span>');
+    if (hot)    tags.push(`<span class="az-tag az-tag-hot">🌡️過熱注意 ${fmtTurn(s.turnover)}</span>`);
     document.getElementById('az-r-tags').innerHTML = tags.join('');
 
     // スコアモードタグ
@@ -1399,6 +1502,11 @@ function renderAnalyze(s) {
         bar.style.width = total + '%';
     }, 80);
 
+    // 売買代金・回転率・時価総額の行（共通）
+    const tradeRow = { key: '売買代金', val: fmtYen(s.tradeValue), cls: lowLiq ? 'warn' : 'up', pip: lowLiq ? 'pip-yellow' : 'pip-green' };
+    const turnRow  = { key: '売買代金回転率', val: fmtTurn(s.turnover), cls: hot ? 'dn' : '', pip: s.turnover === null ? '' : (hot ? 'pip-red' : 'pip-gray') };
+    const capRow   = { key: '時価総額', val: fmtCap(s.marketCap) };
+
     // メトリクスカード：モード別
     const metricsGrid = document.getElementById('az-metrics-grid');
     if (currentMode === 'day') {
@@ -1424,6 +1532,8 @@ function renderAnalyze(s) {
             { key: '当日出来高',     val: azVol(s.volume) },
             { key: '20日平均出来高', val: azVol(s.avgVol20) },
             { key: 'RVOL（補正）',   val: rvolVal.toFixed(2) + 'x', cls: rvolOk ? 'up' : 'warn', pip: rvolOk ? 'pip-green' : 'pip-yellow' },
+            tradeRow,
+            turnRow,
         ]);
         document.getElementById('az-m-price').innerHTML = azMri([
             { key: '現在値',    val: s.price.toLocaleString() + '円' },
@@ -1439,6 +1549,7 @@ function renderAnalyze(s) {
             { key: '補正A3スコア',   val: s.corrA3 || '−', cls: s.corrA3 > 60 ? 'up' : '' },
             { key: 'ギャップ比(A5)', val: s.gapRatio > 0 ? s.gapRatio.toFixed(2) : '−', cls: s.gapRatio >= 1.5 ? 'up' : s.gapRatio >= 1.0 ? '' : 'warn' },
             { key: '営業PEG',       val: s.opPeg > 0 ? s.opPeg.toFixed(2) : '−', cls: s.opPeg > 0 && s.opPeg < 1 ? 'up' : '' },
+            capRow,
         ]);
 
     } else {
@@ -1465,6 +1576,7 @@ function renderAnalyze(s) {
             { key: '元A3スコア', val: s.scoreA3 || '−', cls: s.scoreA3 >= 120 ? 'up' : s.scoreA3 >= 100 ? '' : 'warn', pip: s.scoreA3 >= 120 ? 'pip-green' : s.scoreA3 >= 100 ? 'pip-yellow' : 'pip-red' },
             { key: 'PER',       val: s.per > 0 ? s.per.toFixed(1) + '倍' : '−' },
             { key: '営業PEG',   val: s.opPeg > 0 ? s.opPeg.toFixed(2) : '−', cls: s.opPeg > 0 && s.opPeg < 1 ? 'up' : '' },
+            capRow,
         ]);
         document.getElementById('az-m-growth').innerHTML = azMri([
             { key: '成長率予測', val: s.growth > 0 ? '+' + s.growth.toFixed(1) + '%' : s.growth < 0 ? s.growth.toFixed(1) + '%' : '−', cls: s.growth >= 10 ? 'up' : s.growth > 0 ? '' : 'dn', pip: s.growth >= 10 ? 'pip-green' : s.growth > 0 ? 'pip-yellow' : 'pip-red' },
@@ -1478,6 +1590,8 @@ function renderAnalyze(s) {
             { key: '現在値',    val: s.price.toLocaleString() + '円' },
             { key: '前日比',    val: (s.changePct >= 0 ? '+' : '') + s.changePct.toFixed(2) + '%', cls: s.changePct >= 0 ? 'up' : 'dn' },
             { key: 'VWAP乖離', val: (s.vwapDiff >= 0 ? '+' : '') + s.vwapDiff + '%', cls: s.vwapDiff >= 0 ? 'up' : 'dn' },
+            tradeRow,
+            turnRow,
         ]);
     }
 
@@ -1531,13 +1645,14 @@ let cachedHeaderRow = null;
 // 一覧表の見出し（下の raw 配列と同じ並び）
 const TABLE_HEADER_LABELS = ['コード', '銘柄名', '現在値', '前日差額', '前日比率', 'VWAP',
                              '当日出来高', '5分前出来高', '列2', '20日平均出来高', 'RVOL', '補正RVOL',
-                             '判定', 'ボルト判定', 'ボルト回数'];
+                             '判定', 'ボルト判定', 'ボルト回数', '時価総額', '売買代金', '回転率'];
+const TABLE_LAST_INDEX = TABLE_HEADER_LABELS.length - 1;
+const TABLE_HIDE_INDICES = [3, 7, 8];   // 前日差額・5分前出来高・列2は表示しない
 
 function renderTable(rows) {
     const tableHeader = document.getElementById('table-header');
     const tableBody   = document.getElementById('table-body');
     tableHeader.innerHTML = ''; tableBody.innerHTML = '';
-    const hideIndices = [3, 7, 8, 15];
 
     rows.forEach((row, index) => {
         if (row.includes("Update:")) {
@@ -1557,8 +1672,8 @@ function renderTable(rows) {
             tr.appendChild(scoreTh);
 
             // 見出しは固定の名前で表示（Excelの列が増減しても表の見出しがずれないように）
-            for (let i = 0; i <= 14; i++) {
-                if (hideIndices.includes(i)) continue;
+            for (let i = 0; i <= TABLE_LAST_INDEX; i++) {
+                if (TABLE_HIDE_INDICES.includes(i)) continue;
                 const th = document.createElement('th');
                 th.textContent = TABLE_HEADER_LABELS[i];
                 tr.appendChild(th);
@@ -1605,10 +1720,15 @@ function updateShowMoreUI(totalCount) {
 function renderTableBody(stocks) {
     const tableBody = document.getElementById('table-body');
     tableBody.innerHTML = '';
-    const hideIndices = [3, 7, 8, 15];
 
     const displayStocks = showAllRows ? stocks : stocks.slice(0, INITIAL_SHOW_COUNT);
     updateShowMoreUI(stocks.length);
+
+    // 凡例に「今の売買代金の基準」を表示
+    const liqNote = document.getElementById('liq-threshold-note');
+    if (liqNote && lastUpdateDate) {
+        liqNote.textContent = `（現在の基準：${fmtYen(liquidityThreshold())}。1日1億円を目安に、取引時間の経過に応じて上がります）`;
+    }
 
     displayStocks.forEach((s, idx) => {
         const tr = document.createElement('tr');
@@ -1632,10 +1752,10 @@ function renderTableBody(stocks) {
 
         const raw = [s.code, s.name, s.price, s.priceDiff, s.changePct, s.vwap,
                      s.volume, s.vol5min, '', s.avgVol20, s.rvol, s.corrRvol,
-                     s.sign, s.bolt, s.boltCount];
+                     s.sign, s.bolt, s.boltCount, s.marketCap, s.tradeValue, s.turnover];
 
-        for (let i = 0; i <= 14; i++) {
-            if (hideIndices.includes(i)) continue;
+        for (let i = 0; i <= TABLE_LAST_INDEX; i++) {
+            if (TABLE_HIDE_INDICES.includes(i)) continue;
             const td = document.createElement('td');
             let val = (raw[i] !== undefined && raw[i] !== null) ? String(raw[i]) : '';
 
@@ -1684,6 +1804,25 @@ function renderTableBody(stocks) {
                 td.innerHTML = (!isNaN(count) && count > 0)
                     ? `<span class="bolt-count-badge"><i class="fa-solid fa-bolt"></i>${count}回</span>`
                     : '<span style="color:var(--text-sub)">—</span>';
+            } else if (i === 15) {
+                // 時価総額
+                td.textContent = fmtCap(s.marketCap);
+                td.style.whiteSpace = 'nowrap';
+            } else if (i === 16) {
+                // 売買代金：時間に応じた基準未満なら「流動性注意」の表示
+                if (s.tradeValue > 0 && isLowLiquidity(s)) {
+                    td.innerHTML = `<span class="cell-flag liq-flag" title="売買代金が現在の基準（${fmtYen(liquidityThreshold())}）未満（流動性注意）">${fmtYen(s.tradeValue)}</span>`;
+                } else {
+                    td.textContent = fmtYen(s.tradeValue);
+                    td.style.whiteSpace = 'nowrap';
+                }
+            } else if (i === 17) {
+                // 売買代金回転率：基準以上なら「過熱注意」の表示
+                if (isOverheated(s)) {
+                    td.innerHTML = `<span class="cell-flag hot-flag" title="回転率${HOT_TURNOVER_PCT}%以上（過熱注意）"><span class="cell-flag-dot"></span>${fmtTurn(s.turnover)}</span>`;
+                } else {
+                    td.textContent = fmtTurn(s.turnover);
+                }
             } else {
                 td.textContent = isNaN(parseFloat(val)) ? val : formatNum(val);
             }
@@ -1773,20 +1912,21 @@ const ALERT = (() => {
         const w = t.getDay(), hm = hhmm(t);
         const inHours = w >= 1 && w <= 5 && hm >= 915 && hm <= 1530;
 
-        // AI MIKA 厳選（デイ）のTOP3：買い判定＋補正RVOL1.5以上をAIスコア順に
-        const mika = stocks.filter(s => isBuy(s) && rvOf(s) >= 1.5)
+        // AI MIKA 厳選（デイ）のTOP3：買い判定＋補正RVOL1.5以上＋売買代金が基準以上をAIスコア順に
+        const mika = stocks.filter(s => isBuy(s) && rvOf(s) >= 1.5 && !isLowLiquidity(s))
             .sort((a, b) => calcScoreDay(b).total - calcScoreDay(a).total).slice(0, 3).map(s => s.code);
 
         const news = [];
         if (inHours) {
             for (const s of stocks) {
                 if (s.noA3) continue;   // A3が未入力の銘柄は通知しない（0点＝クリアとは扱わない）
+                if (isLowLiquidity(s)) continue;   // 売買代金が少ない銘柄は通知しない（流動性注意）
                 // 現在値がVWAPより上で、前日比がマイナスでない銘柄だけ（下げている日・VWAPを割っている銘柄は通知しない）
                 if (!(s.price > 0 && s.vwap > 0 && s.price > s.vwap)) continue;
                 if (s.changePct < 0) continue;
                 const sc = calcScoreDay(s).total;
                 const base = { code: s.code, name: s.name, score: sc, rv: rvOf(s), p: s.price, vw: s.vwap, chg: s.changePct,
-                               mika: mika.includes(s.code), t: t.getTime(), quiet: firstCall };
+                               turn: s.turnover, mika: mika.includes(s.code), t: t.getTime(), quiet: firstCall };
                 if (sc >= cfg.rank && !st.seen[s.code + '|rank']) {
                     st.seen[s.code + '|rank'] = 1;
                     news.push(Object.assign({ type: 'rank', why: `AIスコア ${sc}点（${sc >= 80 ? 'S' : 'A'}ランク）に到達` }, base));
@@ -1801,7 +1941,8 @@ const ALERT = (() => {
             const cautions = [];
             if (n.chg >= 15) cautions.push(`前日比+${n.chg.toFixed(1)}%`);
             if (n.vw > 0 && (n.p / n.vw - 1) * 100 >= 2) cautions.push(`VWAPより${((n.p / n.vw - 1) * 100).toFixed(1)}%上`);
-            n.caution = cautions.length ? '⚠ 高値追い注意（' + cautions.join('・') + '）' : '';
+            if (n.turn !== null && n.turn !== undefined && n.turn >= HOT_TURNOVER_PCT) cautions.push(`回転率${fmtTurn(n.turn)}`);
+            n.caution = cautions.length ? '⚠ 高値追い・過熱注意（' + cautions.join('・') + '）' : '';
         });
         st.items = news.concat(st.items).slice(0, 100);
         lsSet(LS_STATE, st);
