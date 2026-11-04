@@ -1790,10 +1790,14 @@ function renderTableBody(stocks) {
             } else if (i === 5) {
                 let num = parseFloat(val.replace(/,/g, ''));
                 td.textContent = isNaN(num) ? val : num.toLocaleString();
-            } else if (i === 11) {
-                // 補正RVOL：3.0以上なら強調表示
+            } else if (i === 10) {
+                // RVOL：小数点以下2桁で表示
                 let num = parseFloat(val);
-                const rvolText = isNaN(num) ? val : formatNum(val);
+                td.textContent = isNaN(num) ? val : num.toFixed(2);
+            } else if (i === 11) {
+                // 補正RVOL：3.0以上なら強調表示（小数点以下2桁）
+                let num = parseFloat(val);
+                const rvolText = isNaN(num) ? val : num.toFixed(2);
                 if (!isNaN(num) && num >= 3.0) {
                     td.innerHTML = `<span class="cell-flag rvol-flag"><span class="cell-flag-dot"></span>${rvolText}</span>`;
                 } else {
